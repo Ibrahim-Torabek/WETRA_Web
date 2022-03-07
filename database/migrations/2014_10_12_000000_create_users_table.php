@@ -23,15 +23,15 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->timestamps();
 
-            $table->integer('group_id')->nullable();
+            $table->tinyInteger('group_id')->nullable();
             $table->string('image_url')->nullable();
             $table->string('job_title')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('address')->nullable();
-            $table->timestamp('register_date')->nullable()->default(time());
-            $table->tinyInteger('status_id');
+            $table->timestamp('registered_date')->useCurrent = true;
+            $table->tinyInteger('status');
             $table->boolean('is_admin')->nullable()->default(false);
-
+            
         });
     }
 
