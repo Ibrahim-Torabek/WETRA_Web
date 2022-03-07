@@ -29,7 +29,7 @@ class CreateUsersTable extends Migration
             $table->string('phone_number')->nullable();
             $table->string('address')->nullable();
             $table->timestamp('registered_date')->useCurrent = true;
-            $table->tinyInteger('status');
+            $table->tinyInteger('status')->nullable();
             $table->boolean('is_admin')->nullable()->default(false);
             
         });
