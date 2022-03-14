@@ -29,19 +29,22 @@
                 <a class="navbar-brand" href="{{ url('https://www.wetra.ca/') }}">
                     <h3>{{ config('app.name', 'Home') }}</h3>
                 </a>
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    MESSAGES
-                </a>
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    SCHEDULE
-                </a>
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    FILES
-                </a>
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    USERS
-                </a>
-
+                @auth
+                    <a class="navbar-brand" href="{{ url('/') }}">
+                        MESSAGES
+                    </a>
+                    <a class="navbar-brand" href="{{ url('/') }}">
+                        SCHEDULE
+                    </a>
+                    <a class="navbar-brand" href="{{ url('/') }}">
+                        FILES
+                    </a>
+                    @if(Auth::user()->is_admin == 1)
+                        <a class="navbar-brand" href="{{ url('/') }}">
+                            USERS
+                        </a>
+                    @endif
+                @endauth
 
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
