@@ -12,10 +12,12 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js" integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -25,7 +27,9 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-dark  shadow-sm" style="background-color:#800b37;">
+
+
+        <nav class="navbar fixed-top navbar-expand-md navbar-dark p-0  shadow-sm" style="background-color:#800b37;">
             <div class="container">
             
                 <!-- <a class="navbar-brand" href="{{ url('https://www.wetra.ca/') }}">
@@ -35,36 +39,42 @@
                     <img src="storage/logo-main-light-80H.png" alt="" width="60" height="45" style="margin-right:80px;">
 
                 </a>
-                @auth
-                    <ul class="navbar-nav mr-auto">
-                        
-                        <a class="navbar-brand active" aria-current="page" href="{{ url('/') }}">
-                            Messages 
-                        </a>
-                        
-                        <a class="navbar-brand" href="{{ url('/') }}">
-                            Schedules
-                        </a>
-                        <a class="navbar-brand" href="{{ url('/') }}">
-                            Files
-                        </a>
-                        @if(Auth::user()->is_admin == 1)
-                            <a class="navbar-brand" href="{{ url('/') }}">
-                                Users
-                            </a>
-                        @endif
-                    </ul>
-                @endauth
-                
+
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">
 
+                    @auth
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item {{ (request()->is('message')) ? 'active' : '' }}">
+                            <a class="navbar-brand"  href="{{ url('/messages') }}">
+                                Messages
+                            </a>
+                            <!-- <a class="nav-link" href="{{ url('/messages') }}">Messages <span class="sr-only">(current)</span></a> -->
+                        
+                        </li>
+                        <li class=" {{ (request()->is('schedule')) ? 'active' : '' }}">
+                            <a class="navbar-brand" href="{{ url('/') }}">
+                                Schedules
+                            </a>
+                        </li>
+                        <li class=" {{ (request()->is('file')) ? 'active' : '' }}">
+                            <a class="navbar-brand" href="{{ url('/') }}">
+                                Files
+                            </a>
+                        </li>
+                        @if(Auth::user()->is_admin == 1)
+                            <li class=" {{ (request()->is('user')) ? 'active' : '' }}">
+                                <a class="navbar-brand" href="{{ url('/') }}">
+                                    Users
+                                </a>
+                            </li>
+                        @endif
                     </ul>
+                @endauth
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
