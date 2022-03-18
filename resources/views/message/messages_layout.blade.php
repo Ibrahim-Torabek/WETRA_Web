@@ -8,12 +8,14 @@
                     <h2>Messages</h2>
                 </ul>
                 <ul class="pl-0 pt-0">
-                    <button type="button" class="btn btn-primary btn-lg " style="border-radius: 25px;">
+                    <a type="button" class="btn btn-primary btn-lg " style="border-radius: 25px;" 
+                        href="{{ action([App\Http\Controllers\MessageController::class, 'create']) }}"
+                    >
                         <i class="material-icons">
                             message
                         </i>
                         Start Chat
-                    </button>    
+                    </a>    
                 </ul>
 
             </nav>

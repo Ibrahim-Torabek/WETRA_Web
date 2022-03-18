@@ -30,7 +30,7 @@ class MessageController extends Controller
      */
     public function create()
     {
-        //
+        return view('message.start');
     }
 
     /**
@@ -88,4 +88,18 @@ class MessageController extends Controller
     {
         //
     }
+
+
+    /**
+     * List users to start a chat.
+     *
+     * @param  \App\Models\Message  $message
+     * @return \Illuminate\Http\Response
+     */
+    public function start(Message $message)
+    {
+        return view('message.start');
+    }
+
+    
 }

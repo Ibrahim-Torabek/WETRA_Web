@@ -20,4 +20,6 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 Route::resource('messages', App\Http\Controllers\MessageController::class);
+//Route::get('/messages/start', [App\Http\Controllers\MessageController::class, 'start']);

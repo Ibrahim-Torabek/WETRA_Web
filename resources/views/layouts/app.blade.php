@@ -36,7 +36,7 @@
                     <h3>{{ config('app.name', 'Home') }}</h3>
                 </a> -->
                 <a class="navbar-brand" href="#">
-                    <img src="storage/logo-main-light-80H.png" alt="" width="60" height="45" style="margin-right:80px;">
+                    <img src="/wetra/storage/logo-main-light-80H.png" alt="" width="60" height="45" style="margin-right:80px;">
 
                 </a>
 
