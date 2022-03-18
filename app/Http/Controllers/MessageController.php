@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class MessageController extends Controller
 {
@@ -30,7 +31,8 @@ class MessageController extends Controller
      */
     public function create()
     {
-        return view('message.start');
+        $users = User::all();
+        return view('message.start',['users' => $users]);
     }
 
     /**
@@ -63,7 +65,8 @@ class MessageController extends Controller
      */
     public function edit(Message $message)
     {
-        //
+        
+        return view('message.index');
     }
 
     /**
@@ -96,9 +99,22 @@ class MessageController extends Controller
      * @param  \App\Models\Message  $message
      * @return \Illuminate\Http\Response
      */
-    public function start(Message $message)
+    public function start()
     {
         return view('message.start');
+    }
+
+        /**
+     * List users to start a chat.
+     *
+     * @param  \App\Models\Message  $message
+     * @return \Illuminate\Http\Response
+     */
+    public function chat()
+    {
+        
+        //return view('message.index');
+        return view('message.chat');
     }
 
     

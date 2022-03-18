@@ -49,9 +49,9 @@
 
                     @auth
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item {{ (request()->is('message')) ? 'active' : '' }}">
-                            <a class="navbar-brand"  href="{{ url('/messages') }}">
-                                Messages
+                        <li class="nav-item {{ (request()->routeIs('messages.*')) ? 'active' : '' }}" >
+                            <a class="navbar-brand"  href="{{ url('/messages') }}" style="color:{{ (request()->routeIs('messages.*')) ? 'gray' : '' }};">
+                                Messages 
                             </a>
                             <!-- <a class="nav-link" href="{{ url('/messages') }}">Messages <span class="sr-only">(current)</span></a> -->
                         
@@ -123,6 +123,9 @@
         </nav>
 
         <main class="py-4">
+            <!-- <div class="p-5">
+                {{ request()->routeIs('messages.*') }}
+            </div> -->
             @yield('content')
         </main>
     </div>
