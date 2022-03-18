@@ -4,10 +4,10 @@
         <div class="col-md-3 col-lg-3 sidebar-offcanvas h-100 overflow-auto bg-light pl-0" id="sidebar" role="navigation">
             <nav class="navbar sticky-top bg-light" style="z-index: 1025;">
 
-                <ul class="pl-0">
+                <ul class="pl-0 pb-0"  style="width: 100%;">
                     <h2>Messages</h2>
                 </ul>
-                <ul >
+                <ul class="pl-0 pt-0">
                     <button type="button" class="btn btn-primary btn-lg " style="border-radius: 25px;">
                         <i class="material-icons">
                             message
@@ -55,11 +55,13 @@
             </ul>
         </div>
         <!--/col-->
-        <main class="col main pt-5 mt-3 h-100 overflow-auto">
-            <h1 class="display-4 d-none d-sm-block">
-            {{ Auth::user()->first_name }} {{ Auth::user()->last_name }} (Selected user name goes here)
-            </h1>
-            <hr>
+        <main class="col main pt-0 mt-0 h-100 overflow-auto">
+            <nav class="nav navvar sticky-top bg-white" style="z-index: 1025;box-shadow: 0 2px 2px -2px gray;">
+                <h3 class="pt-3 pb-3">
+                    @yield('selected-user')
+                </h3>
+            </nav>
+
             @yield('message-content')
             
 
