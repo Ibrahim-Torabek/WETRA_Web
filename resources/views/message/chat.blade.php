@@ -328,7 +328,7 @@
     //setInterval(updateScroll,3000);
 
     function updateScroll(){
-        var myDiv = document.getElementById("chat-content");
+        var myDiv = document.getElementById("chat-scroll-area");
         if(myDiv){
             myDiv.scrollTop = myDiv.scrollHeight;
             console.log("Element finded");

@@ -57,7 +57,7 @@
             </ul>
         </div>
         <!--/col-->
-        <main class="col main pt-0 mt-0 h-100 overflow-auto chat-main">
+        <main class="col main pt-0 mt-0 h-100 overflow-auto chat-main" id="chat-scroll-area">
             <nav class="nav navvar sticky-top bg-white border-bottom" style="z-index: 1025;box-shadow: 0 2px 2px -2px gray;">
                 <h3 class="pt-3 pb-3">
                     @yield('selected-user')
