@@ -31,6 +31,9 @@ class User extends Authenticatable
         'registered_date',
         'status',
         'is_admin',
+
+        // 'updated_at',
+        // 'created_at',
     ];
 
     /**
@@ -51,4 +54,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    function sentMessages(){
+        return $this->hasMany(Message::class,'sender_id');
+    }
+    
+    function receivedMessages(){
+        return $this->hasMany(Message::class,'receiver_id');
+    }
+
+    // function allMessages(){
+    //     $received = $this->hasMany(Message::class,'receiver_id');
+    //     $sent = $this->hasMany(Message::class,'sender_id');
+
+    //     $all = $received->merge($sent);
+    //     return $all.sortBy('created_at');
+    // }
 }

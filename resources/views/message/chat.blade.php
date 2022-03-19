@@ -10,96 +10,39 @@
     
     <div class="conteiner chat-area">
         <div class="chat-content" id="chat-content">
-            <div class="row no-gutters">
-                <div class="chat-box">
-                    <div class="chat-bubble chat-bubble--left">
-                        Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World 
-                    </div>
-                </div>    
-            </div>
-
-            <div class="row no-gutters ">
-                <div class="chat-box chat-box--right">
-                    <div class="chat-bubble chat-bubble--blue chat-bubble--right">
-                        Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People 
-                    </div>
+            @foreach($chatLines as $chatLine)
+                <div class="row">
+                    <div class="chat-box {{ $chatLine->sender_id == Auth::id() ? 'chat-box--right' : '' }}">
+                        <div class="chat-bubble {{ $chatLine->sender_id == Auth::id() ? 'chat-bubble--blue' : '' }} chat-bubble--{{ $chatLine->sender_id == Auth::id() ? 'right' : 'left' }}">
+                            {{ $chatLine->line_text }}
+                        </div>
+                    </div>    
                 </div>
-            </div>
-            <div class="row no-gutters">
-                <div class="chat-box">
-                    <div class="chat-bubble chat-bubble--left">
-                        Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World 
-                    </div>
-                </div>    
-            </div>
+            @endforeach
 
-            <div class="row no-gutters">
-                <div class="chat-box chat-box--right">
-                    <div class="chat-bubble chat-bubble--blue chat-bubble--right">
-                        Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People 
-                    </div>
-                </div>
-            </div>
-            <div class="row no-gutters">
-                <div class="chat-box">
-                    <div class="chat-bubble chat-bubble--left">
-                        Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World 
-                    </div>
-                </div>    
-            </div>
 
-            <div class="row no-gutters">
-                <div class="chat-box chat-box--right">
-                    <div class="chat-bubble chat-bubble--blue chat-bubble--right">
-                        Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People 
-                    </div>
-                </div>        <div class="row no-gutters">
-                <div class="chat-box">
-                    <div class="chat-bubble chat-bubble--left">
-                        Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World 
-                    </div>
-                </div>    
-            </div>
-
-            <div class="row no-gutters">
-                <div class="chat-box chat-box--right">
-                    <div class="chat-bubble chat-bubble--blue chat-bubble--right">
-                        Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People 
-                    </div>
-                </div>
-            </div>
-
-            </div>
-            <div class="row no-gutters">
-                <div class="chat-box">
-                    <div class="chat-bubble chat-bubble--left">
-                        Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World 
-                    </div>
-                </div>    
-            </div>
-
-            <div class="row no-gutters">
-                <div class="chat-box chat-box--right">
-                    <div class="chat-bubble chat-bubble--blue chat-bubble--right">
-                        Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People Hello People 
-                    </div>
-                </div>
-            </div>
         </div>
         <footer class="footer fixed">
             <div class="container-footer">
-                <div class="input-group">
-                    <label for=""></label>
-                    <div class="chatboxdiv mx-auto">
-                        <input class="chatbox" name="username" type="text" />
+                <form method="post" action="{{ action([\App\Http\Controllers\MessageController::class, 'store'], ['receiver' => $selectedUser->id]) }}">
+                    @csrf
+                    <div class="input-group">
+                        <label for=""></label>
+                        <div class="chatboxdiv mx-auto pr-0">
+                            <input class="chatbox" name="chatText" type="text" required/>
+                        </div>
+                        <button class="btn btn-link pl-0 ml-0" >
+                            <span class="material-icons">
+                                sentiment_satisfied_alt
+                            </span>
+                        </button>
+                        <button type="submit" class="btn btn-link pl-0 ml-0">
+                            <i class="material-icons">
+                                send
+                            </i>
+</button>
                     </div>
-                    <span class="material-icons">
-                        sentiment_satisfied_alt
-                    </span>
-                    <i class="material-icons">
-                        send
-                    </i>
-                </div>
+                </form>
             </div>
     </footer>
     </div>
@@ -109,101 +52,6 @@
 @stop
 
 
-<!-- 
-<div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-    <div class="chat-content">
-        <h1>Hello World!</h1>
-    </div>
-
-
-
-
-    <footer class="footer fixed">
-      <div class="container-footer">
-        <div class="input-group">
-            <label for=""></label>
-            <div class="chatboxdiv mx-auto">
-                <input class="chatbox" name="username" type="text" />
-            </div>
-            <span class="material-icons">
-                sentiment_satisfied_alt
-            </span>
-            <i class="material-icons">
-                send
-            </i>
-        </div>
-      </div>
-    </footer> -->
-
 
 <style>
 
@@ -212,6 +60,11 @@
         min-height: 85%;
         flex-direction: column-reverse;
     } */
+
+    .input-group{
+        display: flex;
+        align-items: baseline;
+    }
     .chat-area {
         width:80%;
         margin: auto;
@@ -294,16 +147,18 @@
     }
 
     .footer {
+        
         padding-bottom: 5px;
         position: fixed;
         bottom: 0;
         height: 60px;
         width: 60%;
         background: #fff;
+        align-items: baseline;
     }
 
     .chatboxdiv{
-        width: 90%;
+        width: 85%;
         margin: auto;
     }
 

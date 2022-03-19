@@ -54,7 +54,7 @@
                             <a class="navbar-brand"  href="{{ url('/messages') }}" style="color:{{ (request()->routeIs('messages.*')) ? 'gray' : '' }};">
                                 Messages 
                             </a>
-                            <!-- <a class="nav-link" href="{{ url('/messages') }}">Messages <span class="sr-only">(current)</span></a> -->
+                            
                         
                         </li>
                         <li class=" {{ (request()->is('schedule')) ? 'active' : '' }}">

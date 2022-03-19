@@ -20,9 +20,9 @@
 
             </nav>
             <ul class="nav flex-column sticky-top pl-0 pt-2 mt-3">
-                @for ($i=0; $i < 50; $i++)
+                @foreach(App\Http\Controllers\MessageController::getChatedUsers() as $user)
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{{ action([App\Http\Controllers\MessageController::class, 'chat'], ['selectedUser' => $user]) }}">
 
 
                         <table>
@@ -34,7 +34,7 @@
                                             <circle id="Ellipse_2" data-name="Ellipse 2" cx="5" cy="5" r="5" transform="translate(20 13)" fill="#fff"/>
                                             <path id="Path_8" data-name="Path 8" d="M14.99,0c8.188,0,18.333,2.867,14.826,5.5S23.165,10.934,14.99,11,3.421,7.708.164,5.5,6.8,0,14.99,0Z" transform="translate(10 27.678)" fill="#fff"/>
                                         </svg></td>
-                            <td>FirstName LastName</td>
+                            <td>{{ $user->first_name}} {{ $user->last_name}}</td>
                         </tr>
                         <tr>
                             
@@ -44,7 +44,7 @@
 
                         </a>
                     </li>
-                @endfor
+                @endforeach
                 <!-- <li class="nav-item">
                     <a class="nav-link" href="#submenu1" data-toggle="collapse" data-target="#submenu1">Reports▾</a>
                     <ul class="list-unstyled flex-column pl-3 collapse" id="submenu1" aria-expanded="false">

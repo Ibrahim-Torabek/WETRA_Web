@@ -6,12 +6,36 @@ use App\Models\Message;
 use Illuminate\Http\Request;
 use App\Models\User;
 
+use Illuminate\Support\Facades\Auth;
+
+
 class MessageController extends Controller
 {
 
     public function __construct()
     {
         $this->middleware('auth', ['except' => []]);
+    }
+
+    // Function that get all chated users for current user
+    public function getChatedUsers(){
+        $sent = Auth::user()->sentMessages->unique('receiver_id')->except(Auth::id());;
+        $received = Auth::user()->receivedMessages->unique('sender_id')->except(Auth::id());;
+
+        $allLines = $sent->merge($received)->sortBy('created_at');
+        
+        $chatedUsers = collect(new User);
+        //dd($chatedUsers);
+        foreach($allLines as $line){
+            $user = $line->sender_id == Auth::id() ? User::find($line->receiver_id) : User::find($line->sender_id);
+            if($user->id != Auth::id())
+                $chatedUsers->push($user);
+        }
+
+        $chatedUsers = $chatedUsers->unique('email');
+        //$chatedUsers->forget(Auth::user()->first_name);
+
+        return $chatedUsers;
     }
 
     /**
@@ -21,7 +45,10 @@ class MessageController extends Controller
      */
     public function index()
     {
-        return view('message.index');
+
+        //$chatedUsers = getChatedUsers();
+        //dd($chatedUsers);
+        return view('message.index');//, ['chatedUsers' => $chatedUsers]);
     }
 
     /**
@@ -31,7 +58,9 @@ class MessageController extends Controller
      */
     public function create()
     {
-        $users = User::all();
+        $users = User::all()->except(Auth::id());;
+        
+        //dd($users);
         return view('message.start',['users' => $users]);
     }
 
@@ -43,7 +72,20 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request = $request->all();
+        //dd($request);
+        $message = new Message();
+
+        $message->line_text = $request["chatText"];
+        $message->sender_id = Auth::id();
+        $message->receiver_id = $request["receiver"];
+
+        $message->save();
+
+        
+        //return view('message.chat',['selectedUser' => $selectedUser]);
+        
+        return redirect()->back();
     }
 
     /**
@@ -104,7 +146,7 @@ class MessageController extends Controller
         return view('message.start');
     }
 
-        /**
+    /**
      * List users to start a chat.
      *
      * @param  \App\Models\Message  $message
@@ -112,14 +154,48 @@ class MessageController extends Controller
      */
     public function chat(Request $request)
     {
+        // Get selected user's id from request collection
         $userIds = $request->all();
+        $userId = $userIds["selectedUser"];
+        
+        //dd($userId);
 
         // Find user by Id, and get the first element from the results set.
-        $selectedUser = User::find($userIds)[0];
+        $selectedUser = User::find($userId);
+
+        // Get all chat lines for the current user
+        // $chatLines1 = Message::where('sender_id', Auth::id())
+        //     ->where('receiver_id', $userId)
+        //     ->get();
+
+        // Get all chat lines for the selected user
+        // $chatLines2 = Message::where('sender_id', $userId)
+        //     ->where('receiver_id', Auth::id())
+        //     ->get();
+
+        // Merge the two collections and sort by created data
+        // $chatLines = $chatLines1->merge($chatLines2);
+        // $chatLines = $chatLines->sortBy('created_at');
+        //dd($chatLines);
+
+        // Get all users that chatted with the current user 
+        // This collection will display left side bar in chat page.
+
+        // Get all chat lines current user sent to selected user
+        $sent = Auth::user()->sentMessages->where('receiver_id',$userId);
         
-        //print($selectedUser);
-        //die();
-        return view('message.chat',['selectedUser' => $selectedUser]);
+        // Get all chat lines that current user received from the selected user
+        $received = Auth::user()->receivedMessages->where('sender_id', $userId);
+
+        // merge and sort by created date
+        $allMessages = $sent->merge($received);
+        $allMessages = $allMessages->sortBy('created_at');
+        //dd($allMessages);
+
+        $users1 = Message::find(1)->reciever;
+
+        //dd($users1);
+        return view('message.chat',['selectedUser' => $selectedUser, 'chatLines' => $allMessages]);
     }
 
     

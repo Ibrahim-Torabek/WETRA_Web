@@ -8,31 +8,6 @@
 
 @section('content')
     @section('message-content')
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
-    <h2> Welcome to Message Page!!!</h2>
+        <h2> Welcome to Message Page!!! Click "Start Chat"</h2> 
     @stop
 @stop
