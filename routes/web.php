@@ -23,3 +23,6 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 //profile page
 Route::get('user/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('user/profile');
+
+
+
