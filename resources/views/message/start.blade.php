@@ -122,7 +122,7 @@
             <hr>
             @foreach($users as $user)
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ action([App\Http\Controllers\MessageController::class, 'chat']) }}">
+                    <a class="nav-link" href="{{ action([App\Http\Controllers\MessageController::class, 'chat'], ['selectedUser' => $user]) }}">
                         <table>
                             <tr>
                                 <td class="ml-2" rowspan="2">                               

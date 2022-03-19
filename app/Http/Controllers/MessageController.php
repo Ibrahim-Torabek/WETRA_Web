@@ -110,11 +110,16 @@ class MessageController extends Controller
      * @param  \App\Models\Message  $message
      * @return \Illuminate\Http\Response
      */
-    public function chat()
+    public function chat(Request $request)
     {
+        $userIds = $request->all();
+
+        // Find user by Id, and get the first element from the results set.
+        $selectedUser = User::find($userIds)[0];
         
-        //return view('message.index');
-        return view('message.chat');
+        //print($selectedUser);
+        //die();
+        return view('message.chat',['selectedUser' => $selectedUser]);
     }
 
     
