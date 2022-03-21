@@ -53,7 +53,7 @@
                   </div>
                   <form enctype="multipart/form-data" action="" method="POST"> 
                     @csrf
-                    <div class="row ml-3">
+                    <div class="row justify-content-around">
                       <img src="" class="rounded-circle" style="width:175px; height:175px;"> 
                     </div>
                   
@@ -137,43 +137,25 @@
                       <label class="h5">Emergency Contact</label>
                     </div>
                     <div class="card-body">
-                      <!-- First name for the emergency contact -->
+                      <!-- Name for the emergency contact -->
                       <!-- TO DO:
                       * set value 
-                      * grab emergency first name from user 
-                      * check if emergency first name is in correct format -->
+                      * grab emergency name from user 
+                      * check if emergency name is in correct format -->
                       <div class="row mb-2">
                         <div class="input-group">
-                          <label for="first_name_emergency" class="input-group-text">{{ __('First Name') }}</label>
+                          <label for="contact_name" class="input-group-text">{{ __('Name') }}</label>
 
-                          <input id="first_name_emergency" type="text" class="form-control @error('first_name_emergency') is-invalid @enderror" name="first_name_emergency" aria-label="Edit the first name of your emergency contact" value="" required autocomplete="first_name_emergency" autofocus>
+                          <input id="contact_name" type="text" class="form-control @error('contact_name') is-invalid @enderror" name="contact_name" aria-label="Edit the name of your emergency contact" value="" required autocomplete="contact_name" autofocus>
 
-                          @error('first_name_emergency')
+                          @error('contact_name')
                             <span class="invalid-feedback" role="alert">
                               <strong>{{ $message }}</strong>
                             </span>
                           @enderror
                         </div>
                       </div>
-                      <!-- Last name field for the emergency contact-->
-                      <!-- To Do:
-                      * set value,
-                      * grab emergency last name from user 
-                      * check if emergency last name is in correct format -->
-                      <div class="row mb-2">
-                        <div class="input-group">
-                          <label for="last_name_emergency" class="input-group-text">{{ __('Last Name') }}</label>
-
-                          <input id="last_name_emergency" type="text" class="form-control @error('last_name_emergency') is-invalid @enderror" name="last_name_emergency" aria-label="Edit the last name of your emergency contact" value="" required autocomplete="last_name_emergency" autofocus>
-
-                          @error('last_name_emergency')
-                            <span class="invalid-feedback" role="alert">
-                              <strong>{{ $message }}</strong>
-                            </span>
-                          @enderror
-                        </div>
-                      </div>
-
+                      
                       <!-- Phone number for the emergency contact-->
                       <!-- To Do:
                       * set value,
@@ -183,9 +165,9 @@
                         <div class="input-group">
                             <label for="phone_number_emergency" class="input-group-text">{{ __('Phone Number') }}</label>
 
-                            <input id="phone_number_emergency" type="text" class="form-control @error('phone_number_emergency') is-invalid @enderror" name="phone_number_emergency" aria-label="Edit the phone number for your emergency contact" value="" required autocomplete="phone_number_emergency" autofocus>
+                            <input id="contact_phone_number" type="text" class="form-control @error('contact_phone_number') is-invalid @enderror" name="contact_phone_number" aria-label="Edit the phone number for your emergency contact" value="" required autocomplete="contact_phone_number" autofocus>
 
-                            @error('phone_number_emergency')
+                            @error('contact_phone_number')
                               <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                               </span>
