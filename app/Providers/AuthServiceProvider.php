@@ -29,7 +29,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+        //Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
         //Passport::routes();
     }
 }

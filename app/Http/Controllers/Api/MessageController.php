@@ -8,6 +8,8 @@ use App\Http\Resources\MessageResource;
 use App\Models\Message;
 use Illuminate\Http\Request;
 
+use App\Models\User;
+
 class MessageController extends Controller
 {
     public function __construct()
@@ -25,7 +27,7 @@ class MessageController extends Controller
     {
         $message = Message::all();
 
-        return new MessageCollection($message);
+        return new MessageCollection(auth()->user());
         return MessageResource::collection($message);
     }
 
