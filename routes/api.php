@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('messages/chat', [App\Http\Controllers\MessageController::class, 'chat']);
 Route::post('messages/chatted_users', [App\Http\Controllers\MessageController::class, 'getChatedUsers']);
 Route::post('messages/send', [App\Http\Controllers\MessageController::class, 'store']);
+
+Route::post('users/all', [User::class, 'all']);
 
 //Route::apiResource('messages', App\Http\Controllers\MessageController::class);
 
