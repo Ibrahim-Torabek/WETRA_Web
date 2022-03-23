@@ -155,8 +155,8 @@ class MessageController extends Controller
     public function chat(Request $request)
     {
         // Get selected user's id from request collection
-        $userIds = $request->all();
-        $userId = $userIds["selectedUser"];
+        $userId = $request->all()["selectedUser"];
+        //$userId = $userIds["selectedUser"];
         
         //dd($userId);
 

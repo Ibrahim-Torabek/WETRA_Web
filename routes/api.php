@@ -17,3 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::apiResource('messages', App\Http\Controllers\Api\MessageController::class);
+
+// Route::group(['middleware' => ['auth:sanctum']], function(){
+//     //Route::resource('messages', App\Http\Controllers\Api\MessageController::class);
+// });
+

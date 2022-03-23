@@ -3,11 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MessageCollection;
+use App\Http\Resources\MessageResource;
 use App\Models\Message;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum', ['except' => []]);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +23,10 @@ class MessageController extends Controller
      */
     public function index()
     {
-        //
+        $message = Message::all();
+
+        return new MessageCollection($message);
+        return MessageResource::collection($message);
     }
 
     /**
@@ -37,7 +48,7 @@ class MessageController extends Controller
      */
     public function show(Message $message)
     {
-        //
+        return new MessageResource($message);
     }
 
     /**
@@ -49,7 +60,7 @@ class MessageController extends Controller
      */
     public function update(Request $request, Message $message)
     {
-        //
+        //$message->update(($request))
     }
 
     /**
