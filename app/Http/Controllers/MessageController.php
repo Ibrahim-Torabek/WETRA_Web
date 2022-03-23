@@ -14,7 +14,8 @@ class MessageController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['except' => []]);
+        
+        $this->middleware('auth:sanctum', ['except' => []]);
     }
 
     // Function that get all chated users for current user
@@ -35,6 +36,11 @@ class MessageController extends Controller
         $chatedUsers = $chatedUsers->unique('email');
         //$chatedUsers->forget(Auth::user()->first_name);
 
+        // if($requestAray->wantsJson()){
+        //     return response([
+        //         "chatedUsers" => $chatedUsers
+        //     ]);
+        // }
         return $chatedUsers;
     }
 
@@ -67,24 +73,29 @@ class MessageController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request  $requestAray
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $request = $request->all();
-        //dd($request);
+        $requestAray = $request->all();
+
+        //dd($requestAray);
         $message = new Message();
 
-        $message->line_text = $request["chatText"];
+        $message->line_text = $requestAray["chatText"];
         $message->sender_id = Auth::id();
-        $message->receiver_id = $request["receiver"];
+        $message->receiver_id = $requestAray["receiver"];
 
         $message->save();
 
         
         //return view('message.chat',['selectedUser' => $selectedUser]);
-        
+        if($request->wantsJson()){
+            return response([
+                "message" => "Chat message to be sent"
+            ]);
+        }
         return redirect()->back();
     }
 
@@ -114,13 +125,13 @@ class MessageController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request  $requestAray
      * @param  \App\Models\Message  $message
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Message $message)
+    public function update(Request $requestAray, Message $message)
     {
-        //
+
     }
 
     /**
@@ -152,10 +163,16 @@ class MessageController extends Controller
      * @param  \App\Models\Message  $message
      * @return \Illuminate\Http\Response
      */
-    public function chat(Request $request)
+    public function chat(Request $requestAray)
     {
-        // Get selected user's id from request collection
-        $userId = $request->all()["selectedUser"];
+
+        //dd($requestAray);
+        // return response([
+        //     "requestAray$requestAray" => $requestAray
+        // ]);
+
+        // Get selected user's id from requestAray$requestAray collection
+        $userId = $requestAray->all()["selectedUser"];
         //$userId = $userIds["selectedUser"];
         
         //dd($userId);
@@ -195,7 +212,15 @@ class MessageController extends Controller
         $users1 = Message::find(1)->reciever;
 
         //dd($users1);
-        return view('message.chat',['selectedUser' => $selectedUser, 'chatLines' => $allMessages]);
+
+        if($requestAray->wantsJson()){
+            return response([
+                'chatLines' => $allMessages
+            ], 401);
+        } else {
+            return view('message.chat',['selectedUser' => $selectedUser, 'chatLines' => $allMessages]);
+        }
+        
     }
 
     

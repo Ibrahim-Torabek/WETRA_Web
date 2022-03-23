@@ -27,7 +27,7 @@ class MessageController extends Controller
     {
         $message = Message::all();
 
-        return new MessageCollection(auth()->user());
+        return new MessageCollection($message);
         return MessageResource::collection($message);
     }
 

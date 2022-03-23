@@ -27,6 +27,8 @@ class AuthController extends Controller
 
         $user = User::where('email', $fields['email'])->first();
 
+
+
         // return response([
         //     'User name' => $user->first_name
         // ]);
