@@ -91,11 +91,6 @@
         margin-left: -20px;       
     }
 
-
-    html {
-        position: retaltive;
-        min-height: 100%;
-    }
     textarea{
         border-radius: 5px;
     }
