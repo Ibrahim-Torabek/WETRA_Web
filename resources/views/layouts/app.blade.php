@@ -15,6 +15,8 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/locale/af.min.js" integrity="sha512-lnYINW0FnmQ7QKM2C5b94J7Ev9xp80zvVPs5qY2dImqaUVAyPiGUtZdSks9UsKixpl0G+Vee3Aps3XqOGm4LDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js" integrity="sha512-o0rWIsZigOfRAgBxl4puyd0t6YKzeAw9em/29Ag7lhCQfaaua/mDwnpE2PVzwqJ08N7/wqrgdjc2E0mwdSY2Tg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{{ asset('js/fullcalendar.js') }}" defer></script>
 
     <!-- Fonts -->
@@ -30,6 +32,42 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" integrity="sha512-KXkS7cFeWpYwcoXxyfOumLyRGXMp7BTMTjwrgjMg0+hls4thG2JGzRgQtRfnAuKTn2KWTDZX4UdPg+xTs8k80Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+    <script>
+    $(document).ready(function() {
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        var calendar = $('#calendar').fullCalendar({
+            height:650,
+            showNonCurrenDates: false,
+            editable: true,
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'year,month,basicWeek,basicDay'
+            },
+        });
+
+
+        var calendar = $('#calendar').fullCalendar();
+    })
+
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     var calendarEl = document.getElementById('calendar');
+    //     var calendar = new FullCalendar.Calendar(calendarEl, {
+    //         initialView: 'dayGridMonth'
+    //     });
+    //     calendar.render();
+    //     console.log("Calendar loaded");
+    // });
+</script>
 </head>
 <body>
     <div id="app">
@@ -56,14 +94,14 @@
                     @auth
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item {{ (request()->routeIs('messages.*')) ? 'active' : '' }}" >
-                            <a class="navbar-brand"  href="{{ url('/messages') }}" style="color:{{ (request()->routeIs('messages.*')) ? 'gray' : '' }};">
+                            <a class="navbar-brand"  href="{{ url('/messages') }}" style="color:{{ (request()->is('messages/*') or request()->is('messages')) ? 'gray' : '' }};">
                                 Messages 
                             </a>
                             
                         
                         </li>
                         <li class=" {{ (request()->is('schedule')) ? 'active' : '' }}">
-                            <a class="navbar-brand" href="{{ url('/') }}">
+                            <a class="navbar-brand" href="{{ url('/schedules') }}" style="color:{{ (request()->is('schedules/*') or request()->is('schedules')) ? 'gray' : '' }};">
                                 Schedules
                             </a>
                         </li>

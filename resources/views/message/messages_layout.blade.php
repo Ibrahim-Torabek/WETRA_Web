@@ -1,5 +1,5 @@
 
-<div class="container-fluid" id="main">
+<div class="container-fluid" id="main" >
     <div class="row row-offcanvas row-offcanvas-left vh-100">
         <div class="left-sidebar col-md-3 col-lg-3 sidebar-offcanvas h-100 overflow-auto bg-light pl-0" id="sidebar" role="navigation">
             <nav class="navbar sticky-top bg-light" style="z-index: 1025;">
