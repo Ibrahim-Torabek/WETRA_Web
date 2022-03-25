@@ -10,13 +10,13 @@ class Event extends Model
     use HasFactory;
 
     protected $fillable = [
-        'event_name',
-        'event_description',
-        'event_start_date',
-        'event_end_date',
-        'is_all_day',
+        'title',
+        'description',
+        'start',
+        'end',
+        'allDay',
         'color',
-        'text_color',
+        'textColor',
         'assigned_to',
         'assigned_by',
     ];

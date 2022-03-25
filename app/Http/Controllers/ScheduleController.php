@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,9 +24,11 @@ class ScheduleController extends Controller
      */
     public function index(Request $request)
     {
+        
         if($request){
             //dd($request);
         }
+
         if($request->ajax()){
             $data = Event::whereDate('event_start_date', '>=', $request->start)
                         ->whereDate('event_end_date', '<=', $request->end)
@@ -34,7 +37,9 @@ class ScheduleController extends Controller
             dd($data);
             return response()->json($data);
         }
-        return view('schedule.index');
+
+        $users = User::all();
+        return view('schedule.index', ['users' => $users]);
     }
 
     /**
@@ -55,10 +60,12 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all, [
-            'event_description' => 'required',
-            'event_start_date' => 'required',
-            'event_end_date' => 'required',
+        
+        //dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'start' => 'required',
+            'end' => 'required',
             'assigned_to'  => 'required',
         ]);
 
@@ -71,7 +78,7 @@ class ScheduleController extends Controller
         //dd($request);
         $request = $request->all();
         $request["assigned_by"] = Auth::id();
-        $request["assigned_to"] = 3;
+
 
         //dd($request);
         Event::create($request);
@@ -122,5 +129,10 @@ class ScheduleController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function allEvents(){
+        $events = Event::latest()->get();
+        return response()->json($events, 200);
     }
 }

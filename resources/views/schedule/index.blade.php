@@ -17,26 +17,46 @@
     <div class="dialo-body">
         <form id="dayClick" action="{{ action([\App\Http\Controllers\ScheduleController::class, 'store']) }}" method="POST">
             @csrf
+
+
             <div class="form-group">
                 <label>Event Title</label>
-                <input type="text" class="form-control" name="event_name" placeholder="Event Name" required>
+                <input type="text" class="form-control" name="title" placeholder="Event Title" required>
             </div>
             <div class="form-group">
                 <label>Event Description</label>
-                <input type="text" class="form-control" name="event_description" placeholder="Event Description" required>
+                <input type="text" class="form-control" name="description" placeholder="Event Description" required>
             </div>
 
             <div class="form-group">
                 <label>Start Date</label>
-                <input type="text" class="form-control" name="event_start_date" placeholder="Start Date & Time"  required>
+                <input type="text" class="form-control" id="start" name="start" placeholder="Start Date & Time" required>
             </div>
             <div class="form-group">
                 <label>End Date</label>
-                <input type="text" class="form-control" name="event_end_date" placeholder="Start Date & Time"  required>
+                <input type="text" class="form-control" id="end" name="end" placeholder="Start Date & Time" required>
             </div>
             <div class="custom-control custom-switch">
-                <input type="checkbox" class="custom-control-input" id="customSwitch1" name="is_all_day">
+                <input type="checkbox" class="custom-control-input" id="customSwitch1" name="allDay">
                 <label class="custom-control-label" for="customSwitch1">All Day</label>
+            </div>
+            <div class="form-group">
+                <label>Assigned To</label>
+                <select class="form-control multiple_select" name="assigned_to" single="single" style="width:100%">
+                    <option value="0"></option>
+                    <option value="0">All Users</option>
+                    <option value="admins">Admins</option>
+                    <option value="barn">Barn Staff</option>
+                    <option value="office">Office Staff</option>
+                    <option value="instructors">Instructors</option>
+                    <option value="volunteers">Volunteers</option>
+                    ...
+                    <optgroup label="Users">
+                    @foreach($users as $user)
+                        <option value="{{ $user->id }}">{{ $user->first_name}} {{ $user->last_name}}</option>
+                    @endforeach
+                    </optgroup>
+                </select>
             </div>
             <div class="form-group">
                 <label>Background Color</label>
@@ -44,8 +64,10 @@
             </div>
             <div class="form-group">
                 <label>Text Color</label>
-                <input type="color" class="form-control" name="text_color" value="#ffffff">
+                <input type="color" class="form-control" name="textColor" value="#ffffff">
             </div>
+            
+
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Add</button>
             </div>

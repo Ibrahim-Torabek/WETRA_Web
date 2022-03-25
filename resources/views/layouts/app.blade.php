@@ -11,15 +11,15 @@
     <title>{{ config('app.name', 'WETRA') }}</title>
 
     <!-- Scripts -->
-    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js" integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/locale/af.min.js" integrity="sha512-lnYINW0FnmQ7QKM2C5b94J7Ev9xp80zvVPs5qY2dImqaUVAyPiGUtZdSks9UsKixpl0G+Vee3Aps3XqOGm4LDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js" integrity="sha512-o0rWIsZigOfRAgBxl4puyd0t6YKzeAw9em/29Ag7lhCQfaaua/mDwnpE2PVzwqJ08N7/wqrgdjc2E0mwdSY2Tg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- <script src="{{ asset('js/fullcalendar.js') }}" defer></script> -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js" integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD" crossorigin="anonymous"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -32,16 +32,20 @@
     <!-- <link href="{{ asset('css/fullcalendar.css') }}" rel="stylesheet"> -->
     <!-- <link href="{{ asset('css/CardHeader.css') }}" rel="stylesheet"> -->
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous"> -->
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"> -->
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" integrity="sha512-KXkS7cFeWpYwcoXxyfOumLyRGXMp7BTMTjwrgjMg0+hls4thG2JGzRgQtRfnAuKTn2KWTDZX4UdPg+xTs8k80Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <script>
         //@yield('script')
         $(document).ready(function() {
 
+            $('.multiple_select').select2({
+                placeholder: "Select a group or a person",
+                allowClear: true,
+                dropdownParent: $('#dayDialog')
+            });
 
             $.ajaxSetup({
                 headers: {
@@ -49,11 +53,30 @@
                 }
             });
 
+            function convert(str){
+                const d = new Date(str);
+                let month = '' + (d.getMonth() + 1);
+                let day = '' + (d.getDate()+ 1);
+                let year = '' + d.getFullYear();
+                if(month.length < 2) month = '0' + month;
+                if(day.length < 2) day = '0' + day;
+
+                let hour = '' + d.getUTCHours();
+                let minute = '' + d.getUTCMinutes();
+                let second = '' + d.getUTCSeconds();
+                if(hour.length < 2) hour = '0' + hour;
+                if(minute.length < 2) minute = '0' + minute;
+                if(second.length < 2) second = '0' + second;
+
+                return [year,month,day].join('-') + ' ' + [hour,minute,second].join(':');
+            };
+
             var calendar = $('#calendar').fullCalendar({
                 height: 650,
                 showNonCurrenDates: false,
-                editable: true,
-                initialView: 'dayGridMonth',
+                editable: false,
+                // initialView: 'dayGridMonth',
+                defaultView: 'month',
                 header: {
                     left: 'prev,next today',
                     center: 'title',
@@ -62,12 +85,14 @@
                 //events: 'schedules',
                 selectable: true,
                 // selectHelper: true,
+                events: "{{ url('schedules/allevents') }}",
                 dayClick: function(date, event, view) {
+                    $("#start").val(convert(date));
+                    $("#end").val(convert(date));
                     $('#dayDialog').dialog({
-
-                        title: 'Add Event',
+                        title: 'Add Schedule',
                         width: 600,
-                        height: 700,
+                        height: 720,
                         modal: true,
                         show: {
                             effect: 'clip',
@@ -77,45 +102,10 @@
                             effect: 'clip',
                             duration: 250
                         },
-
                     })
                 }
-                // select: function(){
-                //     var title = prompt('Event Title');
-                //     if(title){
-                //         var start = $.fullCalendar.formatDate(start,'Y-MM-DD HH:mm:ss');
-                //         var end = $.fullCalendar.formatDate(end,'Y-MM-DD HH:mm:ss');
-
-                //         $.ajax({
-                //             url:"schdules/store",
-                //             type: "POST",
-                //             data: {
-                //                 title: title,
-                //                 start: start,
-                //                 end: end,
-                //                 type: 'add'
-                //             },
-                //             success: function(data){
-                //                 calendar.fullCalendar('refetchEvents');
-                //                 alert("Event Created Successfully");
-                //             }
-                //         })
-                //     }
-                // },
             });
-
-
-            //var calendar = $('#calendar').fullCalendar();
         })
-
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     var calendarEl = document.getElementById('calendar');
-        //     var calendar = new FullCalendar.Calendar(calendarEl, {
-        //         initialView: 'dayGridMonth'
-        //     });
-        //     calendar.render();
-        //     console.log("Calendar loaded");
-        // });
     </script>
 
 </head>
