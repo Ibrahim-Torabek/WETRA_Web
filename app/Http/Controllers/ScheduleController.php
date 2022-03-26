@@ -13,7 +13,7 @@ class ScheduleController extends Controller
 {
     public function __construct()
     {
-        
+
         $this->middleware('auth:sanctum', ['except' => []]);
     }
 
@@ -24,15 +24,15 @@ class ScheduleController extends Controller
      */
     public function index(Request $request)
     {
-        
-        if($request){
+
+        if ($request) {
             //dd($request);
         }
 
-        if($request->ajax()){
+        if ($request->ajax()) {
             $data = Event::whereDate('event_start_date', '>=', $request->start)
-                        ->whereDate('event_end_date', '<=', $request->end)
-                        ->get(['id','title','start','end']);
+                ->whereDate('event_end_date', '<=', $request->end)
+                ->get(['id', 'title', 'start', 'end']);
 
             dd($data);
             return response()->json($data);
@@ -49,7 +49,6 @@ class ScheduleController extends Controller
      */
     public function create()
     {
-        
     }
 
     /**
@@ -60,7 +59,7 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         //dd($request->all());
         $validator = Validator::make($request->all(), [
             'title' => 'required',
@@ -69,7 +68,7 @@ class ScheduleController extends Controller
             'assigned_to'  => 'required',
         ]);
 
-        if ($validator->failed()){
+        if ($validator->failed()) {
             dd($request);
             return redirect()->back();
         }
@@ -78,11 +77,19 @@ class ScheduleController extends Controller
         //dd($request);
         $request = $request->all();
         $request["assigned_by"] = Auth::id();
+        $request["description"] = "No Descripition";
 
 
-        //dd($request);
-        Event::create($request);
-
+        
+        if (empty($request["id"])) {
+            //dd($request);
+            Event::create($request);
+        } else {
+            //dd($request);
+            // Event::where('id',$request["id"])->update($request);
+            $event = Event::findOrFail($request['id']);
+            $event->update($request);
+        }
         return redirect()->back();
     }
 
@@ -131,7 +138,8 @@ class ScheduleController extends Controller
         //
     }
 
-    public function allEvents(){
+    public function allEvents()
+    {
         $events = Event::latest()->get();
         return response()->json($events, 200);
     }

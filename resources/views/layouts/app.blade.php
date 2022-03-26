@@ -37,6 +37,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" integrity="sha512-KXkS7cFeWpYwcoXxyfOumLyRGXMp7BTMTjwrgjMg0+hls4thG2JGzRgQtRfnAuKTn2KWTDZX4UdPg+xTs8k80Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+    <!-- <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script> -->
+
     <script>
         //@yield('script')
         $(document).ready(function() {
@@ -53,42 +56,88 @@
                 }
             });
 
-            function convert(str){
-                const d = new Date(str);
-                let month = '' + (d.getMonth() + 1);
-                let day = '' + (d.getDate()+ 1);
-                let year = '' + d.getFullYear();
-                if(month.length < 2) month = '0' + month;
-                if(day.length < 2) day = '0' + day;
+            // function convert(str){
+            //     const d = new Date(str);
+            //     let month = '' + (d.getMonth() + 1);
+            //     let day = '' + (d.getDate());
+            //     let year = '' + d.getFullYear();
+            //     if(month.length < 2) month = '0' + month;
+            //     if(day.length < 2) day = '0' + day;
 
-                let hour = '' + d.getUTCHours();
-                let minute = '' + d.getUTCMinutes();
-                let second = '' + d.getUTCSeconds();
-                if(hour.length < 2) hour = '0' + hour;
-                if(minute.length < 2) minute = '0' + minute;
-                if(second.length < 2) second = '0' + second;
+            //     let hour = '' + d.getHours();
+            //     let minute = '' + d.getMinutes();
+            //     let second = '' + d.getSeconds();
+            //     if(hour.length < 2) hour = '0' + hour;
+            //     if(minute.length < 2) minute = '0' + minute;
+            //     if(second.length < 2) second = '0' + second;
 
-                return [year,month,day].join('-') + ' ' + [hour,minute,second].join(':');
-            };
+            //     return [year,month,day].join('-') + ' ' + [hour,minute,second].join(':');
+            // };
 
             var calendar = $('#calendar').fullCalendar({
-                height: 650,
-                showNonCurrenDates: false,
-                editable: false,
-                // initialView: 'dayGridMonth',
-                defaultView: 'month',
                 header: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'year,month,agendaWeek,agendaDay'
                 },
-                //events: 'schedules',
+                height: 650,
+                showNonCurrenDates: false,
+                initialView: 'dayGridMonth',
+                defaultView: 'month',
                 selectable: true,
-                // selectHelper: true,
+                dragabble: true,
+                selectHelper: true,
+                editable: true,
                 events: "{{ url('schedules/allevents') }}",
                 dayClick: function(date, event, view) {
-                    $("#start").val(convert(date));
-                    $("#end").val(convert(date));
+                    var date = $.fullCalendar.formatDate(date, 'Y-MM-DD HH:mm:ss');
+                    //var end = $.fullCalendar.formatDate(end,'Y-MM-DD HH:mm:ss');
+                    $("#start").val((date));
+                    $("#end").val((date));
+                    $('#dayDialog').dialog({
+                        title: 'Add Schedule',
+                        width: 600,
+                        height: 720,
+                        modal: true,
+                        show: {
+                            effect: 'clip',
+                            duration: 350
+                        },
+                        hide: {
+                            effect: 'clip',
+                            duration: 250
+                        },
+                    })
+                },
+                eventClick: function(event) {
+                    $("#title").val(event.title);
+                    $("#start").val($.fullCalendar.formatDate(event.start, 'Y-MM-DD HH:mm:ss'));
+                    $("#end").val($.fullCalendar.formatDate(event.end, 'Y-MM-DD HH:mm:ss'));
+                    $("#allDay").val(event.allDay);
+                    $("#assigned_to").val(event.assigned_to);
+                    $("#color").val(event.color);
+                    $("#textColor").val(event.textColor);
+                    $("#id").val(event.id);
+                    $('#dayDialog').dialog({
+                        title: 'Edit Schedule',
+                        width: 600,
+                        height: 750,
+                        modal: true,
+                        show: {
+                            effect: 'clip',
+                            duration: 350
+                        },
+                        hide: {
+                            effect: 'clip',
+                            duration: 250
+                        },
+                    })
+                },
+                select: function(start, end) {
+                    var start = $.fullCalendar.formatDate(start, 'Y-MM-DD HH:mm:ss');
+                    var end = $.fullCalendar.formatDate(end, 'Y-MM-DD HH:mm:ss');
+                    $('#start').val((start));
+                    $('#end').val((end));
                     $('#dayDialog').dialog({
                         title: 'Add Schedule',
                         width: 600,
