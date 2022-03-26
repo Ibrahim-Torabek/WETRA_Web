@@ -101,7 +101,7 @@ class ScheduleController extends Controller
      */
     public function show($id)
     {
-        //
+        return "Hello World";
     }
 
     /**
@@ -133,14 +133,24 @@ class ScheduleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Event $event)
     {
-        //
+        dd($event);
+        $event->delete();
+
+        redirect()->back();
     }
 
     public function allEvents()
     {
         $events = Event::latest()->get();
         return response()->json($events, 200);
+    }
+
+    public function deleteEvent($id){
+        
+        //dd(Event::findOrFail($id));
+        Event::findOrFail($id)->delete();
+        return redirect()->back();
     }
 }

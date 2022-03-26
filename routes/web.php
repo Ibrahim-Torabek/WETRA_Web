@@ -24,8 +24,11 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('messages/chat', [App\Http\Controllers\MessageController::class, 'chat']);
 Route::resource('messages', App\Http\Controllers\MessageController::class);
 
+
 Route::get('schedules/allevents', [App\Http\Controllers\ScheduleController::class, 'allEvents']);
+Route::get('schedules/deleteEvent/{id}', [App\Http\Controllers\ScheduleController::class, 'deleteEvent']);
 Route::resource('schedules', App\Http\Controllers\ScheduleController::class);
+
 //Route::get('messages/chat', [App\Http\Controllers\MessageController::class, 'chat']);
 //Route::get('/messages/start', [App\Http\Controllers\MessageController::class, 'start']);
 

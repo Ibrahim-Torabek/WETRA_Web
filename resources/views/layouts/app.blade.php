@@ -73,17 +73,18 @@
 
             //     return [year,month,day].join('-') + ' ' + [hour,minute,second].join(':');
             // };
-
+            var view = $('#calendar').fullCalendar('getView');
+            console.log(view);
             var calendar = $('#calendar').fullCalendar({
                 header: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'year,month,agendaWeek,agendaDay'
+                    right: 'year,month,agendaWeek,agendaDay,listWeek'
                 },
                 height: 650,
                 showNonCurrenDates: false,
-                initialView: 'dayGridMonth',
-                defaultView: 'month',
+                initialView: 'listWeek',
+                defaultView: 'listWeek',
                 selectable: true,
                 dragabble: true,
                 selectHelper: true,
@@ -91,9 +92,11 @@
                 events: "{{ url('schedules/allevents') }}",
                 dayClick: function(date, event, view) {
                     var date = $.fullCalendar.formatDate(date, 'Y-MM-DD HH:mm:ss');
-                    //var end = $.fullCalendar.formatDate(end,'Y-MM-DD HH:mm:ss');
+                    $("#title").val("");
                     $("#start").val((date));
                     $("#end").val((date));
+                    $("#delete").hide();
+                    $("#submit").html('Add Event');
                     $('#dayDialog').dialog({
                         title: 'Add Schedule',
                         width: 600,
@@ -118,6 +121,9 @@
                     $("#color").val(event.color);
                     $("#textColor").val(event.textColor);
                     $("#id").val(event.id);
+                    $("#submit").html('Update');
+                    var url = "{{ url('schedules/deleteEvent') }}";
+                    $("#delete").show().attr('href', url + '/' + event.id);
                     $('#dayDialog').dialog({
                         title: 'Edit Schedule',
                         width: 600,
