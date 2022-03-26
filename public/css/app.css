@@ -11286,27 +11286,6 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
-
-.input-group{
-  display: flex;
-  align-items: baseline;
-}
-.chat-area {
-  width:80%;
-  margin: auto;
-}
-
-.chat-content {
-  margin-bottom: 70px;
-}
-
-.chat-box--right{
-  display: flex;
-  align-items: flex-end;
-  flex-direction: row-reverse;
-  width: 100%;
-}
-
 .chat-bubble {
   padding: 10px 14px;
   background: #eee;
@@ -11333,14 +11312,8 @@ textarea.form-control-lg {
   margin-left: -20px;
 }
 
-.chat-bubble--right:after{
-  right: 0;
-  border-left-color: #147BFC;
-  border-right: 0;
-  margin-right: -20px;       
-}
-
-.chat-bubble--blue{
-  background: #147BFC;
-  color: #fff;
+body{
+  overflow: hidden;
+  height: 100%;
+  background-color: red;
 }

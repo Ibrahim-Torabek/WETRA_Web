@@ -86,7 +86,7 @@ class MessageController extends Controller
         $message->line_text = $requestAray["chatText"];
         $message->sender_id = Auth::id();
         $message->receiver_id = $requestAray["receiver"];
-
+        $message->is_read = false;
         $message->save();
 
         
