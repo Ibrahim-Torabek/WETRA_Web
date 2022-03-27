@@ -25,17 +25,15 @@ class ScheduleController extends Controller
     public function index(Request $request)
     {
 
-        if ($request) {
-            //dd($request);
-        }
 
-        if ($request->ajax()) {
-            $data = Event::whereDate('event_start_date', '>=', $request->start)
-                ->whereDate('event_end_date', '<=', $request->end)
-                ->get(['id', 'title', 'start', 'end']);
-
-            dd($data);
-            return response()->json($data);
+        if ($request->ajax() || $request->wantsJson()) {
+            if (Auth::user()->is_admin == 1) {
+                $events = Event::latest()->get();
+            } else {
+                $events = Event::where('assigned_to', Auth::id())->orWhere('assigned_to', '0')->get();
+            }
+            //dd($data);
+            return response()->json($events);
         }
 
         $users = User::all();
@@ -60,7 +58,7 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {
 
-        //dd($request->all());
+
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'start' => 'required',
@@ -75,21 +73,29 @@ class ScheduleController extends Controller
 
 
         //dd($request);
-        $request = $request->all();
-        $request["assigned_by"] = Auth::id();
-        $request["description"] = "No Descripition";
+        $requestArray = $request->all();
+        $requestArray["assigned_by"] = Auth::id();
+        $requestArray["description"] = "No Descripition";
 
 
-        
-        if (empty($request["id"])) {
+
+        if (empty($requestArray["id"])) {
             //dd($request);
-            Event::create($request);
+            Event::create($requestArray);
+            if ($request->wantsJson()) {
+                return response()->json(["Message" => "Created successfully"]);
+            }
         } else {
             //dd($request);
             // Event::where('id',$request["id"])->update($request);
-            $event = Event::findOrFail($request['id']);
-            $event->update($request);
+            $event = Event::findOrFail($requestArray['id']);
+            $event->update($requestArray);
+            if ($request->wantsJson()) {
+                return response()->json(["Message" => "Updated successfully"]);
+            }
         }
+
+
         return redirect()->back();
     }
 
@@ -101,7 +107,7 @@ class ScheduleController extends Controller
      */
     public function show($id)
     {
-        //
+        //return "Hello World";
     }
 
     /**
@@ -124,7 +130,11 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if ($request->wantsJson()) {
+            $event = Event::findOrFail($request['id']);
+            $event->update($request->all());
+            return response()->json($event);
+        }
     }
 
     /**
@@ -133,14 +143,26 @@ class ScheduleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        if ($request->wantsJson()) {
+            $event = Event::find($request->id);
+            if (!empty($event)) {
+                $event->delete();
+                return response()->json($event);
+            }
+            return response()->json(["Message" => "Event not found"]);
+        }
     }
 
-    public function allEvents()
+
+
+    public function deleteEvent($id)
     {
-        $events = Event::latest()->get();
-        return response()->json($events, 200);
+
+        //dd(Event::findOrFail($id));
+        Event::findOrFail($id)->delete();
+
+        return redirect()->back();
     }
 }

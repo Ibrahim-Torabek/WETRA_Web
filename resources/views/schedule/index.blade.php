@@ -3,7 +3,9 @@
 @section('content')
 <div class="container pt-5">
     <div id='calendar'></div>
+
 </div>
+
 @stop
 
 @section('script')
@@ -12,9 +14,11 @@
 @endsection
 
 
+
 <!-- Modal Dialog Start -->
 <div class="dayDialog hidden" id="dayDialog" style="display:none;">
     <div class="dialo-body">
+        <!-- action="{{ action([\App\Http\Controllers\ScheduleController::class, 'store']) }}" method="POST" -->
         <form id="dayClick" action="{{ action([\App\Http\Controllers\ScheduleController::class, 'store']) }}" method="POST">
             @csrf
             <!-- <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -45,7 +49,7 @@
                 <input type="text" class="form-control" id="end" name="end" placeholder="Start Date & Time" required>
             </div>
             <div class="custom-control custom-switch">
-                <input type="checkbox" class="custom-control-input" id="customSwitch1 allDay" name="allDay" >
+                <input type="checkbox" class="custom-control-input" id="customSwitch1 allDay" name="allDay">
                 <label class="custom-control-label" for="customSwitch1">All Day</label>
             </div>
             <div class="form-group">
@@ -77,7 +81,10 @@
 
 
             <div class="form-group">
-                <button type="submit" class="btn btn-primary float-right">Save</button>
+                <button type="submit" class="btn btn-primary float-right" id="submit">Save</button>
+            </div>
+            <div class="form-group">
+                <a class="btn btn-danger float-right mr-3" id="delete">Delete</a>
             </div>
         </form>
     </div>
