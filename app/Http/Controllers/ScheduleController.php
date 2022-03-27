@@ -27,8 +27,11 @@ class ScheduleController extends Controller
 
 
         if ($request->ajax() || $request->wantsJson()) {
-            $events = Event::latest()->get();
-
+            if (Auth::user()->is_admin == 1) {
+                $events = Event::latest()->get();
+            } else {
+                $events = Event::where('assigned_to', Auth::id())->orWhere('assigned_to', '0')->get();
+            }
             //dd($data);
             return response()->json($events);
         }
@@ -79,7 +82,7 @@ class ScheduleController extends Controller
         if (empty($requestArray["id"])) {
             //dd($request);
             Event::create($requestArray);
-            if($request->wantsJson()){
+            if ($request->wantsJson()) {
                 return response()->json(["Message" => "Created successfully"]);
             }
         } else {
@@ -87,7 +90,7 @@ class ScheduleController extends Controller
             // Event::where('id',$request["id"])->update($request);
             $event = Event::findOrFail($requestArray['id']);
             $event->update($requestArray);
-            if($request->wantsJson()){
+            if ($request->wantsJson()) {
                 return response()->json(["Message" => "Updated successfully"]);
             }
         }
@@ -127,7 +130,7 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->wantsJson()){
+        if ($request->wantsJson()) {
             $event = Event::findOrFail($request['id']);
             $event->update($request->all());
             return response()->json($event);
@@ -144,13 +147,12 @@ class ScheduleController extends Controller
     {
         if ($request->wantsJson()) {
             $event = Event::find($request->id);
-            if(!empty($event)){
+            if (!empty($event)) {
                 $event->delete();
-                return response()->json($event);    
+                return response()->json($event);
             }
             return response()->json(["Message" => "Event not found"]);
         }
-        
     }
 
 
