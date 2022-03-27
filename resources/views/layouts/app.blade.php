@@ -365,7 +365,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                             </a>
                         </li>
                         <li class=" {{ (request()->is('file')) ? 'active' : '' }}">
-                            <a class="navbar-brand" href="{{ url('/') }}">
+                            <a class="navbar-brand" href="{{ url('/files') }}" style="color:{{ (request()->is('files/*') or request()->is('files')) ? 'gray' : '' }};">
                                 Files
                             </a>
                         </li>
