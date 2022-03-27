@@ -39,7 +39,121 @@
 
     <!-- <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script> -->
+    <style>
+        /*
+i wish this required CSS was better documented :(
+https://github.com/FezVrasta/popper.js/issues/674
+derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
+*/
 
+        .popper,
+        .tooltip {
+            position: absolute;
+            z-index: 9999;
+            background: #FFC107;
+            color: black;
+            width: 150px;
+            border-radius: 3px;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            text-align: center;
+        }
+
+        .style5 .tooltip {
+            background: #1E252B;
+            color: #FFFFFF;
+            max-width: 200px;
+            width: auto;
+            font-size: .8rem;
+            padding: .5em 1em;
+        }
+
+        .popper .popper__arrow,
+        .tooltip .tooltip-arrow {
+            width: 0;
+            height: 0;
+            border-style: solid;
+            position: absolute;
+            margin: 5px;
+        }
+
+        .tooltip .tooltip-arrow,
+        .popper .popper__arrow {
+            border-color: #FFC107;
+        }
+
+        .style5 .tooltip .tooltip-arrow {
+            border-color: #1E252B;
+        }
+
+        .popper[x-placement^="top"],
+        .tooltip[x-placement^="top"] {
+            margin-bottom: 5px;
+        }
+
+        .popper[x-placement^="top"] .popper__arrow,
+        .tooltip[x-placement^="top"] .tooltip-arrow {
+            border-width: 5px 5px 0 5px;
+            border-left-color: transparent;
+            border-right-color: transparent;
+            border-bottom-color: transparent;
+            bottom: -5px;
+            left: calc(50% - 5px);
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .popper[x-placement^="bottom"],
+        .tooltip[x-placement^="bottom"] {
+            margin-top: 5px;
+        }
+
+        .tooltip[x-placement^="bottom"] .tooltip-arrow,
+        .popper[x-placement^="bottom"] .popper__arrow {
+            border-width: 0 5px 5px 5px;
+            border-left-color: transparent;
+            border-right-color: transparent;
+            border-top-color: transparent;
+            top: -5px;
+            left: calc(50% - 5px);
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .tooltip[x-placement^="right"],
+        .popper[x-placement^="right"] {
+            margin-left: 5px;
+        }
+
+        .popper[x-placement^="right"] .popper__arrow,
+        .tooltip[x-placement^="right"] .tooltip-arrow {
+            border-width: 5px 5px 5px 0;
+            border-left-color: transparent;
+            border-top-color: transparent;
+            border-bottom-color: transparent;
+            left: -5px;
+            top: calc(50% - 5px);
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .popper[x-placement^="left"],
+        .tooltip[x-placement^="left"] {
+            margin-right: 5px;
+        }
+
+        .popper[x-placement^="left"] .popper__arrow,
+        .tooltip[x-placement^="left"] .tooltip-arrow {
+            border-width: 5px 0 5px 5px;
+            border-top-color: transparent;
+            border-right-color: transparent;
+            border-bottom-color: transparent;
+            right: -5px;
+            top: calc(50% - 5px);
+            margin-left: 0;
+            margin-right: 0;
+        }
+    </style>
     <script>
         //@yield('script')
         $(document).ready(function() {
@@ -50,11 +164,36 @@
                 dropdownParent: $('#dayDialog')
             });
 
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
+            // $.ajaxSetup({
+            //     headers: {
+            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //     }
+            // });
+
+            // $("#submit").click(function(e) {
+            //     //e.preventDefault();
+            //     //$("#dayDialog").hide();
+            //     $.ajax({
+            //         url: "schedules/store",
+            //         type: "POST",
+            //         data: {
+            //             _token: "{{ csrf_token() }}",
+            //             _method: "POST",
+            //             title: $("#title").val(),
+            //             start: $("#start").val(),
+            //             end: $("#end").val(),
+            //             allDay: $("#allDay").val(),
+            //             assigned_to: $("#assigned_to").val(),
+            //             color: $("#color").val(),
+            //             textColor: $("#textColor").val(),
+            //             id: $("#id").val(),
+            //         },
+            //         success: function(data) {
+            //             calendar.fullCalendar('fetchEvents');
+            //             alert("Event Created Successfully");
+            //         }
+            //     })
+            // });
 
             // function convert(str){
             //     const d = new Date(str);
@@ -73,8 +212,11 @@
 
             //     return [year,month,day].join('-') + ' ' + [hour,minute,second].join(':');
             // };
-            var view = $('#calendar').fullCalendar('getView');
-            console.log(view);
+            //var view = $('#calendar').fullCalendar('getView');
+            //console.log(view);
+
+            var calendarEl = document.getElementById('calendar');
+
             var calendar = $('#calendar').fullCalendar({
                 header: {
                     left: 'prev,next today',
@@ -84,17 +226,52 @@
                 height: 650,
                 showNonCurrenDates: false,
                 initialView: 'listWeek',
-                defaultView: 'listWeek',
+                //defaultView: 'listWeek',
+                events: "{{ url('/schedules') }}",
+                eventDidMount: function(info) {
+                    var tooltip = new Tooltip(info.el, {
+                        title: "Hello World", //info.event.description,
+                        placement: 'top',
+                        trigger: 'hover',
+                        container: 'body'
+                    });
+                    console.log(info);
+                },
+
+                @auth
+                @if(Auth::user() - > is_admin == 1)
                 selectable: true,
                 dragabble: true,
                 selectHelper: true,
                 editable: true,
-                events: "{{ url('schedules/allevents') }}",
                 dayClick: function(date, event, view) {
                     var date = $.fullCalendar.formatDate(date, 'Y-MM-DD HH:mm:ss');
                     $("#title").val("");
                     $("#start").val((date));
                     $("#end").val((date));
+                    $("#delete").hide();
+                    $("#submit").html('Add Event');
+                    $('#dayDialog').dialog({
+                        title: 'Add Schedule',
+                        width: 600,
+                        height: 720,
+                        modal: true,
+                        show: {
+                            effect: 'clip',
+                            duration: 350
+                        },
+                        hide: {
+                            effect: 'clip',
+                            duration: 250
+                        },
+                    });
+                    //calendar.fullCalendar('renderEvent', event, true);
+                },
+                select: function(start, end) {
+                    var start = $.fullCalendar.formatDate(start, 'Y-MM-DD HH:mm:ss');
+                    var end = $.fullCalendar.formatDate(end, 'Y-MM-DD HH:mm:ss');
+                    $('#start').val((start));
+                    $('#end').val((end));
                     $("#delete").hide();
                     $("#submit").html('Add Event');
                     $('#dayDialog').dialog({
@@ -139,27 +316,13 @@
                         },
                     })
                 },
-                select: function(start, end) {
-                    var start = $.fullCalendar.formatDate(start, 'Y-MM-DD HH:mm:ss');
-                    var end = $.fullCalendar.formatDate(end, 'Y-MM-DD HH:mm:ss');
-                    $('#start').val((start));
-                    $('#end').val((end));
-                    $('#dayDialog').dialog({
-                        title: 'Add Schedule',
-                        width: 600,
-                        height: 720,
-                        modal: true,
-                        show: {
-                            effect: 'clip',
-                            duration: 350
-                        },
-                        hide: {
-                            effect: 'clip',
-                            duration: 250
-                        },
-                    })
-                }
+                @endif
+                @endauth
             });
+
+            calendar.render();
+
+            // calendar.fullCalendar('renderEvent', event, true);
         })
     </script>
 

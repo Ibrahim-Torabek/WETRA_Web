@@ -3,8 +3,9 @@
 @section('content')
 <div class="container pt-5">
     <div id='calendar'></div>
-    
+
 </div>
+
 @stop
 
 @section('script')
@@ -13,9 +14,11 @@
 @endsection
 
 
+
 <!-- Modal Dialog Start -->
 <div class="dayDialog hidden" id="dayDialog" style="display:none;">
     <div class="dialo-body">
+        <!-- action="{{ action([\App\Http\Controllers\ScheduleController::class, 'store']) }}" method="POST" -->
         <form id="dayClick" action="{{ action([\App\Http\Controllers\ScheduleController::class, 'store']) }}" method="POST">
             @csrf
             <!-- <div class="btn-group btn-group-toggle" data-toggle="buttons">

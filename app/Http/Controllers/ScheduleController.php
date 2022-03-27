@@ -30,12 +30,10 @@ class ScheduleController extends Controller
         }
 
         if ($request->ajax()) {
-            $data = Event::whereDate('event_start_date', '>=', $request->start)
-                ->whereDate('event_end_date', '<=', $request->end)
-                ->get(['id', 'title', 'start', 'end']);
+            $events = Event::latest()->get();
 
-            dd($data);
-            return response()->json($data);
+            //dd($data);
+            return response()->json($events);
         }
 
         $users = User::all();
