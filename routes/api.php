@@ -32,6 +32,10 @@ Route::post('messages/send', [App\Http\Controllers\MessageController::class, 'st
 
 Route::post('users/all', [User::class, 'all']);
 
+//Route::post('schedules/deleteEvent/{id}', App\Http\Controllers\ScheduleController::class);
+Route::apiResource('schedules', App\Http\Controllers\ScheduleController::class);
+
+
 //Route::apiResource('messages', App\Http\Controllers\MessageController::class);
 
 // Route::group(['middleware' => ['auth:sanctum']], function(){

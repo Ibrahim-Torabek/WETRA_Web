@@ -73,19 +73,19 @@ class MessageController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $requestAray
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $requestAray = $request->all();
+        $requestArray = $request->all();
 
         //dd($requestAray);
         $message = new Message();
 
-        $message->line_text = $requestAray["chatText"];
+        $message->line_text = $requestArray["chatText"];
         $message->sender_id = Auth::id();
-        $message->receiver_id = $requestAray["receiver"];
+        $message->receiver_id = $requestArray["receiver"];
         $message->is_read = false;
         $message->save();
 
@@ -163,7 +163,7 @@ class MessageController extends Controller
      * @param  \App\Models\Message  $message
      * @return \Illuminate\Http\Response
      */
-    public function chat(Request $requestAray)
+    public function chat(Request $request)
     {
 
         //dd($requestAray);
@@ -172,7 +172,7 @@ class MessageController extends Controller
         // ]);
 
         // Get selected user's id from requestAray$requestAray collection
-        $userId = $requestAray->all()["selectedUser"];
+        $userId = $request->all()["selectedUser"];
         //$userId = $userIds["selectedUser"];
         
         //dd($userId);
@@ -213,7 +213,7 @@ class MessageController extends Controller
 
         //dd($users1);
 
-        if($requestAray->wantsJson()){
+        if($request->wantsJson()){
             return response([
                 'chatLines' => $allMessages
             ], 401);

@@ -239,7 +239,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                 },
 
                 @auth
-                @if(Auth::user() - > is_admin == 1)
+                @if(Auth::user() -> is_admin == 1)
                 selectable: true,
                 dragabble: true,
                 selectHelper: true,
@@ -318,6 +318,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                 },
                 @endif
                 @endauth
+
             });
 
             calendar.render();
