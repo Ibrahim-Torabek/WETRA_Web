@@ -209,7 +209,7 @@ class MessageController extends Controller
         $allMessages = $allMessages->sortBy('created_at');
         //dd($allMessages);
 
-        $users1 = Message::find(1)->reciever;
+        //$users1 = Message::find(1)->reciever;
 
         //dd($users1);
 
@@ -218,6 +218,7 @@ class MessageController extends Controller
                 'chatLines' => $allMessages
             ], 401);
         } else {
+            //return redirect()->back();
             return view('message.chat',['selectedUser' => $selectedUser, 'chatLines' => $allMessages]);
         }
         
