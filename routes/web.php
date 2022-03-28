@@ -31,6 +31,9 @@ Route::get('schedules/deleteEvent/{id}', [App\Http\Controllers\ScheduleControlle
 // Route::post('schedules/action', [App\Http\Controllers\ScheduleController::class, 'action']);
 Route::resource('schedules', App\Http\Controllers\ScheduleController::class);
 
+
+Route::resource('files', App\Http\Controllers\FileController::class);
+
 //Route::get('messages/chat', [App\Http\Controllers\MessageController::class, 'chat']);
 //Route::get('/messages/start', [App\Http\Controllers\MessageController::class, 'start']);
 

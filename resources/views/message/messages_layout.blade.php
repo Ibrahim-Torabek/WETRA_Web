@@ -84,6 +84,11 @@
     max-height:95%;
     background-color: red;
 }
+
+body{
+  overflow: hidden;
+  height: 100%;
+}
 </style>
 
 
