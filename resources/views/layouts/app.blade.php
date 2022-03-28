@@ -170,7 +170,11 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                 ajax: "{{ route('files.index') }}",
                 columns: [{
                         data: 'file_name',
-                        name: 'file_name'
+                        name: 'file_name',
+                        render: function(data,type,row){
+                            return "<a href='" + row.file_url + "'>" + row.file_name + "</a>";
+                        }
+                        
                     },
                     {
                         data: 'file_extention',

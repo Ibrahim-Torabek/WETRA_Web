@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 use \Yajra\DataTables\DataTables;
+use \Illuminate\Filesystem\FilesystemManager;
+use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
@@ -25,11 +27,15 @@ class FileController extends Controller
 
             return DataTables::of($files)
                 ->addIndexColumn()
-                ->addColumn('action', function ($row) {
+                ->addColumn('action', function ($file) {
 
-                    $btn = '<a href="javascript:void(' . $row->id . ')" class="edit btn btn-primary btn-sm mr-2">View</a>';
-                    $btn = $btn . '<a href="javascript:void(' . $row->id . ')" class="edit btn btn-primary btn-sm mr-2">View</a>';
-
+                    $btn = '<form method="post" action="';
+                    $btn .= action([\App\Http\Controllers\FileController::class,'destroy'],  ['file' => $file->id]);
+                    $btn .= '">';
+                    $btn .= csrf_field();
+                    $btn .= method_field('DELETE');
+                    $btn .= '<input class="btn btn-danger" type="submit" name="submit" value="Delete">';
+                    $btn .= "</form>";
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -64,7 +70,11 @@ class FileController extends Controller
             $extention = $request->file('file')->getClientOriginalExtension();
             $nameToStore = $fileName . '_' . time() . '.' . $extention;
 
-            $fileURL = $request->file('file')->storeAs('public/upload', $nameToStore);
+            $filePath = $request->file->storeAs('public/upload',$nameToStore);
+
+            //TODO: Change the sub folder. My wetra url ha wetra subfolder. it couase the mass of file url.
+            $fileURL = '/wetra' . Storage::url($filePath);
+            //dd($fileURL);
 
             $fileArray = $request->all();
             $fileArray["file_name"] = $fileName;
@@ -123,6 +133,8 @@ class FileController extends Controller
      */
     public function destroy(File $file)
     {
-        //
+        $file->delete();
+
+        return redirect()->back();
     }
 }
