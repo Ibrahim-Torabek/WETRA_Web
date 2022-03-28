@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\File;
 use Illuminate\Http\Request;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
 class FileController extends Controller
 {
     /**
@@ -14,7 +17,8 @@ class FileController extends Controller
      */
     public function index()
     {
-        return view('file.index');
+        $users = User::all();
+        return view('file.index', ['users' => $users]);
     }
 
     /**
@@ -35,7 +39,28 @@ class FileController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //dd($request->all());
+        if($request->hasFile('file')){
+            $fileNameWithExt = $request->file('file')->getClientOriginalName();
+            $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+            $extention = $request->file('file')->getClientOriginalExtension();
+            $nameToStore = $fileName . '_' . time() . '.' . $extention;
+            
+            $fileURL = $request->file('file')->storeAs('public/upload', $nameToStore);
+            
+            $fileArray = $request->all();
+            $fileArray["file_name"] = $fileName;
+            $fileArray["file_extention"] = $extention;
+            $fileArray["file_url"] = $fileURL;
+            $fileArray["uploaded_by"] = Auth::id();
+            
+            File::create($fileArray);
+        } 
+
+        
+
+
+        return redirect()->back();
     }
 
     /**
