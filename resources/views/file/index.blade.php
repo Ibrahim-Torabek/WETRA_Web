@@ -1,15 +1,23 @@
 @extends('layouts.app')
 
 @section('content')
+
+
+
 <div class="container pt-5">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-10">
+
                 <div class="card">
-                    <div class="card-header">
-                        Upload a File
+                    <div class="card-header" data-toggle="collapse" href="#card-body" role="button">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#car-body" aria-expanded="true" aria-controls="cad-body">
+                                Upload a File
+                            </button>
+                        </h2>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body collapse show" id="card-body">
                         <form action="{{ action([App\Http\Controllers\FileController::class, 'store']) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="input-group mb-3">
@@ -58,7 +66,7 @@
                     <div class="card-header">
                         Files
                     </div>
-                    <div class="card-body">
+                    <div class="card-body border">
                         <table class="table table-bordered data-table">
                             <thead>
                                 <tr>
@@ -81,7 +89,3 @@
 
 
 @stop
-@section('script')
-
-
-@endsection
