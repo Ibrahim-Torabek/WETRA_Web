@@ -51,7 +51,34 @@
             </div>
         </div>
     </div>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="car">
+                    <div class="card-header">
+                        Files
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered data-table">
+                            <thead>
+                                <tr>
+                                    <th>File Name</th>
+                                    <th>Ext</th>
+                                    <th>Description</th>
+                                    <th width="100px">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
 
 @stop
 @section('script')
