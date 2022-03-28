@@ -24,6 +24,12 @@ class FileController extends Controller
     {
         if ($request->ajax()) {
             $files = File::all();
+            if(Auth::user()->is_admin != 1){
+                $files = File::where('shared_to', '0')
+                    ->orWhere('shared_to', Auth::id())
+                    ->get();
+                Log::debug($files);                
+            } 
 
             return DataTables::of($files)
                 ->addIndexColumn()

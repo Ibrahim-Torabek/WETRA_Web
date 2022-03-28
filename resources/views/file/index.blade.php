@@ -5,10 +5,10 @@
 
 
 <div class="container pt-5">
+    @if(Auth::user()->is_admin ==1)
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-10">
-
                 <div class="card">
                     <div class="card-header" data-toggle="collapse" href="#card-body" role="button">
                         <h2 class="mb-0">
@@ -25,7 +25,7 @@
                                     <span class="input-group-text" id="inputGroupFileAddon01">Choose File</span>
                                 </div> -->
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="file" name="file" require>
+                                    <input type="file" class="custom-file-input" id="file" name="file" accept="image/*,.pdf"> require>
                                     <label class="custom-file-label" for="file">No file chosen</label>
                                 </div>
                             </div>
@@ -59,6 +59,7 @@
             </div>
         </div>
     </div>
+    @endif
     <div class="container mt-4">
         <div class="row justify-content-center">
             <div class="col-md-10">
