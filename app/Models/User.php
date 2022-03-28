@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+//use Laravel\Passport\HasApiTokens;
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -31,6 +33,9 @@ class User extends Authenticatable
         'registered_date',
         'status',
         'is_admin',
+
+        // 'updated_at',
+        // 'created_at',
     ];
 
     /**
@@ -51,4 +56,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    function sentMessages(){
+        return $this->hasMany(Message::class,'sender_id');
+    }
+    
+    function receivedMessages(){
+        return $this->hasMany(Message::class,'receiver_id');
+    }
+
+    // function allMessages(){
+    //     $received = $this->hasMany(Message::class,'receiver_id');
+    //     $sent = $this->hasMany(Message::class,'sender_id');
+
+    //     $all = $received->merge($sent);
+    //     return $all.sortBy('created_at');
+    // }
 }
