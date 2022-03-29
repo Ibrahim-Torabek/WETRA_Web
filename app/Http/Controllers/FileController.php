@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 use \Yajra\DataTables\DataTables;
-use \Illuminate\Filesystem\FilesystemManager;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+
+use RealRashid\SweetAlert\Facades\Alert;
 
 class FileController extends Controller
 {
@@ -45,7 +47,7 @@ class FileController extends Controller
                     $btn .= '">';
                     $btn .= csrf_field();
                     $btn .= method_field('DELETE');
-                    $btn .= '<input class="btn btn-danger" type="submit" name="submit" value="Delete">';
+                    $btn .= '<input class="btn btn-danger" type="submit" name="submit" value="Delete" onclick="return confirm(\'Are you Sure you want to delete this member?\')">';
                     $btn .= "</form>";
                     return $btn;
                 })
@@ -75,6 +77,12 @@ class FileController extends Controller
     public function store(Request $request)
     {
         //dd($request->all());
+
+        //TODO: File validate file size.
+        $validator = Validator::make($request->all(), [
+            'file' => 'max:500000',
+        ]);
+
         if ($request->hasFile('file')) {
             $fileNameWithExt = $request->file('file')->getClientOriginalName();
             $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
@@ -94,6 +102,9 @@ class FileController extends Controller
             $fileArray["uploaded_by"] = Auth::id();
 
             File::create($fileArray);
+
+            Alert::toast($fileNameWithExt . ' uploded', 'success');
+            
         }
 
 

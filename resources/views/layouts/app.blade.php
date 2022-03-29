@@ -166,6 +166,19 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
         
         $(document).ready(function() {
 
+            $("#file").on('change', function(e){
+                let size = this.files[0].size;
+                if(size > 2097152){  // If more than 2MB
+                    alert('File zise must be less than 2MB ');
+                    //toast('Your Post as been submited!','success');
+
+                    e.preventDefault();
+                    $("#file").val('');
+                    //$("#uploadForm").reset;
+                }
+                
+            });
+
             var table = $('.data-table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -194,6 +207,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                     },
                 ]
             });
+
             bsCustomFileInput.init();
 
             $('.user_select').select2({
@@ -473,6 +487,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
             <!-- <div class="p-5">
                 {{ request()->routeIs('messages.*') }}
             </div> -->
+            @include('sweetalert::alert')
             @yield('content')
         </main>
     </div>

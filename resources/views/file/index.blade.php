@@ -18,7 +18,7 @@
                         </h2>
                     </div>
                     <div class="card-body collapse show" id="card-body">
-                        <form action="{{ action([App\Http\Controllers\FileController::class, 'store']) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ action([App\Http\Controllers\FileController::class, 'store']) }}" method="POST" enctype="multipart/form-data" id="uploadForm">
                             @csrf
                             <div class="input-group mb-3">
                                 <!-- <div class="input-group-prepend">
