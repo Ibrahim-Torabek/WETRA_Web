@@ -179,6 +179,40 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                 
             });
 
+            var table = $('.user-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('users.index') }}",
+                columns: [
+                    {
+                        data: 'first_name',
+                        name: 'first_name',
+                        // render: function(data,type,row){
+                        //     return "<a href='" + row.file_url + "'>" + row.file_name + "</a>";
+                        // }
+                        
+                    },
+                    {
+                        data: 'last_name',
+                        name: 'last_name'
+                    },
+                    {
+                        data: 'group_id',
+                        name: 'group_id'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ]
+            });
+
             var table = $('.data-table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -430,7 +464,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                         </li>
                         @if(Auth::user()->is_admin == 1)
                         <li class=" {{ (request()->is('user')) ? 'active' : '' }}">
-                            <a class="navbar-brand" href="{{ url('/') }}">
+                            <a class="navbar-brand" href="{{ url('/users') }}" style="color:{{ (request()->is('users/*') or request()->is('users')) ? 'gray' : '' }};">
                                 Users
                             </a>
                         </li>

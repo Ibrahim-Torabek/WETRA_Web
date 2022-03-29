@@ -47,7 +47,7 @@ class FileController extends Controller
                     $btn .= '">';
                     $btn .= csrf_field();
                     $btn .= method_field('DELETE');
-                    $btn .= '<input class="btn btn-danger" type="submit" name="submit" value="Delete" onclick="return confirm(\'Are you Sure you want to delete this member?\')">';
+                    $btn .= '<input class="btn btn-danger" type="submit" name="submit" value="Delete" onclick="return confirm(\'Are you Sure you want to delete this file?\')">';
                     $btn .= "</form>";
                     return $btn;
                 })
@@ -156,7 +156,7 @@ class FileController extends Controller
     public function destroy(File $file)
     {
         $file->delete();
-
+        Alert::toast($file->file_name . ' deleted', 'success');
         return redirect()->back();
     }
 }
