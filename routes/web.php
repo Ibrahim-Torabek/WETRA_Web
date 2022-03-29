@@ -34,6 +34,8 @@ Route::resource('schedules', App\Http\Controllers\ScheduleController::class);
 
 Route::resource('files', App\Http\Controllers\FileController::class);
 
+Route::resource('users', App\Http\Controllers\UserController::class);
+
 //Route::get('messages/chat', [App\Http\Controllers\MessageController::class, 'chat']);
 //Route::get('/messages/start', [App\Http\Controllers\MessageController::class, 'start']);
 
