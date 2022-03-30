@@ -22,13 +22,6 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-<<<<<<< HEAD
-//profile page
-Route::get('/user/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('user/profile');
-
-
-
-=======
 Route::get('messages/chat', [App\Http\Controllers\MessageController::class, 'chat']);
 Route::resource('messages', App\Http\Controllers\MessageController::class);
 
@@ -41,5 +34,5 @@ Route::resource('schedules', App\Http\Controllers\ScheduleController::class);
 //Route::get('messages/chat', [App\Http\Controllers\MessageController::class, 'chat']);
 //Route::get('/messages/start', [App\Http\Controllers\MessageController::class, 'start']);
 
-
->>>>>>> development
+//profile page
+Route::get('/user/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('user/profile');
