@@ -29,8 +29,14 @@ class MessageController extends Controller
         //dd($chatedUsers);
         foreach($allLines as $line){
             $user = $line->sender_id == Auth::id() ? User::find($line->receiver_id) : User::find($line->sender_id);
-            if($user->id != Auth::id())
+            if(empty($user)){
+                continue;
+                return response()->json($user);
+            }
+            if($user->id != Auth::id()){
+                
                 $chatedUsers->push($user);
+            }
         }
 
         $chatedUsers = $chatedUsers->unique('email');
