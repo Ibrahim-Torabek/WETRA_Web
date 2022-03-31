@@ -257,36 +257,43 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                 dropdownParent: $('#dayDialog')
             });
 
-            // $.ajaxSetup({
-            //     headers: {
-            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            //     }
-            // });
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
 
-            // $("#submit").click(function(e) {
-            //     //e.preventDefault();
-            //     //$("#dayDialog").hide();
-            //     $.ajax({
-            //         url: "schedules/store",
-            //         type: "POST",
-            //         data: {
-            //             _token: "{{ csrf_token() }}",
-            //             _method: "POST",
-            //             title: $("#title").val(),
-            //             start: $("#start").val(),
-            //             end: $("#end").val(),
-            //             allDay: $("#allDay").val(),
-            //             assigned_to: $("#assigned_to").val(),
-            //             color: $("#color").val(),
-            //             textColor: $("#textColor").val(),
-            //             id: $("#id").val(),
-            //         },
-            //         success: function(data) {
-            //             calendar.fullCalendar('fetchEvents');
-            //             alert("Event Created Successfully");
-            //         }
-            //     })
-            // });
+            $("#submit-event").click(function(e) {
+                e.preventDefault();
+                //$("#dayDialog").hide();
+                //alert("Clicked");
+                $.ajax({
+                    url: "schedules/store",
+                    type: "POST",
+                    data: {
+                        //_token: "{{ csrf_token() }}",
+                        //_method: "POST",
+                        title: $("#title").val(),
+                        start: $("#start").val(),
+                        end: $("#end").val(),
+                        allDay: $("#allDay").val(),
+                        assigned_to: $("#assigned_to").val(),
+                        color: $("#color").val(),
+                        textColor: $("#textColor").val(),
+                        id: $("#id").val(),
+                    },
+                    success: function(data) {
+                        calendar.fullCalendar('fetchEvents');
+                        alert("Event Created Successfully");
+                        e.presented();
+                    },
+                    error: function(result) {
+                        //$("#dayDialog").hide();
+                        alert("Error: " + result);
+                        
+                    },
+                });
+            });
 
             // function convert(str){
             //     const d = new Date(str);
@@ -343,7 +350,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                     $("#start").val((date));
                     $("#end").val((date));
                     $("#delete").hide();
-                    $("#submit").html('Add Event');
+                    $("#submit-event").html('Add Event');
                     $('#dayDialog').dialog({
                         title: 'Add Schedule',
                         width: 600,
@@ -366,7 +373,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                     $('#start').val((start));
                     $('#end').val((end));
                     $("#delete").hide();
-                    $("#submit").html('Add Event');
+                    $("#submit-event").html('Add Event');
                     $('#dayDialog').dialog({
                         title: 'Add Schedule',
                         width: 600,
@@ -391,7 +398,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                     $("#color").val(event.color);
                     $("#textColor").val(event.textColor);
                     $("#id").val(event.id);
-                    $("#submit").html('Update');
+                    $("#submit-event").html('Update');
                     var url = "{{ url('schedules/deleteEvent') }}";
                     $("#delete").show().attr('href', url + '/' + event.id);
                     $('#dayDialog').dialog({
