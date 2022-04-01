@@ -47,9 +47,9 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-    }
+    // public function create()
+    // {
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -154,7 +154,7 @@ class ScheduleController extends Controller
      */
     public function destroy(Request $request)
     {
-        if ($request->wantsJson()) {
+        if ($request->wantsJson() || $request->ajax()) {
             $event = Event::find($request->id);
             if (!empty($event)) {
                 $event->delete();
@@ -166,12 +166,12 @@ class ScheduleController extends Controller
 
 
 
-    public function deleteEvent($id)
-    {
+    // public function deleteEvent($id)
+    // {
 
-        //dd(Event::findOrFail($id));
-        Event::findOrFail($id)->delete();
+    //     //dd(Event::findOrFail($id));
+    //     Event::findOrFail($id)->delete();
 
-        return redirect()->back();
-    }
+    //     return redirect()->back();
+    // }
 }

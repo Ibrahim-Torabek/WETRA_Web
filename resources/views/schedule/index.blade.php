@@ -16,7 +16,8 @@
 
 
 <!-- Modal Dialog Start -->
-<div class="dayDialog hidden" id="dayDialog" style="display:none;">
+<div class="modal-dialog">
+<div id="dayDialog" class="modal hidden" tabindex="-1">
     <div class="dialo-body">
         <!-- action="{{ action([\App\Http\Controllers\ScheduleController::class, 'store']) }}" method="POST" -->
         <div id="dayClick">
@@ -81,13 +82,14 @@
 
 
             <div class="form-group">
-                <buton class="btn btn-primary float-right" id="submit-event">Save</button>
+                <button type="button" class="btn btn-primary float-right" id="submit-event">Save</button>
             </div>
             <div class="form-group">
-                <a class="btn btn-danger float-right mr-3" id="delete">Delete</a>
+                <a class="btn btn-danger float-right mr-3" id="delete-event">Delete</a>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <!-- Modal Dialog End -->
