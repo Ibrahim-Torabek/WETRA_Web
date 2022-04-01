@@ -14,28 +14,25 @@ class MessageController extends Controller
 
     public function __construct()
     {
-        
+
         $this->middleware('auth:sanctum', ['except' => []]);
     }
 
     // Function that get all chated users for current user
-    public function getChatedUsers(){
+    public function getChatedUsers()
+    {
         $sent = Auth::user()->sentMessages->unique('receiver_id')->except(Auth::id());;
         $received = Auth::user()->receivedMessages->unique('sender_id')->except(Auth::id());;
 
         $allLines = $sent->merge($received)->sortBy('created_at');
-        
+
         $chatedUsers = collect(new User);
         //dd($chatedUsers);
-        foreach($allLines as $line){
+        foreach ($allLines as $line) {
             $user = $line->sender_id == Auth::id() ? User::find($line->receiver_id) : User::find($line->sender_id);
-            if(empty($user)){
-                continue;
-                return response()->json($user);
-            }
-            if($user->id != Auth::id()){
-                
-                $chatedUsers->push($user);
+            if (!empty($user)) {
+                if ($user->id != Auth::id())
+                    $chatedUsers->push($user);
             }
         }
 
@@ -60,7 +57,7 @@ class MessageController extends Controller
 
         //$chatedUsers = getChatedUsers();
         //dd($chatedUsers);
-        return view('message.index');//, ['chatedUsers' => $chatedUsers]);
+        return view('message.index'); //, ['chatedUsers' => $chatedUsers]);
     }
 
     /**
@@ -71,9 +68,9 @@ class MessageController extends Controller
     public function create()
     {
         $users = User::all()->except(Auth::id());;
-        
+
         //dd($users);
-        return view('message.start',['users' => $users]);
+        return view('message.start', ['users' => $users]);
     }
 
     /**
@@ -95,9 +92,9 @@ class MessageController extends Controller
         $message->is_read = false;
         $message->save();
 
-        
+
         //return view('message.chat',['selectedUser' => $selectedUser]);
-        if($request->wantsJson()){
+        if ($request->wantsJson()) {
             return response([
                 "message" => "Chat message to be sent"
             ]);
@@ -124,7 +121,7 @@ class MessageController extends Controller
      */
     public function edit(Message $message)
     {
-        
+
         return view('message.index');
     }
 
@@ -137,7 +134,6 @@ class MessageController extends Controller
      */
     public function update(Request $requestAray, Message $message)
     {
-
     }
 
     /**
@@ -180,7 +176,7 @@ class MessageController extends Controller
         // Get selected user's id from requestAray$requestAray collection
         $userId = $request->all()["selectedUser"];
         //$userId = $userIds["selectedUser"];
-        
+
         //dd($userId);
 
         // Find user by Id, and get the first element from the results set.
@@ -205,8 +201,8 @@ class MessageController extends Controller
         // This collection will display left side bar in chat page.
 
         // Get all chat lines current user sent to selected user
-        $sent = Auth::user()->sentMessages->where('receiver_id',$userId);
-        
+        $sent = Auth::user()->sentMessages->where('receiver_id', $userId);
+
         // Get all chat lines that current user received from the selected user
         $received = Auth::user()->receivedMessages->where('sender_id', $userId);
 
@@ -219,16 +215,13 @@ class MessageController extends Controller
 
         //dd($users1);
 
-        if($request->wantsJson()){
+        if ($request->wantsJson()) {
             return response([
                 'chatLines' => $allMessages
             ], 401);
         } else {
             //return redirect()->back();
-            return view('message.chat',['selectedUser' => $selectedUser, 'chatLines' => $allMessages]);
+            return view('message.chat', ['selectedUser' => $selectedUser, 'chatLines' => $allMessages]);
         }
-        
     }
-
-    
 }

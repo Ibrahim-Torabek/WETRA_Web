@@ -47,6 +47,8 @@
     <!-- <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script> -->
 
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
         /*
 i wish this required CSS was better documented :(
@@ -257,36 +259,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                 dropdownParent: $('#dayDialog')
             });
 
-            // $.ajaxSetup({
-            //     headers: {
-            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            //     }
-            // });
 
-            // $("#submit").click(function(e) {
-            //     //e.preventDefault();
-            //     //$("#dayDialog").hide();
-            //     $.ajax({
-            //         url: "schedules/store",
-            //         type: "POST",
-            //         data: {
-            //             _token: "{{ csrf_token() }}",
-            //             _method: "POST",
-            //             title: $("#title").val(),
-            //             start: $("#start").val(),
-            //             end: $("#end").val(),
-            //             allDay: $("#allDay").val(),
-            //             assigned_to: $("#assigned_to").val(),
-            //             color: $("#color").val(),
-            //             textColor: $("#textColor").val(),
-            //             id: $("#id").val(),
-            //         },
-            //         success: function(data) {
-            //             calendar.fullCalendar('fetchEvents');
-            //             alert("Event Created Successfully");
-            //         }
-            //     })
-            // });
 
             // function convert(str){
             //     const d = new Date(str);
@@ -320,7 +293,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                 showNonCurrenDates: false,
                 initialView: 'listWeek',
                 //defaultView: 'listWeek',
-                events: "{{ url('/schedules') }}",
+                events: "{{ url('schedules') }}",
                 eventDidMount: function(info) {
                     var tooltip = new Tooltip(info.el, {
                         title: "Hello World", //info.event.description,
@@ -342,8 +315,9 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                     $("#title").val("");
                     $("#start").val((date));
                     $("#end").val((date));
-                    $("#delete").hide();
-                    $("#submit").html('Add Event');
+                    $("#delete-event").hide();
+                    $("#id").val('');
+                    $("#submit-event").html('Add Event');
                     $('#dayDialog').dialog({
                         title: 'Add Schedule',
                         width: 600,
@@ -363,10 +337,11 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                 select: function(start, end) {
                     var start = $.fullCalendar.formatDate(start, 'Y-MM-DD HH:mm:ss');
                     var end = $.fullCalendar.formatDate(end, 'Y-MM-DD HH:mm:ss');
+                    $("#title").val("");
                     $('#start').val((start));
                     $('#end').val((end));
-                    $("#delete").hide();
-                    $("#submit").html('Add Event');
+                    $("#delete-event").hide();
+                    $("#submit-event").html('Add Event');
                     $('#dayDialog').dialog({
                         title: 'Add Schedule',
                         width: 600,
@@ -391,9 +366,9 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                     $("#color").val(event.color);
                     $("#textColor").val(event.textColor);
                     $("#id").val(event.id);
-                    $("#submit").html('Update');
-                    var url = "{{ url('schedules/deleteEvent') }}";
-                    $("#delete").show().attr('href', url + '/' + event.id);
+                    $("#submit-event").html('Update');
+                    //var url = "{{ url('schedules/deleteEvent') }}";
+                    $("#delete-event").show(); //.attr('href', url + '/' + event.id);
                     $('#dayDialog').dialog({
                         title: 'Edit Schedule',
                         width: 600,
@@ -405,7 +380,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                         },
                         hide: {
                             effect: 'clip',
-                            duration: 250
+                            duration: 50
                         },
                     })
                 },
@@ -414,10 +389,102 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
 
             });
 
-            calendar.render();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            // Add event
+            $("#submit-event").click(function(e) {   
+                e.preventDefault();
+                //$("#dayDialog").hide();
+                //alert("Clicked");
+                $.ajax({
+                    url: "schedules",
+                    type: "POST",
+                    data: {
+                        //_token: "{{ csrf_token() }}",
+                        title: $("#title").val(),
+                        start: $("#start").val(),
+                        end: $("#end").val(),
+                        allDay: $("#allDay").val(),
+                        assigned_to: $("#assigned_to").val(),
+                        color: $("#color").val(),
+                        textColor: $("#textColor").val(),
+                        id: $("#id").val(),
+                    },
+                    success: function(data) {
+                        $("#dayDialog").dialog('close');
+
+                        Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Event added or updated successfully',
+                                
+                                position: 'top-right',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                        $('#calendar').fullCalendar('refetchEvents');
+
+                    },
+                    error: function(result) {
+                        //$("#dayDialog").hide();
+                        alert("Error: " + result);
+                        console.log(result);
+                        
+                    },
+                });
+            });
+
+            //Delete Event
+            $("#delete-event").click(function(e){
+                e.preventDefault;
+                //var confirmDelete = confirm("Are you sure you want to delete?");
+                if(true){
+                    $.ajax({
+                        url: "schedules/destroy",
+                        type: "DELETE",
+                        data: {
+                            id: $("#id").val(),
+                        },
+                        success: function(data){
+                            $("#dayDialog").dialog('close');
+                            $('#calendar').fullCalendar('refetchEvents');
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Event deleted successfully',
+                                animation: false,
+                                position: 'top-right',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                            
+                        },
+                        error: function(result){
+                            //alert("Error: " + result);
+                            console.log(result);
+                        },
+                    });
+                }
+            })
+
+            //calendar.render();
 
             // calendar.fullCalendar('renderEvent', event, true);
-        })
+        });
     </script>
 
 </head>

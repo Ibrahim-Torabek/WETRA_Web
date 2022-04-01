@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Log;
+
 class ScheduleController extends Controller
 {
     public function __construct()
@@ -45,9 +47,9 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-    }
+    // public function create()
+    // {
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -58,6 +60,9 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {
 
+        if($request->ajax()){
+            Log::debug("Ajax Reqested");
+        }
 
         $validator = Validator::make($request->all(), [
             'title' => 'required',
@@ -67,7 +72,7 @@ class ScheduleController extends Controller
         ]);
 
         if ($validator->failed()) {
-            dd($request);
+            //dd($request);
             return redirect()->back();
         }
 
@@ -79,12 +84,16 @@ class ScheduleController extends Controller
 
 
 
+        // Has id means create event, else update event.
         if (empty($requestArray["id"])) {
             //dd($request);
             Event::create($requestArray);
             if ($request->wantsJson()) {
                 return response()->json(["Message" => "Created successfully"]);
             }
+            // if ($request->ajax()){
+            //     return response()-json(["Message" => "Created successfully"]);
+            // }
         } else {
             //dd($request);
             // Event::where('id',$request["id"])->update($request);
@@ -145,7 +154,7 @@ class ScheduleController extends Controller
      */
     public function destroy(Request $request)
     {
-        if ($request->wantsJson()) {
+        if ($request->wantsJson() || $request->ajax()) {
             $event = Event::find($request->id);
             if (!empty($event)) {
                 $event->delete();
@@ -157,12 +166,12 @@ class ScheduleController extends Controller
 
 
 
-    public function deleteEvent($id)
-    {
+    // public function deleteEvent($id)
+    // {
 
-        //dd(Event::findOrFail($id));
-        Event::findOrFail($id)->delete();
+    //     //dd(Event::findOrFail($id));
+    //     Event::findOrFail($id)->delete();
 
-        return redirect()->back();
-    }
+    //     return redirect()->back();
+    // }
 }
