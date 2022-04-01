@@ -29,7 +29,7 @@ Route::resource('messages', App\Http\Controllers\MessageController::class);
 
 
 
-Route::get('schedules/deleteEvent/{id}', [App\Http\Controllers\ScheduleController::class, 'deleteEvent']);
+//Route::get('schedules/deleteEvent/{id}', [App\Http\Controllers\ScheduleController::class, 'deleteEvent']);
 // Route::post('schedules/action', [App\Http\Controllers\ScheduleController::class, 'action']);
 
 

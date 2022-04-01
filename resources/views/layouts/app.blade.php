@@ -47,6 +47,8 @@
     <!-- <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script> -->
 
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
         /*
 i wish this required CSS was better documented :(
@@ -415,14 +417,22 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                     success: function(data) {
                         $("#dayDialog").dialog('close');
 
-                        //alert("Event Created Successfully");
+                        Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Event added or updated successfully',
+                                
+                                position: 'top-right',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
                         $('#calendar').fullCalendar('refetchEvents');
-                        // calendar.fullCalendar({
-                        //     events: "{{ url('schedules') }}",
-                        // });
-                        // console.log(calendar);
-                        // calendar.render();
-                        //e.presented();
+
                     },
                     error: function(result) {
                         //$("#dayDialog").hide();
@@ -447,7 +457,21 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                         success: function(data){
                             $("#dayDialog").dialog('close');
                             $('#calendar').fullCalendar('refetchEvents');
-                            //alert("Event deleted");
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Event deleted successfully',
+                                animation: false,
+                                position: 'top-right',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                            
                         },
                         error: function(result){
                             //alert("Error: " + result);
@@ -457,18 +481,10 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                 }
             })
 
-
-            $("#myModal").modal('show');
- 
- // Close modal on button click
- $(".btn").click(function(){
-     $("#myModal").modal('hide');
- });
-
             //calendar.render();
 
             // calendar.fullCalendar('renderEvent', event, true);
-        })
+        });
     </script>
 
 </head>
