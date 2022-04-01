@@ -65,6 +65,13 @@ class User extends Authenticatable
         return $this->hasMany(Message::class,'receiver_id');
     }
 
+    public function isAdmin(){
+        if ($this->is_admin == 1)
+            return "Yes";
+
+        return "No";
+    }
+
     // function allMessages(){
     //     $received = $this->hasMany(Message::class,'receiver_id');
     //     $sent = $this->hasMany(Message::class,'sender_id');

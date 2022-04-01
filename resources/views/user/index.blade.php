@@ -14,7 +14,7 @@
                     </div>
                     <div class="card-body border">
                         <table class="table table-bordered user-table">
-                            <thead>
+                            <thead style="width: 100%">
                                 <tr>
                                     <th>First Name</th>
                                     <th>Last Name</th>

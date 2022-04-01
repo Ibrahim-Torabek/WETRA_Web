@@ -189,9 +189,11 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                     {
                         data: 'first_name',
                         name: 'first_name',
-                        // render: function(data,type,row){
-                        //     return "<a href='" + row.file_url + "'>" + row.file_name + "</a>";
-                        // }
+                        render: function(data,type,row){
+                            //var url = action([App/Http/Controllers/UserController::class, 'show']);
+                            return "<a href=users/" + row.id + ">" + row.first_name + "</a>";
+                            //return "<a href={{ URL::route('users.show', 23) }}>" + row.first_name + "</a>";
+                        }
                         
                     },
                     {

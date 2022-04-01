@@ -38,10 +38,10 @@ class UserController extends Controller
                     $btnDelete .= '">';
                     $btnDelete .= csrf_field();
                     $btnDelete .= method_field('DELETE');
-                    $btnDelete .= '<input class="btn btn-danger btn-sm" type="submit" name="submit" value="Delete" onclick="return confirm(\'Are you Sure you want to delete this user?\')">';
+                    $btnDelete .= '<input class="btn btn-danger btn-sm float-right" type="submit" name="submit" value="Delete" onclick="return confirm(\'Are you Sure you want to delete this user?\')">';
                     $btnDelete .= "</form>";
 
-                    $btnEdit = '<a class="btn btn-secondary btn-sm mr-2" href="';
+                    $btnEdit = '<a class="btn btn-secondary btn-sm mr-2 float-left" href="';
                     $btnEdit .= action([\App\Http\Controllers\UserController::class, 'edit'], ['user' => $user->id]);
                     $btnEdit .= '"> Edit </a>';
 
@@ -83,7 +83,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        return view('user.show', ['user' => $user]);
     }
 
     /**

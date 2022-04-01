@@ -20,6 +20,8 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::resource('users', App\Http\Controllers\UserController::class);
+
 Route::resource('schedules', App\Http\Controllers\ScheduleController::class);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -36,7 +38,7 @@ Route::resource('messages', App\Http\Controllers\MessageController::class);
 
 Route::resource('files', App\Http\Controllers\FileController::class);
 
-Route::resource('users', App\Http\Controllers\UserController::class);
+
 
 //Route::get('messages/chat', [App\Http\Controllers\MessageController::class, 'chat']);
 //Route::get('/messages/start', [App\Http\Controllers\MessageController::class, 'start']);
