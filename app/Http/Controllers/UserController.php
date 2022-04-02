@@ -33,8 +33,10 @@ class UserController extends Controller
 
             return DataTables::of($users)
                 ->addIndexColumn()
+                ->addColumn('group', function($user){
+                    return $user->group["name"];
+                })
                 ->addColumn('action', function ($user) {
-
                     $btnDelete = '<form method="post" action="';
                     $btnDelete .= action([\App\Http\Controllers\UserController::class,'destroy'],  ['user' => $user->id]);
                     $btnDelete .= '">';
