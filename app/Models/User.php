@@ -65,11 +65,22 @@ class User extends Authenticatable
         return $this->hasMany(Message::class,'receiver_id');
     }
 
-    public function isAdmin(){
+    function isAdmin(){
         if ($this->is_admin == 1)
             return "Yes";
 
         return "No";
+    }
+
+    function group(){
+        return $this->hasOne(Group::class, 'id','group_id');
+    }
+
+    function status(){
+        if($this->status == 0)
+            return "In Active";
+
+        return "Active";
     }
 
     // function allMessages(){

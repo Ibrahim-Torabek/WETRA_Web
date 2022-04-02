@@ -24,8 +24,8 @@
 
         <div class="card-body">
             <p class="border-bottom">Admin: {{ $user->isAdmin() }} </p>
-            <p class="border-bottom">Group: </p>
-            <p class="border-bottom">Status: </p>
+            <p class="border-bottom">Group: {{ $user->group->name ?? "No Group Assigned" }} </p>
+            <p class="border-bottom">Status: {{ $user->status == 1 ? "Active" : "Not Active" }} </p>
         </div>
     </div>
 
@@ -35,10 +35,13 @@
         </div>
 
         <div class="card-body">
-            <p class="border-bottom">Name: </p>
-            <p class="border-bottom">Phone Number: </p>
+            <p class="border-bottom">Name: {{ $user->emergency_name }}</p>
+            <p class="border-bottom">Phone Number: {{ $user->emergency_phone }}</p>
         </div>
     </div>
 
+    <button type="button" class="btn btn-primary pl-4 pr-4">Edit</button>
+    <button type="button" class="btn btn-primary pl-4 pr-4">Chat</button>
+    <button type="button" class="btn btn-danger pl-4 pr-4 float-right">Delete</button>
 </div>
 @stop
