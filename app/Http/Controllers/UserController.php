@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -94,8 +95,8 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        dd($user);
-        //return $id;
+        $groups = Group::all();
+        return view('user.edit', ['user' => $user, 'groups' => $groups]);
     }
 
     /**
@@ -105,9 +106,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $user->update($request->all());
+
+        return redirect()->route('users.show', ['user' => $user]);
     }
 
     /**
@@ -120,7 +123,8 @@ class UserController extends Controller
     {
         $user->delete();
         Alert::toast('deleted ' . $user->first_name, 'success');
-        return redirect()->back();
+
+        return redirect()->route('users.index');
     }
 
     // public function all(){
