@@ -410,7 +410,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{{ route('user/profile') }}">
                                     {{ __('Profile') }}
-                                    </a>
+                                </a>
 
                                 <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -422,7 +422,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                                 </form>
                             </div>
                         </li>
->>>>>>> development
+
                         @endguest
                     </ul>
                 </div>

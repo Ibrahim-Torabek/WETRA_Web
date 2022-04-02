@@ -36,3 +36,4 @@ Route::resource('schedules', App\Http\Controllers\ScheduleController::class);
 
 //profile page
 Route::get('/user/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('user/profile');
+Route::get('/admin/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('admin/profile');

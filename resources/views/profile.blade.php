@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="container">
-  <div class="row justify-content-center">
-    <!-- <div class="col-md-8"> -->
+  <div class="row justify-content-center pt-5">
+    <div class="col-md-8">
       <!-- <h2>Hi {{ Auth::user()->first_name }}</h2> -->
         <div class="card">
           <div class="card-header text-left h5">{{ __('My Profile') }}</div>
@@ -47,24 +47,56 @@
                     
               <!-- Image field To Do add Modal when Update button pressed -->
               <div class="row">
-                <div class="col">
-                  <div class="row my-3 justify-content-around">
-                    <label for="profile_image" class="h5">Image</label>
+                <div class="col pl-4 justify-content-center">
+                  <div class="row my-3">
+                    <label for="profile_image" class="h5">Profile Image</label>
                   </div>
                   <form enctype="multipart/form-data" action="" method="POST"> 
                     @csrf
-                    <div class="row justify-content-around">
-                      <img src="" class="rounded-circle" style="width:175px; height:175px;"> 
+                    <div class="row">
+                      <!-- Image by default -->
+                      <svg id="Avatar_Icon" data-name="Avatar Icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="175" height="175">
+                        <circle id="Ellipse_1" data-name="Ellipse 1" cx="25" cy="25" r="25" fill="green" />
+                        <circle id="Ellipse_2" data-name="Ellipse 2" cx="5" cy="5" r="5" transform="translate(20 13)" fill="#fff" />
+                        <path id="Path_8" data-name="Path 8" d="M14.99,0c8.188,0,18.333,2.867,14.826,5.5S23.165,10.934,14.99,11,3.421,7.708.164,5.5,6.8,0,14.99,0Z" transform="translate(10 27.678)" fill="#fff" />
+                        </svg>
                     </div>
                   
-                    <!-- Make pop up to upload image <input type="file" name="image_url"> -->
+                    
               
-                    <div class="row my-4 justify-content-around">
+                    <div class="col my-4">
                       <!-- TO DO:
                       *set Delete and Upload functions to the profile image -->
-                      <input class="btn btn-primary mr-2" type="submit" value="Delete">  
-                      <input class="btn btn-primary" type="submit" value="Update">        
+                      <div class="row pb-4">
+                        <button class="btn btn-primary" type="submit">Delete Image</button> 
+                      </div>
+                      <div class="row">
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#updateImageModal">Update Image</button>  
+                      </div>     
                     </div>
+                    <!-- Modal to upload image -->
+                    
+                    <div class="modal fade" id="updateImageModal" aria-labelledby="updateImageModal">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="updateImageModalLabel">Update Image</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="mb-3">
+                              <label for="formFile" class="form-label">Browse your files to choose an image.</label>
+                              <input class="form-control" type="file" id="formFile">
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary">Upload Image</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    </div> 
                   </form>
                 </div> 
                   
@@ -194,7 +226,7 @@
             </form>
           </div>
         </div>
-    <!-- </div> -->
+    </div>
   </div>
 </div>
 @endsection
