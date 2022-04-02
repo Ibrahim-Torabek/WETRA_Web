@@ -48,16 +48,19 @@
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <div class="input-group-text">
-                            <input type="checkbox" aria-label="Checkbox for following text input" id="is-admin" name="is_admin" value="1">
+                            <input type="hidden" aria-label="Checkbox for following text input" name="is_admin" value="0"> 
+                            <input type="checkbox" aria-label="Checkbox for following text input" id="is-admin" name="is_admin" value="1" 
+                                {{ $user->is_admin == 1 ? 'checked' : '' }}
+                            >
                         </div>
                     </div>
                     <label class="form-control" for="is-admin"> Is Admin </label>
                 </div>
 
-                
+
             </div>
 
-            
+
         </div>
         <input class="btn btn-primary" type="submit" value="Save & Return">
     </form>
