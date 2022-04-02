@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Log;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ScheduleController extends Controller
 {
@@ -47,7 +48,7 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // public function create()
+    // public function create()`
     // {
     // }
 
@@ -60,10 +61,6 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {
 
-        if($request->ajax()){
-            Log::debug("Ajax Reqested");
-        }
-
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'start' => 'required',
@@ -73,7 +70,8 @@ class ScheduleController extends Controller
 
         if ($validator->failed()) {
             //dd($request);
-            return redirect()->back();
+            //return redirect()->back();
+            //Alert::toast('Error: ' . $validator, 'alert');
         }
 
 
@@ -87,6 +85,7 @@ class ScheduleController extends Controller
         // Has id means create event, else update event.
         if (empty($requestArray["id"])) {
             //dd($request);
+            //Alert::toast('Empty: ' . $validator->errors(), 'alert');
             Event::create($requestArray);
             if ($request->wantsJson()) {
                 return response()->json(["Message" => "Created successfully"]);
@@ -98,9 +97,11 @@ class ScheduleController extends Controller
             //dd($request);
             // Event::where('id',$request["id"])->update($request);
             $event = Event::findOrFail($requestArray['id']);
-            $event->update($requestArray);
-            if ($request->wantsJson()) {
-                return response()->json(["Message" => "Updated successfully"]);
+            if (!empty($event)) {
+                $event->update($requestArray);
+                if ($request->wantsJson()) {
+                    return response()->json(["Message" => "Updated successfully"]);
+                }
             }
         }
 
@@ -114,10 +115,11 @@ class ScheduleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //return "Hello World";
-    }
+    // public function show($id)
+    // {
+    //     //return redirect()->back();
+        
+    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -125,10 +127,10 @@ class ScheduleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
-    }
+    // public function edit($id)
+    // {
+    //     //
+    // }
 
     /**
      * Update the specified resource in storage.
