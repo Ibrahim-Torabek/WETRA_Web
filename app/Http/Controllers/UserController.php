@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
+
 use \Yajra\DataTables\DataTables;
 use RealRashid\SweetAlert\Facades\Alert;
 

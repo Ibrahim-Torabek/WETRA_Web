@@ -38,6 +38,8 @@ Route::resource('messages', App\Http\Controllers\MessageController::class);
 
 Route::resource('files', App\Http\Controllers\FileController::class);
 
+Route::resource('groups', App\Http\Controllers\GroupController::class);
+
 
 
 //Route::get('messages/chat', [App\Http\Controllers\MessageController::class, 'chat']);

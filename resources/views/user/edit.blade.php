@@ -76,26 +76,37 @@
             </div>
             <div class="modal-body">
                 @foreach($groups as $group)
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Group Name" aria-label="Group Name" aria-describedby="button-addon2" 
-                        value="{{ $group->name }}"
-                    >
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" >Save</button>
-                    </div>
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-danger" type="button" >Delete</button>
-                    </div>
+                <div class="row form-group">
+                    <form method="POST" action="{{ action([App\Http\Controllers\GroupController::class, 'update'], ['group' => $group]) }}">
+                        @csrf
+                        @method('PATCH')
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Group Name" aria-label="Group Name" aria-describedby="button-addon2" value="{{ $group->name }}" name="name">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit">Save</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form method="POST" action="{{ action([App\Http\Controllers\GroupController::class, 'destroy'], ['group' => $group]) }}">
+                        @csrf
+                        @method('DELETE')
+
+                        <button class="btn btn-outline-danger float-right" type="submit">Delete</button>
+
+                    </form>
                 </div>
                 @endforeach
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Group Name" aria-label="Group Name" aria-describedby="button-addon2">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-primary" type="button" >Insert</button>
+                <form method="POST" action="{{ action([App\Http\Controllers\GroupController::class, 'store']) }}">
+                    @csrf
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Group Name" aria-label="Group Name" aria-describedby="button-addon2" name="name">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-primary" type="sumbit">Insert</button>
+                        </div>
                     </div>
+                </form>
 
-                </div>
-                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

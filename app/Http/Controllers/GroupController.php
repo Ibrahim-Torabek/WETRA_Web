@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+// use PHPUnit\TextUI\XmlConfiguration\Group;
+use App\Models\Group;
 
 class GroupController extends Controller
 {
@@ -34,7 +36,10 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //dd($request->all());
+        Group::create($request->all());
+        return redirect()->back();
+        
     }
 
     /**
@@ -66,9 +71,12 @@ class GroupController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Group $group)
     {
-        //
+        //dd($request->all());
+        $group->update($request->all());
+
+        return redirect()->back();
     }
 
     /**
@@ -77,8 +85,10 @@ class GroupController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Group $group)
     {
-        //
+        $group->delete();
+
+        return redirect()->back();
     }
 }
