@@ -26,6 +26,9 @@
                         <option value="{{ $group->id }}" {{ ($user->group_id == $group->id) ? 'selected' : '' }}> {{ $group->name }} </option>
                         @endforeach
                     </select>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="button-addon2" data-toggle="modal" data-target="#manageGroup">Manage Group</button>
+                    </div>
                 </div>
 
                 <div class="input-group mb-3">
@@ -48,18 +51,68 @@
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <div class="input-group-text">
-                            <input type="checkbox" aria-label="Checkbox for following text input" id="is-admin" name="is_admin" value="1">
+                            <input type="hidden" aria-label="Checkbox for following text input" name="is_admin" value="0">
+                            <input type="checkbox" aria-label="Checkbox for following text input" id="is-admin" name="is_admin" value="1" {{ $user->is_admin == 1 ? 'checked' : '' }}>
                         </div>
                     </div>
                     <label class="form-control" for="is-admin"> Is Admin </label>
                 </div>
-
-                
             </div>
-
-            
         </div>
         <input class="btn btn-primary" type="submit" value="Save & Return">
     </form>
+</div>
+
+
+<!-- Manage Group Modal -->
+<div class="modal fade" id="manageGroup" tabindex="-1" role="dialog" aria-labelledby="manageGroup" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="manageGroupTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @foreach($groups as $group)
+                <div class="row form-group">
+                    <form method="POST" action="{{ action([App\Http\Controllers\GroupController::class, 'update'], ['group' => $group]) }}">
+                        @csrf
+                        @method('PATCH')
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Group Name" aria-label="Group Name" aria-describedby="button-addon2" value="{{ $group->name }}" name="name">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit">Save</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form method="POST" action="{{ action([App\Http\Controllers\GroupController::class, 'destroy'], ['group' => $group]) }}">
+                        @csrf
+                        @method('DELETE')
+
+                        <button class="btn btn-outline-danger float-right" type="submit">Delete</button>
+
+                    </form>
+                </div>
+                @endforeach
+                <form method="POST" action="{{ action([App\Http\Controllers\GroupController::class, 'store']) }}">
+                    @csrf
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Group Name" aria-label="Group Name" aria-describedby="button-addon2" name="name">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-primary" type="sumbit">Insert</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+        </div>
+    </div>
 </div>
 @stop

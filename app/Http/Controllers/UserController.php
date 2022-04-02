@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
+
 use \Yajra\DataTables\DataTables;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -32,8 +33,10 @@ class UserController extends Controller
 
             return DataTables::of($users)
                 ->addIndexColumn()
+                ->addColumn('group', function($user){
+                    return $user->group["name"];
+                })
                 ->addColumn('action', function ($user) {
-
                     $btnDelete = '<form method="post" action="';
                     $btnDelete .= action([\App\Http\Controllers\UserController::class,'destroy'],  ['user' => $user->id]);
                     $btnDelete .= '">';
@@ -108,6 +111,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        //dd($request->all());
         $user->update($request->all());
 
         return redirect()->route('users.show', ['user' => $user]);

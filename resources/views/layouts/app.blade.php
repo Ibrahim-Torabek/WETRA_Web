@@ -201,8 +201,9 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                         name: 'last_name'
                     },
                     {
-                        data: 'group_id',
-                        name: 'group_id'
+                        data: 'group',
+                        name: 'group',     
+             
                     },
                     {
                         data: 'status',
@@ -323,7 +324,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                     $('#dayDialog').dialog({
                         title: 'Add Schedule',
                         width: 600,
-                        height: 720,
+                        height: 650,
                         modal: true,
                         show: {
                             effect: 'clip',
@@ -347,7 +348,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                     $('#dayDialog').dialog({
                         title: 'Add Schedule',
                         width: 600,
-                        height: 720,
+                        height: 650,
                         modal: true,
                         show: {
                             effect: 'clip',
@@ -374,7 +375,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                     $('#dayDialog').dialog({
                         title: 'Edit Schedule',
                         width: 600,
-                        height: 750,
+                        height: 650,
                         modal: true,
                         show: {
                             effect: 'clip',
