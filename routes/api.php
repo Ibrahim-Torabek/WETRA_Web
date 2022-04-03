@@ -31,6 +31,7 @@ Route::post('messages/chatted_users', [App\Http\Controllers\MessageController::c
 Route::post('messages/send', [App\Http\Controllers\MessageController::class, 'store']);
 
 Route::post('users/all', [User::class, 'all']);
+Route::apiResource('users', App\Http\Controllers\UserController::class);
 
 //Route::post('schedules/deleteEvent/{id}', App\Http\Controllers\ScheduleController::class);
 Route::apiResource('schedules', App\Http\Controllers\ScheduleController::class);
