@@ -28,8 +28,9 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $users = User::all();
         if ($request->ajax()) {
-            $users = User::all();
+            
 
             return DataTables::of($users)
                 ->addIndexColumn()
@@ -53,6 +54,10 @@ class UserController extends Controller
                 })
                 ->rawColumns(['action'])
                 ->make(true);
+        }
+
+        if($request->wantsJson()){
+            return response()->json($users);
         }
         
         return view('user.index');
@@ -85,8 +90,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(Request $request, User $user)
     {
+        if($request->wantsJson()){
+            return response()->json($user);
+        }
         return view('user.show', ['user' => $user]);
     }
 
@@ -111,8 +119,16 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //dd($request->all());
+        // if($request->wantsJson()){
+        //     return response()->json($request);
+        // }
         $user->update($request->all());
+
+        if($request->wantsJson()){
+            return response()->json(
+                ["Message" => "Success"]
+            );
+        }
 
         return redirect()->route('users.show', ['user' => $user]);
     }
@@ -123,9 +139,13 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
+
         $user->delete();
+        if($request->wantsJson()){
+            return response()->json(["Message" => "Success"]);
+        }
         Alert::toast('deleted ' . $user->first_name, 'success');
 
         return redirect()->route('users.index');
