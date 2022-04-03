@@ -1,0 +1,122 @@
+body{
+    overflow: hidden;
+    height: 100%;
+  }
+
+/* .chat-bubble {
+    max-width: 60%;
+    padding: 10px 14px;
+    background: #eee;
+    margin: 10px 30px;
+    border-radius: 9px;
+    position: relative;
+    animation: fadeIn 1s ease-in;
+
+}
+
+
+.chat-bubble:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border: 20px solid transparent;
+    border-bottom: 0;
+    margin-top: -10px;
+}
+
+.chat-bubble--left:after {
+    left: 0;
+    border-right-color: #eee;
+    border-left: 0;
+    margin-left: -20px;
+}
+
+textarea {
+    border-radius: 5px;
+}
+
+.footer {
+
+    padding-bottom: 5px;
+    position: fixed;
+    bottom: 0;
+    height: 60px;
+    width: 60%;
+    background: #fff;
+    align-items: baseline;
+}
+
+.chatboxdiv {
+    width: 85%;
+    margin: auto;
+}
+
+.chatbox {
+    border-radius: 20px;
+    width: 100%;
+    padding: 10px 20px;
+}
+
+.material-icons {
+    padding: 10px 5px;
+}
+
+.chat-bubble:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border: 20px solid transparent;
+    border-bottom: 0;
+    margin-top: -10px;
+}
+
+.chat-bubble--left:after {
+    left: 0;
+    border-right-color: #eee;
+    border-left: 0;
+    margin-left: -20px;
+}
+.chat-main{
+    position: relative;
+    min-height: 80%;
+    max-height:95%;
+}
+
+.left-sidebar{
+    max-height:95%;
+    background-color: red;
+}
+
+
+
+/* asdasd */
+/* .chat-bubble {
+    padding: 10px 14px;
+    background: #eee;
+    margin: 10px 30px;
+    border-radius: 9px;
+    position: relative;
+    -webkit-animation: fadeIn 1s ease-in;
+            animation: fadeIn 1s ease-in;
+  }
+  .chat-bubble:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border: 20px solid transparent;
+    border-bottom: 0;
+    margin-top: -10px;
+  }
+  .chat-bubble--left:after {
+    left: 0;
+    border-right-color: #eee;
+    border-left: 0;
+    margin-left: -20px;
+  }
+   */ */
