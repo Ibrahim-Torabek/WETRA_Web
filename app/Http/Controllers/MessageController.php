@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\User;
 
 use Illuminate\Support\Facades\Auth;
+use App\Events\Chat;
 
+use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Log;
 
 class MessageController extends Controller
 {
@@ -81,6 +84,8 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
+
+        //return $request;
         $requestArray = $request->all();
 
         //dd($requestAray);
@@ -92,13 +97,21 @@ class MessageController extends Controller
         $message->is_read = false;
         $message->save();
 
-
+        event(
+            new Chat(
+                $requestArray["receiver"],
+                $requestArray["chatText"]
+            )
+        );
+        
         //return view('message.chat',['selectedUser' => $selectedUser]);
         if ($request->wantsJson()) {
             return response([
-                "message" => "Chat message to be sent"
+                "success" => true
             ]);
         }
+        //
+
         return redirect()->back();
     }
 
