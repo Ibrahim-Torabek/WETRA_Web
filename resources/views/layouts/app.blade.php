@@ -20,7 +20,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js" integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD" crossorigin="anonymous"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
@@ -37,8 +37,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" integrity="sha512-KXkS7cFeWpYwcoXxyfOumLyRGXMp7BTMTjwrgjMg0+hls4thG2JGzRgQtRfnAuKTn2KWTDZX4UdPg+xTs8k80Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+    <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js" integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2" crossorigin="anonymous"></script>
     <!-- <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script> -->
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
         /*
 i wish this required CSS was better documented :(
@@ -155,8 +165,96 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
         }
     </style>
     <script>
-        //@yield('script')
+        
         $(document).ready(function() {
+
+            $("#file").on('change', function(e){
+                let size = this.files[0].size;
+                if(size > 2097152){  // If more than 2MB
+                    alert('File zise must be less than 2MB ');
+                    //toast('Your Post as been submited!','success');
+
+                    e.preventDefault();
+                    $("#file").val('');
+                    //$("#uploadForm").reset;
+                }
+                
+            });
+
+            var table = $('.user-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('users.index') }}",
+                columns: [
+                    {
+                        data: 'first_name',
+                        name: 'first_name',
+                        render: function(data,type,row){
+                            //var url = action([App/Http/Controllers/UserController::class, 'show']);
+                            return "<a href=users/" + row.id + ">" + row.first_name + "</a>";
+                            //return "<a href={{ URL::route('users.show', 23) }}>" + row.first_name + "</a>";
+                        }
+                        
+                    },
+                    {
+                        data: 'last_name',
+                        name: 'last_name'
+                    },
+                    {
+                        data: 'group',
+                        name: 'group',     
+             
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ]
+            });
+
+            var table = $('.data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('files.index') }}",
+                columns: [{
+                        data: 'file_name',
+                        name: 'file_name',
+                        render: function(data,type,row){
+                            return "<a href='" + row.file_url + "'>" + row.file_name + "</a>";
+                        }
+                        
+                    },
+                    {
+                        data: 'file_extention',
+                        name: 'file_extention'
+                    },
+                    {
+                        data: 'description',
+                        name: 'description'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ]
+            });
+
+            bsCustomFileInput.init();
+
+            $('.user_select').select2({
+                placeholder: "Select a group or a person",
+                allowClear: true,
+                width: 'resolve',
+                theme: "classic"
+            });
 
             $('.multiple_select').select2({
                 placeholder: "Select a group or a person",
@@ -164,36 +262,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                 dropdownParent: $('#dayDialog')
             });
 
-            // $.ajaxSetup({
-            //     headers: {
-            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            //     }
-            // });
 
-            // $("#submit").click(function(e) {
-            //     //e.preventDefault();
-            //     //$("#dayDialog").hide();
-            //     $.ajax({
-            //         url: "schedules/store",
-            //         type: "POST",
-            //         data: {
-            //             _token: "{{ csrf_token() }}",
-            //             _method: "POST",
-            //             title: $("#title").val(),
-            //             start: $("#start").val(),
-            //             end: $("#end").val(),
-            //             allDay: $("#allDay").val(),
-            //             assigned_to: $("#assigned_to").val(),
-            //             color: $("#color").val(),
-            //             textColor: $("#textColor").val(),
-            //             id: $("#id").val(),
-            //         },
-            //         success: function(data) {
-            //             calendar.fullCalendar('fetchEvents');
-            //             alert("Event Created Successfully");
-            //         }
-            //     })
-            // });
 
             // function convert(str){
             //     const d = new Date(str);
@@ -227,7 +296,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                 showNonCurrenDates: false,
                 initialView: 'listWeek',
                 //defaultView: 'listWeek',
-                events: "{{ url('/schedules') }}",
+                events: "{{ url('schedules') }}",
                 eventDidMount: function(info) {
                     var tooltip = new Tooltip(info.el, {
                         title: "Hello World", //info.event.description,
@@ -249,12 +318,13 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                     $("#title").val("");
                     $("#start").val((date));
                     $("#end").val((date));
-                    $("#delete").hide();
-                    $("#submit").html('Add Event');
+                    $("#delete-event").hide();
+                    $("#id").val('');
+                    $("#submit-event").html('Add Event');
                     $('#dayDialog').dialog({
                         title: 'Add Schedule',
                         width: 600,
-                        height: 720,
+                        height: 650,
                         modal: true,
                         show: {
                             effect: 'clip',
@@ -270,14 +340,15 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                 select: function(start, end) {
                     var start = $.fullCalendar.formatDate(start, 'Y-MM-DD HH:mm:ss');
                     var end = $.fullCalendar.formatDate(end, 'Y-MM-DD HH:mm:ss');
+                    $("#title").val("");
                     $('#start').val((start));
                     $('#end').val((end));
-                    $("#delete").hide();
-                    $("#submit").html('Add Event');
+                    $("#delete-event").hide();
+                    $("#submit-event").html('Add Event');
                     $('#dayDialog').dialog({
                         title: 'Add Schedule',
                         width: 600,
-                        height: 720,
+                        height: 650,
                         modal: true,
                         show: {
                             effect: 'clip',
@@ -298,13 +369,13 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                     $("#color").val(event.color);
                     $("#textColor").val(event.textColor);
                     $("#id").val(event.id);
-                    $("#submit").html('Update');
-                    var url = "{{ url('schedules/deleteEvent') }}";
-                    $("#delete").show().attr('href', url + '/' + event.id);
+                    $("#submit-event").html('Update');
+                    //var url = "{{ url('schedules/deleteEvent') }}";
+                    $("#delete-event").show(); //.attr('href', url + '/' + event.id);
                     $('#dayDialog').dialog({
                         title: 'Edit Schedule',
                         width: 600,
-                        height: 750,
+                        height: 650,
                         modal: true,
                         show: {
                             effect: 'clip',
@@ -312,7 +383,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                         },
                         hide: {
                             effect: 'clip',
-                            duration: 250
+                            duration: 50
                         },
                     })
                 },
@@ -321,10 +392,102 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
 
             });
 
-            calendar.render();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            // Add event
+            $("#submit-event").click(function(e) {   
+                e.preventDefault();
+                //$("#dayDialog").hide();
+                //alert("Clicked");
+                $.ajax({
+                    url: "schedules",
+                    type: "POST",
+                    data: {
+                        //_token: "{{ csrf_token() }}",
+                        title: $("#title").val(),
+                        start: $("#start").val(),
+                        end: $("#end").val(),
+                        allDay: $("#allDay").val(),
+                        assigned_to: $("#assigned_to").val(),
+                        color: $("#color").val(),
+                        textColor: $("#textColor").val(),
+                        id: $("#id").val(),
+                    },
+                    success: function(data) {
+                        $("#dayDialog").dialog('close');
+
+                        Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Event added or updated successfully',
+                                
+                                position: 'top-right',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                        $('#calendar').fullCalendar('refetchEvents');
+
+                    },
+                    error: function(result) {
+                        //$("#dayDialog").hide();
+                        alert("Error: " + result);
+                        console.log(result);
+                        
+                    },
+                });
+            });
+
+            //Delete Event
+            $("#delete-event").click(function(e){
+                e.preventDefault;
+                //var confirmDelete = confirm("Are you sure you want to delete?");
+                if(true){
+                    $.ajax({
+                        url: "schedules/destroy",
+                        type: "DELETE",
+                        data: {
+                            id: $("#id").val(),
+                        },
+                        success: function(data){
+                            $("#dayDialog").dialog('close');
+                            $('#calendar').fullCalendar('refetchEvents');
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Event deleted successfully',
+                                animation: false,
+                                position: 'top-right',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                            
+                        },
+                        error: function(result){
+                            //alert("Error: " + result);
+                            console.log(result);
+                        },
+                    });
+                }
+            })
+
+            //calendar.render();
 
             // calendar.fullCalendar('renderEvent', event, true);
-        })
+        });
     </script>
 
 </head>
@@ -365,13 +528,13 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                             </a>
                         </li>
                         <li class=" {{ (request()->is('file')) ? 'active' : '' }}">
-                            <a class="navbar-brand" href="{{ url('/') }}">
+                            <a class="navbar-brand" href="{{ url('/files') }}" style="color:{{ (request()->is('files/*') or request()->is('files')) ? 'gray' : '' }};">
                                 Files
                             </a>
                         </li>
                         @if(Auth::user()->is_admin == 1)
                         <li class=" {{ (request()->is('user')) ? 'active' : '' }}">
-                            <a class="navbar-brand" href="{{ url('/') }}">
+                            <a class="navbar-brand" href="{{ url('/users') }}" style="color:{{ (request()->is('users/*') or request()->is('users')) ? 'gray' : '' }};">
                                 Users
                             </a>
                         </li>
@@ -433,6 +596,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
             <!-- <div class="p-5">
                 {{ request()->routeIs('messages.*') }}
             </div> -->
+            @include('sweetalert::alert')
             @yield('content')
         </main>
     </div>

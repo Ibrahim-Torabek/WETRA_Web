@@ -16,11 +16,12 @@
 
 
 <!-- Modal Dialog Start -->
-<div class="dayDialog hidden" id="dayDialog" style="display:none;">
+<div class="modal-dialog">
+<div id="dayDialog" class="modal hidden" tabindex="-1">
     <div class="dialo-body">
         <!-- action="{{ action([\App\Http\Controllers\ScheduleController::class, 'store']) }}" method="POST" -->
-        <form id="dayClick" action="{{ action([\App\Http\Controllers\ScheduleController::class, 'store']) }}" method="POST">
-            @csrf
+        <div id="dayClick">
+            <!-- @csrf -->
             <!-- <div class="btn-group btn-group-toggle" data-toggle="buttons">
                 <label class="btn btn-secondary active">
                     <input type="radio" name="options" id="option1" checked> Add Event
@@ -81,13 +82,14 @@
 
 
             <div class="form-group">
-                <button type="submit" class="btn btn-primary float-right" id="submit">Save</button>
+                <button type="button" class="btn btn-primary float-right" id="submit-event">Save</button>
             </div>
             <div class="form-group">
-                <a class="btn btn-danger float-right mr-3" id="delete">Delete</a>
+                <a class="btn btn-danger float-right mr-3" id="delete-event">Delete</a>
             </div>
-        </form>
+        </div>
     </div>
+</div>
 </div>
 
 <!-- Modal Dialog End -->

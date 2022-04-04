@@ -2,59 +2,61 @@
 @extends('layouts.app')
 
 @section('selected-user')
-    {{ $selectedUser->first_name }} {{ $selectedUser->last_name }}
+{{ $selectedUser->first_name }} {{ $selectedUser->last_name }}
 @stop
 
 @section('content')
-    @section('message-content')
-    
-    <div class="conteiner chat-area">
-        <div class="chat-content" id="chat-content">
-            @foreach($chatLines as $chatLine)
-                <div class="row">
-                    <div class="chat-box {{ $chatLine->sender_id == Auth::id() ? 'chat-box--right' : '' }}">
-                        <div class="chat-bubble {{ $chatLine->sender_id == Auth::id() ? 'chat-bubble--blue' : '' }} chat-bubble--{{ $chatLine->sender_id == Auth::id() ? 'right' : 'left' }}">
-                            {{ $chatLine->line_text }}
-                        </div>
-                    </div>    
+@section('message-content')
+
+<div class="conteiner chat-area">
+    <div class="chat-content" id="chat-content">
+        @foreach($chatLines as $chatLine)
+        <div class="row">
+            <div class="chat-box col-md-10 d-flex {{ $chatLine->sender_id == Auth::id() ? 'justify-content-end' : '' }}">
+                <div class="chat-bubble {{ $chatLine->sender_id == Auth::id() ? 'chat-bubble--blue bg-primary text-light' : '' }} chat-bubble--{{ $chatLine->sender_id == Auth::id() ? 'right' : 'left' }}">
+                    {{ $chatLine->line_text }}
                 </div>
-            @endforeach
-
-
-        </div>
-        <footer class="footer fixed">
-            <div class="container-footer">
-                <form method="post" action="{{ action([\App\Http\Controllers\MessageController::class, 'store'], ['receiver' => $selectedUser->id]) }}">
-                    @csrf
-                    <div class="input-group">
-                        <label for=""></label>
-                        <div class="chatboxdiv mx-auto pr-0">
-                            <input class="chatbox" name="chatText" type="text" required/>
-                        </div>
-                        <button class="btn btn-link pl-0 ml-0" >
-                            <span class="material-icons">
-                                sentiment_satisfied_alt
-                            </span>
-                        </button>
-                        <button type="submit" class="btn btn-link pl-0 ml-0">
-                            <i class="material-icons">
-                                send
-                            </i>
-</button>
-                    </div>
-                </form>
             </div>
-    </footer>
+        </div>
+        @endforeach
+
+
     </div>
+    <footer class="footer fixed">
+        <div class="container-footer">
+            <!-- method="post" action="{{ action([\App\Http\Controllers\MessageController::class, 'store'], ['receiver' => $selectedUser->id]) }}" -->
+            <form id="message_form">
+                @csrf
+                <div class="input-group">
+                    <label for=""></label>
+                    <div class="chatboxdiv mx-auto pr-0">
+                        <input class="chatbox" id="chatText" name="chatText" type="text" required />
+                        <input type="hidden" name="selectedUser" id="selectedUser" value="{{ $selectedUser->id }}" />
+                        <input type="hidden" name="user" id="user" value="{{ Auth::id() }}" />
+                    </div>
+                    <button class="btn btn-link pl-0 ml-0">
+                        <span class="material-icons">
+                            sentiment_satisfied_alt
+                        </span>
+                    </button>
+                    <button type="submit" class="btn btn-link pl-0 ml-0">
+                        <i class="material-icons">
+                            send
+                        </i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </footer>
+</div>
 
 
-    @stop
+@stop
 @stop
 
 
 
 <style>
-
     /* .chat-area{
         display:flex;
         min-height: 85%;
@@ -63,7 +65,7 @@
 
 
     .chat-bubble {
-        max-width:60%;
+        max-width: 60%;
         padding: 10px 14px;
         background: #eee;
         margin: 10px 30px;
@@ -84,19 +86,20 @@
         border-bottom: 0;
         margin-top: -10px;
     }
-    .chat-bubble--left:after{
+
+    .chat-bubble--left:after {
         left: 0;
         border-right-color: #eee;
         border-left: 0;
-        margin-left: -20px;       
+        margin-left: -20px;
     }
 
-    textarea{
+    textarea {
         border-radius: 5px;
     }
 
     .footer {
-        
+
         padding-bottom: 5px;
         position: fixed;
         bottom: 0;
@@ -106,56 +109,54 @@
         align-items: baseline;
     }
 
-    .chatboxdiv{
+    .chatboxdiv {
         width: 85%;
         margin: auto;
     }
 
-    .chatbox{
+    .chatbox {
         border-radius: 20px;
         width: 100%;
         padding: 10px 20px;
     }
-    .material-icons{
+
+    .material-icons {
         padding: 10px 5px;
     }
 
-.chat-bubble:after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  width: 0;
-  height: 0;
-  border: 20px solid transparent;
-  border-bottom: 0;
-  margin-top: -10px;
-}
-.chat-bubble--left:after {
-  left: 0;
-  border-right-color: #eee;
-  border-left: 0;
-  margin-left: -20px;
-}
+    .chat-bubble:after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 0;
+        height: 0;
+        border: 20px solid transparent;
+        border-bottom: 0;
+        margin-top: -10px;
+    }
 
+    .chat-bubble--left:after {
+        left: 0;
+        border-right-color: #eee;
+        border-left: 0;
+        margin-left: -20px;
+    }
 </style>
 
 <script>
-    window.onload = function(){
+    window.onload = function() {
         updateScroll();
         //$("#chat-content").scrollTop($("#chat-content")[0].scrollHeight);
     }
 
     //setInterval(updateScroll,3000);
 
-    function updateScroll(){
+    function updateScroll() {
         var myDiv = document.getElementById("chat-scroll-area");
-        if(myDiv){
+        if (myDiv) {
             myDiv.scrollTop = myDiv.scrollHeight;
-            console.log("Element finded");
         } else {
             console.log("Cannot find element")
         }
     }
-    
-    
 </script>

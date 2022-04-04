@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->timestamps();
 
-            $table->tinyInteger('group_id')->nullable();
+            $table->integer('group_id')->nullable();
             $table->string('image_url')->nullable();
             $table->string('job_title')->nullable();
             $table->string('phone_number')->nullable();

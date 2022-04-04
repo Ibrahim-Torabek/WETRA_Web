@@ -34,7 +34,7 @@
                                             <circle id="Ellipse_2" data-name="Ellipse 2" cx="5" cy="5" r="5" transform="translate(20 13)" fill="#fff"/>
                                             <path id="Path_8" data-name="Path 8" d="M14.99,0c8.188,0,18.333,2.867,14.826,5.5S23.165,10.934,14.99,11,3.421,7.708.164,5.5,6.8,0,14.99,0Z" transform="translate(10 27.678)" fill="#fff"/>
                                         </svg></td>
-                            <td>{{ $user->first_name}} {{ $user->last_name}}</td>
+                            <td><span>{{ $user->first_name}} {{ $user->last_name}}</span></td>
                         </tr>
                         <tr>
                             
@@ -77,12 +77,19 @@
 .chat-main{
     position: relative;
     min-height: 80%;
-    max-height:95%;
+    max-height: calc(100% - 100px);
+    width: 90%;
+    margin: auto;
 }
 
 .left-sidebar{
     max-height:95%;
     background-color: red;
+}
+
+body{
+  overflow: hidden;
+  height: 100%;
 }
 </style>
 

@@ -2,20 +2,65 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 
+use \Yajra\DataTables\DataTables;
+use RealRashid\SweetAlert\Facades\Alert;
+
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        
+        $this->middleware('auth:sanctum', ['except' => []]);
+        $this->middleware('is_admin', ['except' => []]);
+
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $users = User::all();
+        if ($request->ajax()) {
+            
+
+            return DataTables::of($users)
+                ->addIndexColumn()
+                ->addColumn('group', function($user){
+                    return $user->group["name"];
+                })
+                ->addColumn('action', function ($user) {
+                    $btnDelete = '<form method="post" action="';
+                    $btnDelete .= action([\App\Http\Controllers\UserController::class,'destroy'],  ['user' => $user->id]);
+                    $btnDelete .= '">';
+                    $btnDelete .= csrf_field();
+                    $btnDelete .= method_field('DELETE');
+                    $btnDelete .= '<input class="btn btn-danger btn-sm float-right" type="submit" name="submit" value="Delete" onclick="return confirm(\'Are you Sure you want to delete this user?\')">';
+                    $btnDelete .= "</form>";
+
+                    $btnEdit = '<a class="btn btn-secondary btn-sm mr-2 float-left" href="';
+                    $btnEdit .= action([\App\Http\Controllers\UserController::class, 'edit'], ['user' => $user->id]);
+                    $btnEdit .= '"> Edit </a>';
+
+                    return $btnEdit . $btnDelete;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
+        if($request->wantsJson()){
+            return response()->json($users);
+        }
+        
+        return view('user.index');
     }
 
     /**
@@ -45,9 +90,12 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, User $user)
     {
-        //
+        if($request->wantsJson()){
+            return response()->json($user);
+        }
+        return view('user.show', ['user' => $user]);
     }
 
     /**
@@ -56,9 +104,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        $groups = Group::all();
+        return view('user.edit', ['user' => $user, 'groups' => $groups]);
     }
 
     /**
@@ -68,9 +117,20 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        // if($request->wantsJson()){
+        //     return response()->json($request);
+        // }
+        $user->update($request->all());
+
+        if($request->wantsJson()){
+            return response()->json(
+                ["Message" => "Success"]
+            );
+        }
+
+        return redirect()->route('users.show', ['user' => $user]);
     }
 
     /**
@@ -79,9 +139,16 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, User $user)
     {
-        //
+
+        $user->delete();
+        if($request->wantsJson()){
+            return response()->json(["Message" => "Success"]);
+        }
+        Alert::toast('deleted ' . $user->first_name, 'success');
+
+        return redirect()->route('users.index');
     }
 
     // public function all(){
