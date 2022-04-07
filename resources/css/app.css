@@ -3,6 +3,31 @@ body{
     height: 100%;
   }
 
+  .form-group.floating>label {
+    bottom: 34px;
+    left: 8px;
+    position: relative;
+    background-color: white;
+    padding: 0px 5px 0px 5px;
+    font-size: 1.1em;
+    transition: 0.1s;
+    pointer-events: none;
+    font-weight: 500 !important;
+    transform-origin: bottom left;
+}
+
+.form-control.floating:focus~label {
+    transform: translate(1px, -85%) scale(0.80);
+    opacity: .5;
+    color: #005ebf;
+}
+
+.form-control.floating:valid~label {
+    transform-origin: bottom left;
+    transform: translate(1px, -85%) scale(0.80);
+    opacity: .8;
+}
+
 /* .chat-bubble {
     max-width: 60%;
     padding: 10px 14px;

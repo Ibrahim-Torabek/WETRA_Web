@@ -61,6 +61,8 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {
 
+        Log::debug($request->all());
+        return ['Debug'];
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'start' => 'required',
