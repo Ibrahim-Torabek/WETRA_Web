@@ -23,7 +23,7 @@ class CreateEventsTable extends Migration
             $table->string('color');
             $table->string('textColor');
 
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->integer('assigned_to')->default(0); //All
             $table->integer('assigned_by');
 

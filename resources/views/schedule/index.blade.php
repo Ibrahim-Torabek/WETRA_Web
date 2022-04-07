@@ -21,7 +21,7 @@
                     <input type="text" class="form-control floating" name="title" id="title" required value="">
                     <label for="title">Title</label>
                 </div>
-                <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+                <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons" id="event-task-selection">
                     <label class="btn btn-secondary active">
                         <input type="radio" name="options" id="add-event" checked> Add Event
                     </label>
@@ -29,9 +29,9 @@
                         <input type="radio" name="options" id="add-task"> Add Task
                     </label>
                 </div>
-                <div class="form-group hide" id="description">
+                <div class="form-group hide" id="task-description">
                     <label>Task Description</label>
-                    <input type="text" class="form-control" name="description" id="description" placeholder="Event Description" required>
+                    <input type="text" class="form-control" name="description" id="description" placeholder="Task Description" required>
                 </div>
 
                 <div class="form-group">
@@ -90,26 +90,18 @@
 <script>
     // Initial for Add Event 
     $('#schedule-type').val('event');
-    $('#description').hide();
+    $('#task-description').hide();
     $('#assigned-to').hide();
     $('#all-day').hide();
 
     // Add event button clicked
     $('#add-event').click(function(e) {
-        $('#schedule-type').val('event');
-        $('#description').hide();
-        $('#assigned-to').hide();
-
-        $('#end-date').show();
+        eventClicked();
     });
 
     // Add Task button clicked
     $('#add-task').click(function(e) {
-        $('#schedule-type').val('task');
-        $('#end-date').hide();
-
-        $('#description').show();
-        $('#assigned-to').show();
+        taskClicked();
     });
 
     $('.multiple_select').select2({
@@ -117,6 +109,8 @@
         allowClear: true,
         dropdownParent: $('#dayDialog')
     });
+
+
     var calendarEl = document.getElementById('calendar');
 
     var calendar = $('#calendar').fullCalendar({
@@ -131,6 +125,14 @@
         initialView: 'listWeek',
         //defaultView: 'listWeek',
         events: "{{ url('schedules') }}",
+        
+        eventRender: function(event, element){
+            if(event.scheduleType == 'task'){
+                element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">task_alt</i> ' +  event.title);
+                
+            }
+        },
+
         eventDidMount: function(info) {
             var tooltip = new Tooltip(info.el, {
                 title: "Hello World", //info.event.description,
@@ -181,11 +183,14 @@
         select: function(start, end) {
             var start = $.fullCalendar.formatDate(start, 'Y-MM-DD HH:mm:ss');
             var end = $.fullCalendar.formatDate(end, 'Y-MM-DD HH:mm:ss');
+            $('#event-task-selection').show();
             $("#title").val("");
             $('#start').val((start));
             $('#end').val((end));
             $("#delete-event").hide();
-            $("#submit-event").html('Add Event');
+            $("#id").val('');
+            $("#description").val('');
+            $("#submit-event").html('Save');
             $('#dayDialog').dialog({
                 title: 'Add Schedule',
                 width: 600,
@@ -202,10 +207,19 @@
             })
         },
         eventClick: function(event) {
+            $('#event-task-selection').hide();
+            if(event.scheduleType == 'task'){
+                taskClicked();
+                $('#schedule-type').val('task');
+            } else {
+                eventClicked();
+                $('#schedule-type').val('event');
+            }
             $("#title").val(event.title);
             $("#start").val($.fullCalendar.formatDate(event.start, 'Y-MM-DD HH:mm:ss'));
             $("#end").val($.fullCalendar.formatDate(event.end, 'Y-MM-DD HH:mm:ss'));
             $("#allDay").val(event.allDay);
+            $("#description").val(event.description);
             $("#assigned_to").val(event.assigned_to);
             $("#color").val(event.color);
             $("#textColor").val(event.textColor);
@@ -232,6 +246,10 @@
         @endauth
 
     });
+
+
+
+
 
     $.ajaxSetup({
         headers: {
@@ -299,6 +317,7 @@
                 type: "DELETE",
                 data: {
                     id: $("#id").val(),
+                    scheduleType: $('#schedule-type').val(),
                 },
                 success: function(data) {
                     $("#dayDialog").dialog('close');
@@ -325,7 +344,25 @@
                 },
             });
         }
-    })
+    });
+
+    function taskClicked(){
+        $('#schedule-type').val('task');
+        $('#end-date').hide();
+
+        $('#task-description').show();
+        $('#assigned-to').show();
+
+        //$('#submit-event').html('Add Task');
+    }
+
+    function eventClicked(){
+        $('#schedule-type').val('event');
+        $('#task-description').hide();
+        $('#assigned-to').hide();
+
+        $('#end-date').show();
+    }
 </script>
 <style>
   .form-group.floating>label {

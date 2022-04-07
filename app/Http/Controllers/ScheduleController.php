@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -32,11 +33,13 @@ class ScheduleController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             if (Auth::user()->is_admin == 1) {
                 $events = Event::latest()->get();
+                $tasks = Task::latest()->get();
             } else {
                 $events = Event::where('assigned_to', Auth::id())->orWhere('assigned_to', '0')->get();
+                $tasks = Task::where('assigned_to', Auth::id())->orWhere('assigned_to', '0')->get();
             }
             //dd($data);
-            return response()->json($events);
+            return response()->json($events->merge($tasks));
         }
 
         $users = User::all();
@@ -61,8 +64,8 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {
 
-        Log::debug($request->all());
-        return ['Debug'];
+        // Log::debug($request->all());
+        // return ['Debug'];
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'start' => 'required',
@@ -80,33 +83,51 @@ class ScheduleController extends Controller
         //dd($request);
         $requestArray = $request->all();
         $requestArray["assigned_by"] = Auth::id();
-        $requestArray["description"] = "No Descripition";
+        //$requestArray["description"] = "No Descripition";
 
 
-
+        Log::debug($request->all());
         // Has id means create event, else update event.
         if (empty($requestArray["id"])) {
             //dd($request);
             //Alert::toast('Empty: ' . $validator->errors(), 'alert');
-            Event::create($requestArray);
+            switch($requestArray["scheduleType"]){
+                case 'event':
+                    Event::create($requestArray);
+                    break;
+
+                case 'task':
+                    Task::create($requestArray);
+            }
+
+            
             if ($request->wantsJson()) {
                 return response()->json(["Message" => "Created successfully"]);
             }
-            // if ($request->ajax()){
-            //     return response()-json(["Message" => "Created successfully"]);
-            // }
-        } else {
-            //dd($request);
-            // Event::where('id',$request["id"])->update($request);
-            $event = Event::findOrFail($requestArray['id']);
-            if (!empty($event)) {
-                $event->update($requestArray);
-                if ($request->wantsJson()) {
-                    return response()->json(["Message" => "Updated successfully"]);
-                }
-            }
-        }
 
+        } else {
+            switch($requestArray["scheduleType"]){
+                case 'event':
+                    $event = Event::findOrFail($requestArray['id']);
+                    if (!empty($event)) {
+                        $event->update($requestArray);
+                        if ($request->wantsJson()) {
+                            return response()->json(["Message" => "Updated successfully"]);
+                        }
+                    }
+                    break;
+
+                case 'task':
+                    $task = Task::findOrFail($requestArray['id']);
+                    if (!empty($task)) {
+                        $task->update($requestArray);
+                        if ($request->wantsJson()) {
+                            return response()->json(["Message" => "Updated successfully"]);
+                        }
+                    }
+            }
+
+        }
 
         return redirect()->back();
     }
@@ -143,6 +164,7 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::debug($request->all());
         if ($request->wantsJson()) {
             $event = Event::findOrFail($request['id']);
             $event->update($request->all());
@@ -159,11 +181,23 @@ class ScheduleController extends Controller
     public function destroy(Request $request)
     {
         if ($request->wantsJson() || $request->ajax()) {
-            $event = Event::find($request->id);
-            if (!empty($event)) {
-                $event->delete();
-                return response()->json($event);
+            switch($request["scheduleType"]){
+                case 'event':
+                    $event = Event::find($request->id);
+                    if (!empty($event)) {
+                        $event->delete();
+                        return response()->json($event);
+                    }
+                    break;
+
+                case 'task':
+                    $task = Task::find($request->id);
+                    if (!empty($task)) {
+                        $task->delete();
+                        return response()->json($task);
+                    }
             }
+
             return response()->json(["Message" => "Event not found"]);
         }
     }
