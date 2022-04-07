@@ -162,14 +162,26 @@ class ScheduleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        Log::debug($request->all());
-        if ($request->wantsJson()) {
-            $event = Event::findOrFail($request['id']);
-            $event->update($request->all());
-            return response()->json($event);
+        
+        $id = $request->all()["id"];
+        $task = Task::findOrFail($id);
+        switch($request->all()["taskStatus"]){
+            case "completed":
+                $task->is_completed = true;
+                break;
+
+            case "requestTimeOff":
+                $task->request_time_off_id = Auth::id();
         }
+        $task->update();
+
+        // if ($request->wantsJson()) {
+        //     $event = Event::findOrFail($request['id']);
+        //     $event->update($request->all());
+        //     return response()->json($event);
+        // }
     }
 
     /**

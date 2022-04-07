@@ -87,6 +87,60 @@
 
 <!-- Modal Dialog End -->
 
+<!-- Non-admin User Modal -->
+<div class="modal-dialog">
+    <div id="taskDialog" class="modal hidden" tabindex="-1">
+        <div class="dialog-body">
+            <!-- action="{{ action([\App\Http\Controllers\ScheduleController::class, 'store']) }}" method="POST" -->
+            <div id="dayClick">
+                <!-- @csrf -->
+                <!-- <input class="col-5" type="checkbox" checked data-toggle="toggle" data-on="Event" data-off="Task" data-onstyle="success" data-offstyle="danger" width="50"> -->
+                <input type="hidden" name="id" id="id">
+                <input type="hidden" name="scheduleType" id="schedule-type">
+
+                <div class="form-check m-3">
+                    <input class="form-check-input taskStatus" type="radio" name="taskStatus" id="completed" value="completed">
+                    <label class="form-check-label" for="completed">
+                        Completed
+                    </label>
+                </div>
+                <div class="form-check m-3">
+                    <input class="form-check-input taskStatus" type="radio" name="taskStatus" id="request-time-off" value="requestTimeOff">
+                    <label class="form-check-label" for="request-time-off">
+                        Request Time-off
+                    </label>
+                </div>
+                <hr>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary float-right" id="submit-task">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Dialog End -->
+
 <script>
     // Initial for Add Event 
     $('#schedule-type').val('event');
@@ -125,11 +179,14 @@
         initialView: 'listWeek',
         //defaultView: 'listWeek',
         events: "{{ url('schedules') }}",
-        
-        eventRender: function(event, element){
-            if(event.scheduleType == 'task'){
-                element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">task_alt</i> ' +  event.title);
-                
+
+        eventRender: function(event, element) {
+            if (event.scheduleType == 'task') {
+                element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">task_alt</i> ' + event.title);
+                if(event.is_completed == 1){
+                    element.css("background-color", "grey");
+                    element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">done_all</i> ' + event.title);
+                }
             }
         },
 
@@ -208,7 +265,7 @@
         },
         eventClick: function(event) {
             $('#event-task-selection').hide();
-            if(event.scheduleType == 'task'){
+            if (event.scheduleType == 'task') {
                 taskClicked();
                 $('#schedule-type').val('task');
             } else {
@@ -241,6 +298,29 @@
                     duration: 50
                 },
             })
+        },
+        @else
+
+        eventClick: function(event) {  
+            if (event.scheduleType == 'task' && event.is_completed != 1) {
+                $("#id").val(event.id);
+                $('#schedule-type').val('task');
+                $('#taskDialog').dialog({
+                    title: event.title,
+                    width: 400,
+                    height: 250,
+                    modal: true,
+                    show: {
+                        effect: 'clip',
+                        duration: 350
+                    },
+                    hide: {
+                        effect: 'clip',
+                        duration: 50
+                    },
+                })
+            } 
+
         },
         @endif
         @endauth
@@ -346,7 +426,46 @@
         }
     });
 
-    function taskClicked(){
+    // Change Task Status
+    $("#submit-task").click(function(e) {
+        e.preventDefault();
+        //$("#dayDialog").hide();
+        //alert("Clicked");
+        var url = "schedules/update"; // + $("#id").val();
+        console.log(url);
+        $.ajax({
+            url: url,
+            type: "PUT",
+            data: {
+                //_token: "{{ csrf_token() }}",
+                id: $("#id").val(),
+                taskStatus: $(".taskStatus:checked").val(), // $("input[type='radio']:checked").val(),
+            },
+            success: function(data) {
+                $("#taskDialog").dialog('close');
+
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Task status updated successfully',
+
+                    position: 'top-right',
+                    showConfirmButton: false,
+                    timer: 1000,
+                });
+                $('#calendar').fullCalendar('refetchEvents');
+
+            },
+            error: function(result) {
+                //$("#dayDialog").hide();
+                alert("Error: " + result);
+                console.log(result);
+
+            },
+        });
+    });
+
+    function taskClicked() {
         $('#schedule-type').val('task');
         $('#end-date').hide();
 
@@ -356,7 +475,7 @@
         //$('#submit-event').html('Add Task');
     }
 
-    function eventClicked(){
+    function eventClicked() {
         $('#schedule-type').val('event');
         $('#task-description').hide();
         $('#assigned-to').hide();
@@ -365,30 +484,30 @@
     }
 </script>
 <style>
-  .form-group.floating>label {
-    bottom: 34px;
-    left: 8px;
-    position: relative;
-    background-color: white;
-    padding: 0px 5px 0px 5px;
-    font-size: 1.1em;
-    transition: 0.1s;
-    pointer-events: none;
-    font-weight: 500 !important;
-    transform-origin: bottom left;
-}
+    .form-group.floating>label {
+        bottom: 34px;
+        left: 8px;
+        position: relative;
+        background-color: white;
+        padding: 0px 5px 0px 5px;
+        font-size: 1.1em;
+        transition: 0.1s;
+        pointer-events: none;
+        font-weight: 500 !important;
+        transform-origin: bottom left;
+    }
 
-.form-control.floating:focus~label {
-    transform: translate(1px, -85%) scale(0.80);
-    opacity: .5;
-    color: #005ebf;
-}
+    .form-control.floating:focus~label {
+        transform: translate(1px, -85%) scale(0.80);
+        opacity: .5;
+        color: #005ebf;
+    }
 
-.form-control.floating:valid~label {
-    transform-origin: bottom left;
-    transform: translate(1px, -85%) scale(0.80);
-    opacity: .8;
-}
+    .form-control.floating:valid~label {
+        transform-origin: bottom left;
+        transform: translate(1px, -85%) scale(0.80);
+        opacity: .8;
+    }
 </style>
 @stop
 
