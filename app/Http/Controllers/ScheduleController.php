@@ -86,27 +86,27 @@ class ScheduleController extends Controller
         //$requestArray["description"] = "No Descripition";
 
 
-        Log::debug($request->all());
+        //Log::debug($request->all());
         // Has id means create event, else update event.
         if (empty($requestArray["id"])) {
             //dd($request);
             //Alert::toast('Empty: ' . $validator->errors(), 'alert');
-            switch($requestArray["scheduleType"]){
-                case 'event':
-                    Event::create($requestArray);
-                    break;
-
+            switch ($requestArray["scheduleType"]) {
                 case 'task':
                     Task::create($requestArray);
+                    //Log::debug(["requested array" => $requestArray]);
+                    break;
+
+                default:
+                    Event::create($requestArray);
             }
 
-            
+
             if ($request->wantsJson()) {
                 return response()->json(["Message" => "Created successfully"]);
             }
-
         } else {
-            switch($requestArray["scheduleType"]){
+            switch ($requestArray["scheduleType"]) {
                 case 'event':
                     $event = Event::findOrFail($requestArray['id']);
                     if (!empty($event)) {
@@ -126,7 +126,6 @@ class ScheduleController extends Controller
                         }
                     }
             }
-
         }
 
         return redirect()->back();
@@ -141,7 +140,7 @@ class ScheduleController extends Controller
     // public function show($id)
     // {
     //     //return redirect()->back();
-        
+
     // }
 
     /**
@@ -164,12 +163,13 @@ class ScheduleController extends Controller
      */
     public function update(Request $request)
     {
-        
+
         $id = $request->all()["id"];
         $task = Task::findOrFail($id);
-        switch($request->all()["taskStatus"]){
+        switch ($request->all()["taskStatus"]) {
             case "completed":
                 $task->is_completed = true;
+                $task->request_time_off_id = 0;
                 break;
 
             case "requestTimeOff":
@@ -177,11 +177,8 @@ class ScheduleController extends Controller
         }
         $task->update();
 
-        // if ($request->wantsJson()) {
-        //     $event = Event::findOrFail($request['id']);
-        //     $event->update($request->all());
-        //     return response()->json($event);
-        // }
+        return response()->json($task);
+
     }
 
     /**
@@ -192,21 +189,23 @@ class ScheduleController extends Controller
      */
     public function destroy(Request $request)
     {
+        //Log::debug($request);
         if ($request->wantsJson() || $request->ajax()) {
-            switch($request["scheduleType"]){
-                case 'event':
+            switch ($request["scheduleType"]) {
+                case 'task':
+
+                    $task = Task::find($request->id);
+                    //Log::debug($task);
+                    if (!empty($task)) {
+                        $task->delete();
+                        return response()->json($task);
+                    }
+                    break;
+                default:
                     $event = Event::find($request->id);
                     if (!empty($event)) {
                         $event->delete();
                         return response()->json($event);
-                    }
-                    break;
-
-                case 'task':
-                    $task = Task::find($request->id);
-                    if (!empty($task)) {
-                        $task->delete();
-                        return response()->json($task);
                     }
             }
 

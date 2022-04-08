@@ -181,15 +181,24 @@
         events: "{{ url('schedules') }}",
 
         eventRender: function(event, element) {
+            if(event.allDay == 1){
+                evet.allDay = true;
+                console.log(event);
+            }
             if (event.scheduleType == 'task') {
                 element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">task_alt</i> ' + event.title);
                 if(event.is_completed == 1){
                     element.css("background-color", "grey");
                     element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">done_all</i> ' + event.title);
                 }
+                if(event.request_time_off_id > 0){
+                    element.css("background-color", "orange");
+                    element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">auto_delete</i> ' + event.title);
+                }
             }
         },
 
+        showNonCurrentDates: false,
         eventDidMount: function(info) {
             var tooltip = new Tooltip(info.el, {
                 title: "Hello World", //info.event.description,
