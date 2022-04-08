@@ -14,8 +14,9 @@
                 </div>
                 <div class="card-body">
                     <!-- <form method="POST" action=""> -->
-                    <form>
+                    <form method="POST" action="{{ action([App\Http\Controllers\UserController::class, 'update'], ['user' => $user]) }}">
                         @csrf
+                        {{ method_field('PATCH') }}
                         <div class="row">
                             <!-- First name field -->
                             <div class="col">
@@ -82,7 +83,7 @@
                                     <div class="input-group">
                                         <label for="phone_number" class="input-group-text">Phone Number</label>
 
-                                        <input id="phone_number" type="text" class="form-control " name="phone_number" aria-label="Edit your phone number" value="" required="" autocomplete="phone_number" autofocus="" value="{{ $user->phone_number }}">
+                                        <input id="phone_number" type="text" class="form-control " name="phone_number" aria-label="Edit your phone number" required=""  value="{{ $user->phone_number }}">
 
                                     </div>
                                 </div>
@@ -94,9 +95,9 @@
                 * check if address is in correct format -->
                                 <div class="row mb-2">
                                     <div class="input-group">
-                                        <label for="address" class="input-group-text">Address</label>
+                                        <label for="address" class="input-group-text">Address:</label>
 
-                                        <input id="address" type="text" class="form-control " name="address" aria-label="Edit your address" value="" required="" autocomplete="address" autofocus="" value="{{ $user->address }}">
+                                        <input id="address" type="text" class="form-control " name="address" aria-label="Edit your address" value="{{ $user->address }}">
 
                                     </div>
                                 </div>
@@ -114,7 +115,7 @@
                                     <div class="input-group">
                                         <label for="job_title" class="input-group-text">Job Title</label>
 
-                                        <input id="job_title" type="job_title" readonly="" class="form-control-plaintext p-2 border"  aria-label="Inactive job title row" value="{{ $user->job_title }}" disabled>
+                                        <input id="job_title" type="job_title" readonly="" class="form-control-plaintext p-2 border" aria-label="Inactive job title row" value="{{ $user->job_title }}" disabled>
 
                                     </div>
                                 </div>
@@ -124,7 +125,7 @@
                                     <div class="input-group .bg-light">
                                         <label for="group" class="input-group-text">Group</label>
 
-                                        <input id="group" type="job_title" readonly="" class="form-control-plaintext p-2 border"  aria-label="Inactive job title row" value="{{ $user->group['name'] }}" disabled>
+                                        <input id="group" type="job_title" readonly="" class="form-control-plaintext p-2 border" aria-label="Inactive job title row" value="{{ $user->group['name'] }}" disabled>
 
                                     </div>
                                 </div>
@@ -136,47 +137,39 @@
                                     </div>
                                     <div class="card-body">
                                         <!-- Name for the emergency contact -->
-                                        <!-- TO DO:
-                    * set value 
-                    * grab emergency name from user 
-                    * check if emergency name is in correct format -->
                                         <div class="row mb-2">
                                             <div class="input-group">
                                                 <label for="contact_name" class="input-group-text">Name</label>
 
-                                                <input id="contact_name" type="text" class="form-control " name="contact_name" aria-label="Edit the name of your emergency contact" value="" required="" autocomplete="contact_name" autofocus="">
+                                                <input id="contact_name" type="text" class="form-control " name="emergency_name" aria-label="Edit the name of your emergency contact"  value="{{ $user->emergency_name }}">
 
                                             </div>
                                         </div>
 
                                         <!-- Phone number for the emergency contact-->
-                                        <!-- To Do:
-                    * set value,
-                    * grab emergency phone number from user 
-                    * check if phone number is in correct format -->
                                         <div class="row">
                                             <div class="input-group">
                                                 <label for="phone_number_emergency" class="input-group-text">Phone Number</label>
 
-                                                <input id="contact_phone_number" type="text" class="form-control " name="contact_phone_number" aria-label="Edit the phone number for your emergency contact" value="" required="" autocomplete="contact_phone_number" autofocus="">
-
+                                                <input id="contact_phone_number" type="text" class="form-control " name="emergency_phone" aria-label="Edit the phone number for your emergency contact" value="{{ $user->emergency_phone }}">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <!-- Button to Save Changes to the Profile Page -->
+                        <div class="row mt-4">
+                            <div class="col-md-10 offset-md-4 mb-2">
+                                <button type="submit" class="btn btn-primary">
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
                     </form>
                 </div>
 
-                <!-- Button to Save Changes to the Profile Page -->
-                <div class="row">
-                    <div class="col-md-10 offset-md-4 mb-2">
-                        <button type="submit" class="btn btn-primary">
-                            Save Changes
-                        </button>
-                    </div>
-                </div>
+
 
             </div>
         </div>

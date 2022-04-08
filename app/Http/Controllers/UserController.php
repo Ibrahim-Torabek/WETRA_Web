@@ -17,7 +17,7 @@ class UserController extends Controller
     {
         
         $this->middleware('auth:sanctum', ['except' => []]);
-        $this->middleware('is_admin', ['except' => ['profile']]);
+        $this->middleware('is_admin', ['except' => ['profile', 'update']]);
 
     }
 
@@ -119,9 +119,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        // if($request->wantsJson()){
-        //     return response()->json($request);
-        // }
+        //dd($request->all());
         $user->update($request->all());
 
         if($request->wantsJson()){
@@ -130,7 +128,8 @@ class UserController extends Controller
             );
         }
 
-        return redirect()->route('users.show', ['user' => $user]);
+        Alert::toast('Profile Saved successfully', 'success');
+        return redirect()->back(); //route('users.show', ['user' => $user]);
     }
 
     /**
