@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Task;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -32,11 +34,13 @@ class ScheduleController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             if (Auth::user()->is_admin == 1) {
                 $events = Event::latest()->get();
+                $tasks = Task::latest()->get();
             } else {
                 $events = Event::where('assigned_to', Auth::id())->orWhere('assigned_to', '0')->get();
+                $tasks = Task::where('assigned_to', Auth::id())->orWhere('assigned_to', '0')->get();
             }
             //dd($data);
-            return response()->json($events);
+            return response()->json($events->merge($tasks));
         }
 
         $users = User::all();
@@ -61,6 +65,8 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {
 
+        // Log::debug($request->all());
+        // return ['Debug'];
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'start' => 'required',
@@ -78,33 +84,53 @@ class ScheduleController extends Controller
         //dd($request);
         $requestArray = $request->all();
         $requestArray["assigned_by"] = Auth::id();
-        $requestArray["description"] = "No Descripition";
+        //$requestArray["description"] = "No Descripition";
 
 
-
+        //Log::debug($request->all());
         // Has id means create event, else update event.
         if (empty($requestArray["id"])) {
             //dd($request);
             //Alert::toast('Empty: ' . $validator->errors(), 'alert');
-            Event::create($requestArray);
+            switch ($requestArray["scheduleType"]) {
+                case 'task':
+                    // Add 30 minutes to the start time.
+                    $requestArray["end"] = Carbon::parse($requestArray["start"])->addMinutes(30)->format('Y-m-d H:i:s');
+                    Task::create($requestArray);
+                    break;
+
+                default:
+                    Event::create($requestArray);
+            }
+
+
             if ($request->wantsJson()) {
                 return response()->json(["Message" => "Created successfully"]);
             }
-            // if ($request->ajax()){
-            //     return response()-json(["Message" => "Created successfully"]);
-            // }
         } else {
-            //dd($request);
-            // Event::where('id',$request["id"])->update($request);
-            $event = Event::findOrFail($requestArray['id']);
-            if (!empty($event)) {
-                $event->update($requestArray);
-                if ($request->wantsJson()) {
-                    return response()->json(["Message" => "Updated successfully"]);
-                }
+            switch ($requestArray["scheduleType"]) {
+                case 'task':
+                    $task = Task::findOrFail($requestArray['id']);
+                    $requestArray["end"] = Carbon::parse($requestArray["start"])->addMinutes(30)->format('Y-m-d H:i:s');
+                    if (!empty($task)) {
+                        $task->update($requestArray);
+                        if ($request->wantsJson()) {
+                            return response()->json(["Message" => "Updated successfully"]);
+                        }
+                    }
+                    break;
+
+                default:
+                    $event = Event::findOrFail($requestArray['id']);
+                    if (!empty($event)) {
+                        $event->update($requestArray);
+                        if ($request->wantsJson()) {
+                            return response()->json(["Message" => "Updated successfully"]);
+                        }
+                    }
+                    break;
             }
         }
-
 
         return redirect()->back();
     }
@@ -118,7 +144,7 @@ class ScheduleController extends Controller
     // public function show($id)
     // {
     //     //return redirect()->back();
-        
+
     // }
 
     /**
@@ -139,13 +165,34 @@ class ScheduleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        if ($request->wantsJson()) {
-            $event = Event::findOrFail($request['id']);
-            $event->update($request->all());
-            return response()->json($event);
+
+        //Log::debug($request);
+        //return;
+        $id = $request->all()["id"];
+        $task = Task::findOrFail($id);
+        switch ($request->all()["taskStatus"]) {
+            case "completed":
+                $task->is_completed = true;
+                $task->request_time_off_id = 0;
+                break;
+
+            case "requestTimeOff":
+                $task->request_time_off_id = Auth::id();
+                break;
+
+            case 'confirmTimeOff':
+                $task->confirm_time_off_id = Auth::id();
+                break;
+
+            case 'rejectTimeOff':
+                $task->request_time_off_id = 0;
+                        
         }
+        $task->update();
+
+        return response()->json($task);
     }
 
     /**
@@ -156,12 +203,28 @@ class ScheduleController extends Controller
      */
     public function destroy(Request $request)
     {
+        //Log::debug($request);
+        // return;
         if ($request->wantsJson() || $request->ajax()) {
-            $event = Event::find($request->id);
-            if (!empty($event)) {
-                $event->delete();
-                return response()->json($event);
+            switch ($request["scheduleType"]) {
+                case 'task':
+
+                    $task = Task::find($request->id);
+                    //Log::debug($task);
+                    if (!empty($task)) {
+                        $task->delete();
+                        return response()->json($task);
+                    }
+                    break;
+                default:
+                    $event = Event::find($request->id);
+                    Log::debug($event);
+                    if (!empty($event)) {
+                        $event->delete();
+                        return response()->json($event);
+                    }
             }
+
             return response()->json(["Message" => "Event not found"]);
         }
     }
