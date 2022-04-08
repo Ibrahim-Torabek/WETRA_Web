@@ -157,4 +157,10 @@ class UserController extends Controller
     //     //     "currentUser" => auth()->user()->id,
     //     // ]);
     // }
+
+    public function profileGet()
+    {
+        return view('profile');
+        //return "hi";
+    }
 }

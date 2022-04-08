@@ -45,6 +45,7 @@ Route::resource('groups', App\Http\Controllers\GroupController::class);
 //Route::get('messages/chat', [App\Http\Controllers\MessageController::class, 'chat']);
 //Route::get('/messages/start', [App\Http\Controllers\MessageController::class, 'start']);
 
+
 //profile page
 Route::get('/user/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('user/profile');
 Route::get('/admin/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('admin/profile');

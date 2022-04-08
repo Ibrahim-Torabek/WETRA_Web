@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'https://wyibulayin.scweb.ca/wetra'),
+    'url' => env('APP_URL', 'https://epolyakova.scweb.ca/wetra'),
 
     'asset_url' => env('ASSET_URL', null),
 
