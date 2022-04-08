@@ -87,6 +87,10 @@
 
 <!-- Modal Dialog End -->
 
+<!-- Admin Completed Task View Modal -->
+
+<!-- Non-admin User Modal End -->
+
 <!-- Non-admin User Modal -->
 <div class="modal-dialog">
     <div id="taskDialog" class="modal hidden" tabindex="-1">
@@ -112,13 +116,14 @@
                 </div>
                 <hr>
                 <div class="form-group">
+
                     <button type="button" class="btn btn-primary float-right" id="submit-task">Save</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
+<!-- Non-admin User Modal End -->
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -142,6 +147,11 @@
 <!-- Modal Dialog End -->
 
 <script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     // Initial for Add Event 
     $('#schedule-type').val('event');
     $('#task-description').hide();
@@ -181,19 +191,22 @@
         events: "{{ url('schedules') }}",
 
         eventRender: function(event, element) {
-            if(event.allDay == 1){
+            if (event.allDay == 1) {
                 evet.allDay = true;
-                console.log(event);
+                console.log(element);
             }
             if (event.scheduleType == 'task') {
                 element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">task_alt</i> ' + event.title);
-                if(event.is_completed == 1){
+                if (event.is_completed == 1) {
                     element.css("background-color", "grey");
                     element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">done_all</i> ' + event.title);
                 }
-                if(event.request_time_off_id > 0){
+                if (event.request_time_off_id > 0) {
                     element.css("background-color", "orange");
                     element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">auto_delete</i> ' + event.title);
+                    if(event.confirm_time_off_id > 0){
+                        element.css("background-color", "grey");
+                    }
                 }
             }
         },
@@ -206,7 +219,7 @@
                 trigger: 'hover',
                 container: 'body'
             });
-            console.log(info);
+            console.log("Hello World");
         },
 
         navLinks: true,
@@ -273,14 +286,18 @@
             })
         },
         eventClick: function(event) {
-            $('#event-task-selection').hide();
-            if (event.scheduleType == 'task') {
-                taskClicked();
-                $('#schedule-type').val('task');
-            } else {
-                eventClicked();
-                $('#schedule-type').val('event');
+
+            if (event.is_completed == 1) {
+                Swal.fire(
+                    'Task Completed!',
+                    '',
+                    'success'
+                );
+                return;
             }
+
+            $('#event-task-selection').hide();
+
             $("#title").val(event.title);
             $("#start").val($.fullCalendar.formatDate(event.start, 'Y-MM-DD HH:mm:ss'));
             $("#end").val($.fullCalendar.formatDate(event.end, 'Y-MM-DD HH:mm:ss'));
@@ -290,9 +307,107 @@
             $("#color").val(event.color);
             $("#textColor").val(event.textColor);
             $("#id").val(event.id);
+            $("#schedule-type").val(event.scheduleType);
             $("#submit-event").html('Update');
-            //var url = "{{ url('schedules/deleteEvent') }}";
             $("#delete-event").show(); //.attr('href', url + '/' + event.id);
+
+            if (event.request_time_off_id > 0) {
+                var users = {!!str_replace("'", "\'", json_encode($users)) !!};
+                var user = users.filter(function(item) {
+                    return item.id == event.request_time_off_id;
+                })[0];
+
+                var url = "schedules/update"; // + $("#id").val();
+
+                Swal.fire({
+                    title: 'Requested time-off by \n<i>' + user.first_name + ' ' + user.last_name + "</i>",
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirm',
+                    denyButtonText: 'Reject',
+                    cancelButtonText: 'Edit',
+                    cancelButtonColor: 'orange'
+                }).then((result) => {
+                    
+                    if (result.isConfirmed) {
+                        
+                        $.ajax({
+                            url: url,
+                            type: "PUT",
+                            data: {
+                                id: event.id,
+                                taskStatus: 'confirmTimeOff',
+                            },
+                            success: function(data) {
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'success',
+                                    title: 'Task time-off confirmed',
+
+                                    position: 'top-right',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    
+                                });
+                                $('#calendar').fullCalendar('refetchEvents');
+
+                            },
+                            error: function(result) {
+                                //$("#dayDialog").hide();
+                                alert("Error: " + result);
+                                console.log(result);
+
+                            },
+                        });
+                    } else if (result.isDenied) {
+                        $.ajax({
+                            url: url,
+                            type: "PUT",
+                            data: {
+                                id: event.id,
+                                taskStatus: 'rejectTimeOff',
+                            },
+                            success: function(data) {
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'info',
+                                    title: 'Task time-off rejected',
+
+                                    position: 'top-right',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    
+                                });
+                                $('#calendar').fullCalendar('refetchEvents');
+
+                            },
+                            error: function(result) {
+                                //$("#dayDialog").hide();
+                                alert("Error: " + result);
+                                console.log(result);
+
+                            },
+                        });
+
+                    } else {
+                        $('#dayDialog').dialog({
+                            title: 'Edit Schedule',
+                            width: 600,
+                            height: 650,
+                            modal: true,
+                            show: {
+                                effect: 'clip',
+                                duration: 350
+                            },
+                            hide: {
+                                effect: 'clip',
+                                duration: 50
+                            },
+                        });
+                    }
+                });
+                return;
+            }
             $('#dayDialog').dialog({
                 title: 'Edit Schedule',
                 width: 600,
@@ -306,11 +421,11 @@
                     effect: 'clip',
                     duration: 50
                 },
-            })
+            });
         },
         @else
 
-        eventClick: function(event) {  
+        eventClick: function(event) {
             if (event.scheduleType == 'task' && event.is_completed != 1) {
                 $("#id").val(event.id);
                 $('#schedule-type').val('task');
@@ -328,7 +443,7 @@
                         duration: 50
                     },
                 })
-            } 
+            }
 
         },
         @endif
@@ -340,11 +455,6 @@
 
 
 
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
 
     // Add event
     $("#submit-event").click(function(e) {
@@ -410,6 +520,7 @@
                 },
                 success: function(data) {
                     $("#dayDialog").dialog('close');
+                    $("#id").val('');
                     $('#calendar').fullCalendar('refetchEvents');
                     Swal.fire({
                         toast: true,
