@@ -17,7 +17,7 @@ class UserController extends Controller
     {
         
         $this->middleware('auth:sanctum', ['except' => []]);
-        $this->middleware('is_admin', ['except' => []]);
+        $this->middleware('is_admin', ['except' => ['profile']]);
 
     }
 
@@ -151,10 +151,8 @@ class UserController extends Controller
         return redirect()->route('users.index');
     }
 
-    // public function all(){
-    //     // return response([
-    //     //     "allUsers" => User::all()->except(auth()->user()->id),
-    //     //     "currentUser" => auth()->user()->id,
-    //     // ]);
-    // }
+    public function profile(){
+
+        return view('user.profile');
+    }
 }
