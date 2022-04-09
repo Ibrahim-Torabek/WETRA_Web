@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
-
+use Illuminate\Support\Facades\Log;
 use \Yajra\DataTables\DataTables;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Storage;
+
 
 class UserController extends Controller
 {
@@ -17,7 +19,7 @@ class UserController extends Controller
     {
         
         $this->middleware('auth:sanctum', ['except' => []]);
-        $this->middleware('is_admin', ['except' => []]);
+        $this->middleware('is_admin', ['except' => ['profile', 'update','loadImage']]);
 
     }
 
@@ -119,9 +121,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        // if($request->wantsJson()){
-        //     return response()->json($request);
-        // }
+        //dd($request->all());
         $user->update($request->all());
 
         if($request->wantsJson()){
@@ -130,7 +130,8 @@ class UserController extends Controller
             );
         }
 
-        return redirect()->route('users.show', ['user' => $user]);
+        Alert::toast('Profile Saved successfully', 'success');
+        return redirect()->back(); //route('users.show', ['user' => $user]);
     }
 
     /**
@@ -151,10 +152,46 @@ class UserController extends Controller
         return redirect()->route('users.index');
     }
 
-    // public function all(){
-    //     // return response([
-    //     //     "allUsers" => User::all()->except(auth()->user()->id),
-    //     //     "currentUser" => auth()->user()->id,
-    //     // ]);
-    // }
+    public function profile(){
+
+        return view('user.profile');
+    }
+
+    public function uploadImage(Request $request){
+        
+
+        // $input = $request->all();
+        // $input['file'] = time().'.'.$request->file->extension();
+        // $request->file->move(public_path('images'), $input['image']);
+
+        Log::debug($request);
+
+        if ($request->hasFile('file')) {
+            $fileNameWithExt = $request->file('file')->getClientOriginalName();
+            $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+            $extention = $request->file('file')->getClientOriginalExtension();
+            $nameToStore = $fileName . '_' . time() . '.' . $extention;
+
+            $filePath = $request->file->storeAs('public/avatar',$nameToStore);
+
+            //TODO: Change the sub folder. My wetra url ha wetra subfolder. it couase the mass of file url.
+            $fileURL = '/wetra' . Storage::url($filePath);
+            //dd($fileURL);
+
+            $fileArray = $request->all();
+            $fileArray["file_name"] = $fileName;
+            $fileArray["file_extention"] = $extention;
+            $fileArray["file_url"] = $fileURL;
+            $fileArray["uploaded_by"] = Auth::id();
+
+            //File::create($fileArray);
+            Log::debug($fileArray);
+
+            Alert::toast($fileNameWithExt . ' uploded', 'success');
+            
+        } else {
+            Log::debug("No File");
+            return response()->json(['error' => 'File not found']);
+        }
+    }
 }

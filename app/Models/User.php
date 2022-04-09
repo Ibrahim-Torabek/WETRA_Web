@@ -34,6 +34,9 @@ class User extends Authenticatable
         'status',
         'is_admin',
 
+        'emergency_name',
+        'emergency_phone',
+
         // 'updated_at',
         // 'created_at',
     ];

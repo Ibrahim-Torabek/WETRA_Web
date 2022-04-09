@@ -176,6 +176,7 @@ class ScheduleController extends Controller
             case "completed":
                 $task->is_completed = true;
                 $task->request_time_off_id = 0;
+                $task->confirm_time_off_id = 0;
                 break;
 
             case "requestTimeOff":
@@ -188,6 +189,7 @@ class ScheduleController extends Controller
 
             case 'rejectTimeOff':
                 $task->request_time_off_id = 0;
+                $task->confirm_time_off_id = 0;
                         
         }
         $task->update();

@@ -200,8 +200,7 @@
                 if (event.is_completed == 1) {
                     element.css("background-color", "grey");
                     element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">done_all</i> ' + event.title);
-                }
-                if (event.request_time_off_id > 0) {
+                } else if (event.request_time_off_id > 0) {
                     element.css("background-color", "orange");
                     element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">auto_delete</i> ' + event.title);
                     if(event.confirm_time_off_id > 0){
@@ -328,7 +327,7 @@
                     cancelButtonText: 'Edit',
                     cancelButtonColor: 'orange'
                 }).then((result) => {
-                    
+                    //console.log(result);
                     if (result.isConfirmed) {
                         
                         $.ajax({
@@ -389,21 +388,22 @@
                             },
                         });
 
-                    } else {
-                        $('#dayDialog').dialog({
-                            title: 'Edit Schedule',
-                            width: 600,
-                            height: 650,
-                            modal: true,
-                            show: {
-                                effect: 'clip',
-                                duration: 350
-                            },
-                            hide: {
-                                effect: 'clip',
-                                duration: 50
-                            },
-                        });
+                    } else  if(result.isDismissed){
+                        if (result.dismiss == "cancel")
+                            $('#dayDialog').dialog({
+                                title: 'Edit Schedule',
+                                width: 600,
+                                height: 650,
+                                modal: true,
+                                show: {
+                                    effect: 'clip',
+                                    duration: 350
+                                },
+                                hide: {
+                                    effect: 'clip',
+                                    duration: 50
+                                },
+                            });
                     }
                 });
                 return;
@@ -426,6 +426,7 @@
         @else
 
         eventClick: function(event) {
+            console.log(event);
             if (event.scheduleType == 'task' && event.is_completed != 1) {
                 $("#id").val(event.id);
                 $('#schedule-type').val('task');
