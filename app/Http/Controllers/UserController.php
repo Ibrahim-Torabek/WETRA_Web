@@ -19,7 +19,7 @@ class UserController extends Controller
     {
         
         $this->middleware('auth:sanctum', ['except' => []]);
-        $this->middleware('is_admin', ['except' => ['profile', 'update','loadImage']]);
+        $this->middleware('is_admin', ['except' => ['profile', 'update','uploadImage']]);
 
     }
 
@@ -164,7 +164,15 @@ class UserController extends Controller
         // $input['file'] = time().'.'.$request->file->extension();
         // $request->file->move(public_path('images'), $input['image']);
 
-        Log::debug($request);
+        $user = User::findOrFail(Auth::id());
+
+        if($request->update == 'deleteImage'){
+            Log::debug($request);
+            $user->image_url = NULL;
+            $user->update();
+
+            return response()->json(['delete' => 'success']);
+        }
 
         if ($request->hasFile('file')) {
             $fileNameWithExt = $request->file('file')->getClientOriginalName();
@@ -184,10 +192,13 @@ class UserController extends Controller
             $fileArray["file_url"] = $fileURL;
             $fileArray["uploaded_by"] = Auth::id();
 
-            //File::create($fileArray);
-            Log::debug($fileArray);
+            
 
-            Alert::toast($fileNameWithExt . ' uploded', 'success');
+            $user->image_url = $fileURL;
+            $user->update();
+            Log::debug($user);
+
+            return response()->json(['fileUrl' => $fileURL]);
             
         } else {
             Log::debug("No File");
