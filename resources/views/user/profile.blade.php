@@ -48,20 +48,25 @@ $user = Auth::user()
                                 </div>
 
 
-                                <div class="row">
+                                <div class="row align-center">
                                     <!-- Image by default -->
-                                    <svg id="Avatar_Icon" data-name="Avatar Icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="175" height="175">
+                                    @if(Auth::user()->image_url)
+                                    <img id="profile-image" class="rounded mx-auto d-block" src="{{ Auth::user()->image_url }}" style="width:175px;height:175px;">
+                                    @else
+                                    <img id="profile-image" class="rounded mx-auto d-block" src="/wetra/storage/avatar/avatar_icon.svg" style="width:175px;height:175px;">
+                                    @endif
+                                    <!-- <svg id="Avatar_Icon" data-name="Avatar Icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="175" height="175">
                                         <circle id="Ellipse_1" data-name="Ellipse 1" cx="25" cy="25" r="25" fill="green"></circle>
                                         <circle id="Ellipse_2" data-name="Ellipse 2" cx="5" cy="5" r="5" transform="translate(20 13)" fill="#fff"></circle>
                                         <path id="Path_8" data-name="Path 8" d="M14.99,0c8.188,0,18.333,2.867,14.826,5.5S23.165,10.934,14.99,11,3.421,7.708.164,5.5,6.8,0,14.99,0Z" transform="translate(10 27.678)" fill="#fff"></path>
-                                    </svg>
+                                    </svg> -->
                                 </div>
 
                                 <div class="col my-4">
                                     <!-- TO DO:
                     *set Delete and Upload functions to the profile image -->
                                     <div class="row pb-4">
-                                        <button class="btn btn-primary" type="submit">Delete Image</button>
+                                        <button id="delete-image" class="btn btn-primary" type="button">Delete Image</button>
                                     </div>
                                     <div class="row">
 
@@ -170,7 +175,7 @@ $user = Auth::user()
                         </div>
                     </form>
 
-                    <form action="{{ action([App\Http\Controllers\UserController::class, 'uploadImage']) }}" id='image-upload-form' enctype="multipart/form-data"  method="POST">
+                    <form action="{{ action([App\Http\Controllers\UserController::class, 'uploadImage']) }}" id='image-upload-form' enctype="multipart/form-data" method="POST">
                         @csrf
                         <input id="files" style="visibility:hidden;" type="file" accept="image/*">
                     </form>
@@ -190,10 +195,24 @@ $user = Auth::user()
         }
     });
 
+    $('#delete-image').click(function() {
+        $('#avatar-image').attr('src', '/wetra/storage/avatar/avatar_icon.svg');
+        $('#profile-image').attr('src', '/wetra/storage/avatar/avatar_icon.svg');
+
+        $.ajax({
+            url: 'upload_image',
+            type: 'POST',
+            data: {
+                update: 'deleteImage',
+            },
+
+        });
+    });
+
     $('#upload-image').click(function(e) {
         $('#files').click();
     });
-    var CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+
     $("#files").on('change', function(e) {
         let size = this.files[0].size;
         if (size < 1000000) { // If more than 1MB
@@ -201,13 +220,12 @@ $user = Auth::user()
             //toast('Your Post as been submited!','success');
 
             e.preventDefault();
-            file = $("#files").val();
-            form = $("#files").parent();
-            formData = new FormData(document.getElementById("image-upload-form"));
+            file = $("#files").files;
+            file = $('input[type=file]')[0].files[0];
+            form = document.getElementById("image-upload-form");
+            formData = new FormData();
             formData.append('file', file);
-            //formData.append('_token',CSRF_TOKEN);
 
-            console.log(form);
             $.ajax({
                 url: "upload_image",
                 type: "POST",
@@ -216,7 +234,14 @@ $user = Auth::user()
                 data: formData,
                 enctype: 'multipart/form-data',
                 success: function(data) {
-                    console.log("Uploded: " + data.error);
+                    if (data.error) {
+                        console.log("Error");
+                    } else {
+
+                        $('#avatar-image').attr('src', data.fileUrl);
+                        $('#profile-image').attr('src', data.fileUrl);
+
+                    }
                 }
             });
 

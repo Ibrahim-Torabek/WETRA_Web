@@ -331,12 +331,16 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
 
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 <!-- <img src="storage/avatar_icon.svg" alt="" width="30" height="30" class="Test1" > -->
+                                @if(Auth::user()->image_url)
+                                <img id="avatar-image" class="rounded mx-auto d-block rounded-circle float-left mr-4" src="{{ Auth::user()->image_url }}" style="width:30px;height:30px;">
+                                @else
                                 <svg id="Avatar_Icon" data-name="Avatar Icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="30" height="30">
                                     <circle id="Ellipse_1" data-name="Ellipse 1" cx="25" cy="25" r="25" fill="green" />
                                     <circle id="Ellipse_2" data-name="Ellipse 2" cx="5" cy="5" r="5" transform="translate(20 13)" fill="#fff" />
                                     <path id="Path_8" data-name="Path 8" d="M14.99,0c8.188,0,18.333,2.867,14.826,5.5S23.165,10.934,14.99,11,3.421,7.708.164,5.5,6.8,0,14.99,0Z" transform="translate(10 27.678)" fill="#fff" />
                                 </svg>
-                                {{ Auth::user()->first_name }}
+                                @endif
+                                <span class="ml-2">{{ Auth::user()->first_name }}</span>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
