@@ -68,7 +68,13 @@
                   <label for="inputCurrentPassword" class="col-form-label">Current password</label>
                 </div>
                 <div class="col">
-                  <input type="password" id="inputCurrentPassword" class="form-control" aria-label="Type your current password">
+                  <input type="password" id="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" aria-label="Type your current password">
+
+                  @error('password')
+                    <span class="invalid-feedback" role="alert">
+                      <strong>{{ $message }}</strong>
+                    </span>
+                  @enderror
                 </div>          
               </div>
 
