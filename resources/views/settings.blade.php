@@ -55,13 +55,54 @@
     <div class="col">
       <div class="card">
         <div class="card-header text-left">
-          <h5>{{ __('Change Password') }}</h5>
+          <h5 class="mb-0">{{ __('Change Password') }}</h5>
         </div>
         <div class="card-body">       
           <form method="POST" action="">
             @csrf
-            <div class="d-flex pt-3 border-bottom">
-            
+            <!-- Current password field                      -->
+            <div class="row g-3 align-items-center">
+              <div class="col-auto">
+                <label for="inputCurrentPassword" class="col-form-label">Current password</label>
+              </div>
+              <div class="col-auto">
+                <input type="password" id="inputCurrentPassword" class="form-control" aria-describedby="currentPasswordHelpInline">
+              </div>
+              <div class="col-auto">
+                <span id="currentPasswordHelpInline" class="form-text">
+                  Type your current password
+                </span>
+              </div>
+            </div>
+
+            <!-- New password field -->
+            <div class="row g-1 align-items-center mt-1">
+              <div class="col-auto">
+                <label for="inputNewPassword" class="col-form-label">New password</label>
+              </div>
+              <div class="col-auto">
+                <input type="password" id="inputNewPassword" class="form-control" aria-describedby="newPasswordHelpInline">
+              </div>
+              <div class="col-auto">
+                <span id="newPasswordHelpInline" class="form-text">
+                Must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
+                </span>
+              </div>
+            </div>
+
+            <!-- Confirm password field -->
+            <div class="row g-3 align-items-center mt-1">
+              <div class="col-auto">
+                <label for="confirmNewPassword" class="col-form-label">New password</label>
+              </div>
+              <div class="col-auto">
+                <input type="password" id="confirmNewPassword" class="form-control" aria-describedby="confirmPasswordHelpInline">
+              </div>
+              <div class="col-auto">
+                <span id="confirmPasswordHelpInline" class="form-text">
+                Type your new password to confirm.
+                </span>
+              </div>
             </div>
           </form>
         </div>
