@@ -79,6 +79,10 @@ class User extends Authenticatable
         return $this->hasOne(Group::class, 'id','group_id');
     }
 
+    function settings(){
+        return $this->hasOne(Setting::class); // link setting table's user to user table's id
+    }
+
     function status(){
         if($this->status == 0)
             return "In Active";
