@@ -19,7 +19,7 @@ class UserController extends Controller
     {
         
         $this->middleware('auth:sanctum', ['except' => []]);
-        $this->middleware('is_admin', ['except' => ['profile', 'update','uploadImage']]);
+        $this->middleware('is_admin', ['except' => ['profile', 'update','uploadImage','settings']]);
 
     }
 
@@ -155,6 +155,11 @@ class UserController extends Controller
     public function profile(){
 
         return view('user.profile');
+    }
+
+    public function settings(){
+
+        return view('user.settings');
     }
 
     public function uploadImage(Request $request){
