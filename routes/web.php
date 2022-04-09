@@ -20,8 +20,11 @@ Route::get('/', function () {
 
 Auth::routes();
 
+
 Route::get('users/profile', [App\Http\Controllers\UserController::class, 'profile']);
+Route::post('users/upload_image', [App\Http\Controllers\UserController::class, 'uploadImage']);
 Route::resource('users', App\Http\Controllers\UserController::class);
+
 
 Route::resource('schedules', App\Http\Controllers\ScheduleController::class);
 

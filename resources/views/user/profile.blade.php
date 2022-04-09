@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    $user = Auth::user()
+$user = Auth::user()
 @endphp
 
 @section('content')
@@ -64,7 +64,9 @@
                                         <button class="btn btn-primary" type="submit">Delete Image</button>
                                     </div>
                                     <div class="row">
-                                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#updateImageModal">Update Image</button>
+
+                                        <button id="upload-image" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#updateImageModal">Update Image</button>
+
                                     </div>
                                 </div>
 
@@ -83,7 +85,7 @@
                                     <div class="input-group">
                                         <label for="phone_number" class="input-group-text">Phone Number</label>
 
-                                        <input id="phone_number" type="text" class="form-control " name="phone_number" aria-label="Edit your phone number" required=""  value="{{ $user->phone_number }}">
+                                        <input id="phone_number" type="text" class="form-control " name="phone_number" aria-label="Edit your phone number" required="" value="{{ $user->phone_number }}">
 
                                     </div>
                                 </div>
@@ -141,7 +143,7 @@
                                             <div class="input-group">
                                                 <label for="contact_name" class="input-group-text">Name</label>
 
-                                                <input id="contact_name" type="text" class="form-control " name="emergency_name" aria-label="Edit the name of your emergency contact"  value="{{ $user->emergency_name }}">
+                                                <input id="contact_name" type="text" class="form-control " name="emergency_name" aria-label="Edit the name of your emergency contact" value="{{ $user->emergency_name }}">
 
                                             </div>
                                         </div>
@@ -167,6 +169,11 @@
                             </div>
                         </div>
                     </form>
+
+                    <form action="{{ action([App\Http\Controllers\UserController::class, 'uploadImage']) }}" id='image-upload-form' enctype="multipart/form-data"  method="POST">
+                        @csrf
+                        <input id="files" style="visibility:hidden;" type="file" accept="image/*">
+                    </form>
                 </div>
 
 
@@ -175,4 +182,49 @@
         </div>
     </div>
 </div>
+
+<script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $('#upload-image').click(function(e) {
+        $('#files').click();
+    });
+    var CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    $("#files").on('change', function(e) {
+        let size = this.files[0].size;
+        if (size < 1000000) { // If more than 1MB
+
+            //toast('Your Post as been submited!','success');
+
+            e.preventDefault();
+            file = $("#files").val();
+            form = $("#files").parent();
+            formData = new FormData(document.getElementById("image-upload-form"));
+            formData.append('file', file);
+            //formData.append('_token',CSRF_TOKEN);
+
+            console.log(form);
+            $.ajax({
+                url: "upload_image",
+                type: "POST",
+                contentType: false,
+                processData: false,
+                data: formData,
+                enctype: 'multipart/form-data',
+                success: function(data) {
+                    console.log("Uploded: " + data.error);
+                }
+            });
+
+            //$("#uploadForm").reset;
+        } else {
+            alert('File zise must be less than 1MB ');
+        }
+
+    });
+</script>
 @stop
