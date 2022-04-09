@@ -256,237 +256,6 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                 theme: "classic"
             });
 
-            $('.multiple_select').select2({
-                placeholder: "Select a group or a person",
-                allowClear: true,
-                dropdownParent: $('#dayDialog')
-            });
-
-
-
-            // function convert(str){
-            //     const d = new Date(str);
-            //     let month = '' + (d.getMonth() + 1);
-            //     let day = '' + (d.getDate());
-            //     let year = '' + d.getFullYear();
-            //     if(month.length < 2) month = '0' + month;
-            //     if(day.length < 2) day = '0' + day;
-
-            //     let hour = '' + d.getHours();
-            //     let minute = '' + d.getMinutes();
-            //     let second = '' + d.getSeconds();
-            //     if(hour.length < 2) hour = '0' + hour;
-            //     if(minute.length < 2) minute = '0' + minute;
-            //     if(second.length < 2) second = '0' + second;
-
-            //     return [year,month,day].join('-') + ' ' + [hour,minute,second].join(':');
-            // };
-            //var view = $('#calendar').fullCalendar('getView');
-            //console.log(view);
-
-            var calendarEl = document.getElementById('calendar');
-
-            var calendar = $('#calendar').fullCalendar({
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'year,month,agendaWeek,agendaDay,listWeek'
-                },
-                height: 650,
-                showNonCurrenDates: false,
-                initialView: 'listWeek',
-                //defaultView: 'listWeek',
-                events: "{{ url('schedules') }}",
-                eventDidMount: function(info) {
-                    var tooltip = new Tooltip(info.el, {
-                        title: "Hello World", //info.event.description,
-                        placement: 'top',
-                        trigger: 'hover',
-                        container: 'body'
-                    });
-                    console.log(info);
-                },
-
-                @auth
-                @if(Auth::user() -> is_admin == 1)
-                selectable: true,
-                dragabble: true,
-                selectHelper: true,
-                editable: true,
-                dayClick: function(date, event, view) {
-                    var date = $.fullCalendar.formatDate(date, 'Y-MM-DD HH:mm:ss');
-                    $("#title").val("");
-                    $("#start").val((date));
-                    $("#end").val((date));
-                    $("#delete-event").hide();
-                    $("#id").val('');
-                    $("#submit-event").html('Add Event');
-                    $('#dayDialog').dialog({
-                        title: 'Add Schedule',
-                        width: 600,
-                        height: 650,
-                        modal: true,
-                        show: {
-                            effect: 'clip',
-                            duration: 350
-                        },
-                        hide: {
-                            effect: 'clip',
-                            duration: 250
-                        },
-                    });
-                    //calendar.fullCalendar('renderEvent', event, true);
-                },
-                select: function(start, end) {
-                    var start = $.fullCalendar.formatDate(start, 'Y-MM-DD HH:mm:ss');
-                    var end = $.fullCalendar.formatDate(end, 'Y-MM-DD HH:mm:ss');
-                    $("#title").val("");
-                    $('#start').val((start));
-                    $('#end').val((end));
-                    $("#delete-event").hide();
-                    $("#submit-event").html('Add Event');
-                    $('#dayDialog').dialog({
-                        title: 'Add Schedule',
-                        width: 600,
-                        height: 650,
-                        modal: true,
-                        show: {
-                            effect: 'clip',
-                            duration: 350
-                        },
-                        hide: {
-                            effect: 'clip',
-                            duration: 250
-                        },
-                    })
-                },
-                eventClick: function(event) {
-                    $("#title").val(event.title);
-                    $("#start").val($.fullCalendar.formatDate(event.start, 'Y-MM-DD HH:mm:ss'));
-                    $("#end").val($.fullCalendar.formatDate(event.end, 'Y-MM-DD HH:mm:ss'));
-                    $("#allDay").val(event.allDay);
-                    $("#assigned_to").val(event.assigned_to);
-                    $("#color").val(event.color);
-                    $("#textColor").val(event.textColor);
-                    $("#id").val(event.id);
-                    $("#submit-event").html('Update');
-                    //var url = "{{ url('schedules/deleteEvent') }}";
-                    $("#delete-event").show(); //.attr('href', url + '/' + event.id);
-                    $('#dayDialog').dialog({
-                        title: 'Edit Schedule',
-                        width: 600,
-                        height: 650,
-                        modal: true,
-                        show: {
-                            effect: 'clip',
-                            duration: 350
-                        },
-                        hide: {
-                            effect: 'clip',
-                            duration: 50
-                        },
-                    })
-                },
-                @endif
-                @endauth
-
-            });
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            // Add event
-            $("#submit-event").click(function(e) {   
-                e.preventDefault();
-                //$("#dayDialog").hide();
-                //alert("Clicked");
-                $.ajax({
-                    url: "schedules",
-                    type: "POST",
-                    data: {
-                        //_token: "{{ csrf_token() }}",
-                        title: $("#title").val(),
-                        start: $("#start").val(),
-                        end: $("#end").val(),
-                        allDay: $("#allDay").val(),
-                        assigned_to: $("#assigned_to").val(),
-                        color: $("#color").val(),
-                        textColor: $("#textColor").val(),
-                        id: $("#id").val(),
-                    },
-                    success: function(data) {
-                        $("#dayDialog").dialog('close');
-
-                        Swal.fire({
-                                toast: true,
-                                icon: 'success',
-                                title: 'Event added or updated successfully',
-                                
-                                position: 'top-right',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            });
-                        $('#calendar').fullCalendar('refetchEvents');
-
-                    },
-                    error: function(result) {
-                        //$("#dayDialog").hide();
-                        alert("Error: " + result);
-                        console.log(result);
-                        
-                    },
-                });
-            });
-
-            //Delete Event
-            $("#delete-event").click(function(e){
-                e.preventDefault;
-                //var confirmDelete = confirm("Are you sure you want to delete?");
-                if(true){
-                    $.ajax({
-                        url: "schedules/destroy",
-                        type: "DELETE",
-                        data: {
-                            id: $("#id").val(),
-                        },
-                        success: function(data){
-                            $("#dayDialog").dialog('close');
-                            $('#calendar').fullCalendar('refetchEvents');
-                            Swal.fire({
-                                toast: true,
-                                icon: 'success',
-                                title: 'Event deleted successfully',
-                                animation: false,
-                                position: 'top-right',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            });
-                            
-                        },
-                        error: function(result){
-                            //alert("Error: " + result);
-                            console.log(result);
-                        },
-                    });
-                }
-            })
-
-            //calendar.render();
-
-            // calendar.fullCalendar('renderEvent', event, true);
         });
     </script>
 
@@ -562,18 +331,21 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
 
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 <!-- <img src="storage/avatar_icon.svg" alt="" width="30" height="30" class="Test1" > -->
+                                @if(Auth::user()->image_url)
+                                <img id="avatar-image" class="rounded mx-auto d-block rounded-circle float-left mr-4" src="{{ Auth::user()->image_url }}" style="width:30px;height:30px;">
+                                @else
                                 <svg id="Avatar_Icon" data-name="Avatar Icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="30" height="30">
                                     <circle id="Ellipse_1" data-name="Ellipse 1" cx="25" cy="25" r="25" fill="green" />
                                     <circle id="Ellipse_2" data-name="Ellipse 2" cx="5" cy="5" r="5" transform="translate(20 13)" fill="#fff" />
                                     <path id="Path_8" data-name="Path 8" d="M14.99,0c8.188,0,18.333,2.867,14.826,5.5S23.165,10.934,14.99,11,3.421,7.708.164,5.5,6.8,0,14.99,0Z" transform="translate(10 27.678)" fill="#fff" />
                                 </svg>
-                                {{ Auth::user()->first_name }}
+                                @endif
+                                <span class="ml-2">{{ Auth::user()->first_name }}</span>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('profile') }}">
-                                    {{ __('Profile') }}
-                                </a>
+
+                                <a class="dropdown-item" href="{{ action([App\Http\Controllers\UserController::class, 'profile']) }}"> Profile </a>
 
                                 <a class="dropdown-item" href="{{ route('settings') }}">
                                     {{ __('Settings') }}

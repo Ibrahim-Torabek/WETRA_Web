@@ -78,6 +78,7 @@ class FileController extends Controller
     {
         //dd($request->all());
 
+        Log::debug($request . $request->fiel('file'));
         //TODO: File validate file size.
         $validator = Validator::make($request->all(), [
             'file' => 'max:500000',

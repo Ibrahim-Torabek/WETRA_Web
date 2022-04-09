@@ -20,7 +20,11 @@ Route::get('/', function () {
 
 Auth::routes();
 
+
+Route::get('users/profile', [App\Http\Controllers\UserController::class, 'profile']);
+Route::post('users/upload_image', [App\Http\Controllers\UserController::class, 'uploadImage']);
 Route::resource('users', App\Http\Controllers\UserController::class);
+
 
 Route::resource('schedules', App\Http\Controllers\ScheduleController::class);
 
@@ -45,11 +49,4 @@ Route::resource('groups', App\Http\Controllers\GroupController::class);
 //Route::get('messages/chat', [App\Http\Controllers\MessageController::class, 'chat']);
 //Route::get('/messages/start', [App\Http\Controllers\MessageController::class, 'start']);
 
-
-//profile page
-Route::get('/user/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('profile');
-Route::get('/admin/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('profile');
-
-//settings page
-Route::get('/user/settings', [App\Http\Controllers\HomeController::class, 'settings'])->name('settings');
-Route::get('/admin/settings', [App\Http\Controllers\HomeController::class, 'settings'])->name('settings');
+Route::get('users/settings', [App\Http\Controllers\UserController::class, 'settings']);
