@@ -49,3 +49,7 @@ Route::resource('groups', App\Http\Controllers\GroupController::class);
 //profile page
 Route::get('/user/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('user/profile');
 Route::get('/admin/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('admin/profile');
+
+//settings page
+Route::get('/user/settings', [App\Http\Controllers\HomeController::class, 'settings'])->name('user/settings');
+Route::get('/admin/settings', [App\Http\Controllers\HomeController::class, 'settings'])->name('admin/settings');
