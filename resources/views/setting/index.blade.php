@@ -61,17 +61,18 @@
       </div>
     </div>
   </div>
-
   <!-- Change password card -->
   <div class="row pt-4 justify-content-center">
-    <div class="col-md-8">
+    <div class="col-md-10">
       <div class="card">
         <div class="card-header text-left">
           <h5 class="mb-0">{{ __('Change Password') }}</h5>
         </div>
         <div class="card-body">
-          <form method="POST" action="">
+          <form id='password-form' method="POST" action="{{ action([\App\Http\Controllers\SettingController::class, 'update'], ['setting' => Auth::user()->settings]) }}">
             @csrf
+            {{ method_field('PATCH') }}
+            <input type="hidden" name="settingsType" value="password">
             <!-- Current password field -->
             <div class="row align-items-center">
               <div class="col-md-2">
@@ -79,7 +80,6 @@
               </div>
               <div class="col">
                 <input type="password" id="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" aria-label="Type your current password">
-
                 @error('password')
                 <span class="invalid-feedback" role="alert">
                   <strong>{{ $message }}</strong>
@@ -91,12 +91,15 @@
             <!-- New password field -->
             <div class="row align-items-center mt-3">
               <div class="col-md-2">
-                <label for="inputNewPassword" class="col-form-label">New password</label>
+                <label for="new-password" class="col-form-label">New password</label>
               </div>
               <div class="col">
-                <input type="password" id="inputNewPassword" class="form-control" aria-describedby="newPasswordHelpBlock">
-                <div id="newPasswordHelpBlock" class="form-text">
-                  Must be 8-20 characters long and contain only letters and numbers.
+                <input type="password" id="new-password" name="newPassword" class="form-control @error('notvalid') is-invalid @enderror" aria-describedby="newPasswordHelpBlock">
+                <div id="newPasswordHelpBlock" class="form-text" style="display:none;">
+                  <span id="length" class="invalid mr-2">Minimum <b>8 characters</b></span>
+                  <span id="letter" class="invalid mr-2">A <b>lowercase</b> letter</span>
+                  <span id="capital" class="invalid mr-2">A <b>capital (uppercase)</b> letter</span>
+                  <span id="number" class="invalid mr-2">A <b>number</b></span>
                 </div>
               </div>
             </div>
@@ -104,18 +107,22 @@
             <!-- Confirm password field -->
             <div class="row align-items-center mt-3">
               <div class="col-md-2">
-                <label for="confirmNewPassword" class="col-form-label">Confirm password</label>
+                <label for="confirm-passowrd" class="col-form-label">Confirm password</label>
               </div>
               <div class="col">
-                <input type="password" id="confirmNewPassword" class="form-control" aria-label="Confirm your new password">
+                <input type="password" id="confirm-password" name="confirmPassword" class="form-control  @error('notvalid') is-invalid @enderror" aria-label="Confirm your new password">
+                <!-- <span class="invalid-feedback" role="alert"> -->
+                @error('notvalid')
+                <strong> <span class="text-danger" id="not-confirmed">{{ $message }}</span></strong>
+                @enderror
+                <!-- </span> -->
               </div>
-
             </div>
 
             <!-- Button to Save password change -->
             <div class="row text-center">
               <div class="mt-4">
-                <button type="submit" class="btn btn-primary btn-lg">
+                <button type="submit" class="btn btn-primary btn-lg" id="submit-password">
                   {{ __('Update Password') }}
                 </button>
               </div>
@@ -127,4 +134,97 @@
 
   </div>
 </div>
+
+<script>
+  var myInput = document.getElementById("new-password");
+  var letter = document.getElementById("letter");
+  var capital = document.getElementById("capital");
+  var number = document.getElementById("number");
+  var length = document.getElementById("length");
+
+  myInput.onfocus = function() {
+    document.getElementById("newPasswordHelpBlock").style.display = "block";
+  }
+
+  myInput.onkeyup = function() {
+  // Validate lowercase letters
+  var lowerCaseLetters = /[a-z]/g;
+  if(myInput.value.match(lowerCaseLetters)) {  
+    letter.classList.remove("invalid");
+    letter.classList.add("valid");
+  } else {
+    letter.classList.remove("valid");
+    letter.classList.add("invalid");
+  }
+  
+  // Validate capital letters
+  var upperCaseLetters = /[A-Z]/g;
+  if(myInput.value.match(upperCaseLetters)) {  
+    capital.classList.remove("invalid");
+    capital.classList.add("valid");
+  } else {
+    capital.classList.remove("valid");
+    capital.classList.add("invalid");
+  }
+
+  // Validate numbers
+  var numbers = /[0-9]/g;
+  if(myInput.value.match(numbers)) {  
+    number.classList.remove("invalid");
+    number.classList.add("valid");
+  } else {
+    number.classList.remove("valid");
+    number.classList.add("invalid");
+  }
+  
+  // Validate length
+  if(myInput.value.length >= 8) {
+    length.classList.remove("invalid");
+    length.classList.add("valid");
+  } else {
+    length.classList.remove("valid");
+    length.classList.add("invalid");
+  }
+}
+  // $(document).ready(function() {
+
+
+  //   $('#submit-password').click(function(e) {
+  //     e.preventDefault();
+  //     var pass = $('#new-password').val();
+  //     var pass2 = $('#confirm-password').val();
+  //     if (pass != pass2) {
+  //       //$('#not-confirmed').html("The new passowrd not confirmed");
+  //       $('#new-password').setCustomValidity('Passwords must match');
+  //       console.log(pass + ' ' + pass2);
+  //       return;
+  //     }
+  //     $('#password-form').submit();
+  //   });
+  // });
+</script>
+
+<style>
+
+.valid {
+  color: green;
+}
+
+.valid:before {
+  position: relative;
+  left: -3px;
+  content: "✔";
+}
+
+/* Add a red text color and an "x" when the requirements are wrong */
+.invalid {
+  color: red;
+}
+
+.invalid:before {
+  position: relative;
+  left: -3px;
+  content: "✖";
+}
+</style>
 @stop
