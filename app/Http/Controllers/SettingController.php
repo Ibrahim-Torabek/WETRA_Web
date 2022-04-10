@@ -103,7 +103,7 @@ class SettingController extends Controller
                 }
                 if(strcmp($request['newPassword'], $request['confirmPassword']) != 0){
                     
-                    return redirect()->back()->withErrors(['notvalid' => 'Passwords do not match!']);
+                    return redirect()->back()->withErrors(['notvalid' => 'Your new password does not match with the confirm password!']);
                 }
                 
                 break;

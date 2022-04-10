@@ -29,8 +29,11 @@ class FileController extends Controller
      */
     public function index(Request $request)
     {
+
+        $files = File::all();
+
         if ($request->ajax()) {
-            $files = File::all();
+            
             if(Auth::user()->is_admin != 1){
                 $files = File::where('shared_to', '0')
                     ->orWhere('shared_to', Auth::id())
@@ -53,6 +56,12 @@ class FileController extends Controller
                 })
                 ->rawColumns(['action'])
                 ->make(true);
+        }
+        
+        if($request->wantsJson()){
+            Log::debug("File API Requested." . $request);
+            
+            return response()->json($files);
         }
         $users = User::all();
         return view('file.index', ['users' => $users]);
@@ -78,7 +87,7 @@ class FileController extends Controller
     {
         //dd($request->all());
 
-        Log::debug($request . $request->fiel('file'));
+        Log::debug($request . $request->file('file'));
         //TODO: File validate file size.
         $validator = Validator::make($request->all(), [
             'file' => 'max:500000',
@@ -103,13 +112,13 @@ class FileController extends Controller
             $fileArray["uploaded_by"] = Auth::id();
 
             File::create($fileArray);
+            if($request->wantsJson()){
+                return response()->json(['success' => 'file uploaded successfully!']);
+            }
 
             Alert::toast($fileNameWithExt . ' uploded', 'success');
             
         }
-
-
-
 
         return redirect()->back();
     }
@@ -120,10 +129,10 @@ class FileController extends Controller
      * @param  \App\Models\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function show(File $file)
-    {
-        //
-    }
+    // public function show(File $file)
+    // {
+    //     //
+    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -131,10 +140,10 @@ class FileController extends Controller
      * @param  \App\Models\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function edit(File $file)
-    {
-        //
-    }
+    // public function edit(File $file)
+    // {
+    //     //
+    // }
 
     /**
      * Update the specified resource in storage.
@@ -143,10 +152,10 @@ class FileController extends Controller
      * @param  \App\Models\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, File $file)
-    {
-        //
-    }
+    // public function update(Request $request, File $file)
+    // {
+    //     //
+    // }
 
     /**
      * Remove the specified resource from storage.
@@ -154,9 +163,14 @@ class FileController extends Controller
      * @param  \App\Models\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function destroy(File $file)
+    public function destroy(Request $request, File $file)
     {
         $file->delete();
+
+        if($request->wantsJson()){
+            return response()->json(['success' => 'file deleted successfully!']);
+        }
+        
         Alert::toast($file->file_name . ' deleted', 'success');
         return redirect()->back();
     }

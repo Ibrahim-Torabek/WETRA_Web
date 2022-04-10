@@ -36,7 +36,7 @@ Route::apiResource('users', App\Http\Controllers\UserController::class);
 //Route::post('schedules/deleteEvent/{id}', App\Http\Controllers\ScheduleController::class);
 Route::apiResource('schedules', App\Http\Controllers\ScheduleController::class);
 
-
+Route::apiResource('files', App\Http\Controllers\FileController::class);
 //Route::apiResource('messages', App\Http\Controllers\MessageController::class);
 
 // Route::group(['middleware' => ['auth:sanctum']], function(){
