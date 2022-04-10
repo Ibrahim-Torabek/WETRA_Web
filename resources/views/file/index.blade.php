@@ -25,7 +25,7 @@
                                     <span class="input-group-text" id="inputGroupFileAddon01">Choose File</span>
                                 </div> -->
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="file" name="file" accept="image/*,.pdf"> require>
+                                    <input type="file" class="custom-file-input" id="file" name="file" accept="image/*,.pdf"> require
                                     <label class="custom-file-label" for="file">No file chosen</label>
                                 </div>
                             </div>
