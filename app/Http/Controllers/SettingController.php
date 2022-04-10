@@ -11,6 +11,11 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class SettingController extends Controller
 {
+    public function __construct()
+    {
+        
+        $this->middleware('auth:sanctum', ['except' => []]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -87,6 +92,8 @@ class SettingController extends Controller
         switch($request['settingsType']){
             case 'notification':
                 $setting->update($request);
+                Alert::toast('Settings saved successfully', 'success');
+                return redirect()->back();
                 break;
 
             case 'password':
@@ -96,7 +103,7 @@ class SettingController extends Controller
                 }
                 if(strcmp($request['newPassword'], $request['confirmPassword']) != 0){
                     
-                    return redirect()->back()->withErrors(['notvalid' => 'New password you entered is not confirmed!']);
+                    return redirect()->back()->withErrors(['notvalid' => 'Passwords do not match!']);
                 }
                 
                 break;

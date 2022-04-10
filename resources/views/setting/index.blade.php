@@ -94,7 +94,7 @@
                 <label for="new-password" class="col-form-label">New password</label>
               </div>
               <div class="col">
-                <input type="password" id="new-password" name="newPassword" class="form-control @error('notvalid') is-invalid @enderror" aria-describedby="newPasswordHelpBlock">
+                <input type="password" id="new-password" name="newPassword" class="form-control @error('notvalid') is-invalid @enderror" aria-describedby="newPasswordHelpBlock" required>
                 <div id="newPasswordHelpBlock" class="form-text" style="display:none;">
                   <span id="length" class="invalid mr-2">Minimum <b>8 characters</b></span>
                   <span id="letter" class="invalid mr-2">A <b>lowercase</b> letter</span>
@@ -110,7 +110,7 @@
                 <label for="confirm-passowrd" class="col-form-label">Confirm password</label>
               </div>
               <div class="col">
-                <input type="password" id="confirm-password" name="confirmPassword" class="form-control  @error('notvalid') is-invalid @enderror" aria-label="Confirm your new password">
+                <input type="password" id="confirm-password" name="confirmPassword" class="form-control  @error('notvalid') is-invalid @enderror" aria-label="Confirm your new password" required>
                 <!-- <span class="invalid-feedback" role="alert"> -->
                 @error('notvalid')
                 <strong> <span class="text-danger" id="not-confirmed">{{ $message }}</span></strong>
@@ -141,90 +141,94 @@
   var capital = document.getElementById("capital");
   var number = document.getElementById("number");
   var length = document.getElementById("length");
+  var validate1 = false;
+  var validate2 = false;
+  var validate3 = false;
+  var validate4 = false;
 
   myInput.onfocus = function() {
     document.getElementById("newPasswordHelpBlock").style.display = "block";
   }
 
   myInput.onkeyup = function() {
-  // Validate lowercase letters
-  var lowerCaseLetters = /[a-z]/g;
-  if(myInput.value.match(lowerCaseLetters)) {  
-    letter.classList.remove("invalid");
-    letter.classList.add("valid");
-  } else {
-    letter.classList.remove("valid");
-    letter.classList.add("invalid");
-  }
-  
-  // Validate capital letters
-  var upperCaseLetters = /[A-Z]/g;
-  if(myInput.value.match(upperCaseLetters)) {  
-    capital.classList.remove("invalid");
-    capital.classList.add("valid");
-  } else {
-    capital.classList.remove("valid");
-    capital.classList.add("invalid");
+    // Validate lowercase letters
+    var lowerCaseLetters = /[a-z]/g;
+    if (myInput.value.match(lowerCaseLetters)) {
+      letter.classList.remove("invalid");
+      letter.classList.add("valid");
+      validate1 = true;
+    } else {
+      letter.classList.remove("valid");
+      letter.classList.add("invalid");
+      
+    }
+
+    // Validate capital letters
+    var upperCaseLetters = /[A-Z]/g;
+    if (myInput.value.match(upperCaseLetters)) {
+      capital.classList.remove("invalid");
+      capital.classList.add("valid");
+      validate2 = true;
+    } else {
+      capital.classList.remove("valid");
+      capital.classList.add("invalid");
+    }
+
+    // Validate numbers
+    var numbers = /[0-9]/g;
+    if (myInput.value.match(numbers)) {
+      number.classList.remove("invalid");
+      number.classList.add("valid");
+      validate3 = true;
+    } else {
+      number.classList.remove("valid");
+      number.classList.add("invalid");
+    }
+
+    // Validate length
+    if (myInput.value.length >= 8) {
+      length.classList.remove("invalid");
+      length.classList.add("valid");
+      validate4 = true;
+    } else {
+      length.classList.remove("valid");
+      length.classList.add("invalid");
+    }
   }
 
-  // Validate numbers
-  var numbers = /[0-9]/g;
-  if(myInput.value.match(numbers)) {  
-    number.classList.remove("invalid");
-    number.classList.add("valid");
-  } else {
-    number.classList.remove("valid");
-    number.classList.add("invalid");
-  }
-  
-  // Validate length
-  if(myInput.value.length >= 8) {
-    length.classList.remove("invalid");
-    length.classList.add("valid");
-  } else {
-    length.classList.remove("valid");
-    length.classList.add("invalid");
-  }
-}
-  // $(document).ready(function() {
 
-
-  //   $('#submit-password').click(function(e) {
-  //     e.preventDefault();
-  //     var pass = $('#new-password').val();
-  //     var pass2 = $('#confirm-password').val();
-  //     if (pass != pass2) {
-  //       //$('#not-confirmed').html("The new passowrd not confirmed");
-  //       $('#new-password').setCustomValidity('Passwords must match');
-  //       console.log(pass + ' ' + pass2);
-  //       return;
-  //     }
-  //     $('#password-form').submit();
-  //   });
-  // });
+  $('#submit-password').click(function(e) {
+    e.preventDefault();
+    
+    if(validate1 && validate2 && validate3 && validate4){
+      
+      $('#password-form').submit();
+      return;
+    }
+    console.log("Not match passord validation");
+  });
 </script>
 
 <style>
+  .valid {
+    color: green;
+  }
 
-.valid {
-  color: green;
-}
+  .valid:before {
+    position: relative;
+    left: -3px;
+    content: "✔";
+  }
 
-.valid:before {
-  position: relative;
-  left: -3px;
-  content: "✔";
-}
+  /* Add a red text color and an "x" when the requirements are wrong */
+  .invalid {
+    color: red;
+  }
 
-/* Add a red text color and an "x" when the requirements are wrong */
-.invalid {
-  color: red;
-}
-
-.invalid:before {
-  position: relative;
-  left: -3px;
-  content: "✖";
-}
+  .invalid:before {
+    position: relative;
+    left: -3px;
+    content: "✖";
+  }
 </style>
 @stop
