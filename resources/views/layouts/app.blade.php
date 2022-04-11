@@ -17,6 +17,7 @@
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/locale/af.min.js" integrity="sha512-lnYINW0FnmQ7QKM2C5b94J7Ev9xp80zvVPs5qY2dImqaUVAyPiGUtZdSks9UsKixpl0G+Vee3Aps3XqOGm4LDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js" integrity="sha512-o0rWIsZigOfRAgBxl4puyd0t6YKzeAw9em/29Ag7lhCQfaaua/mDwnpE2PVzwqJ08N7/wqrgdjc2E0mwdSY2Tg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- <script src="{{ asset('js/fullcalendar.js') }}" defer></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.5/umd/popper.min.js" integrity="sha512-8cU710tp3iH9RniUh6fq5zJsGnjLzOWLWdZqBMLtqaoZUA6AWIE34lwMB3ipUNiTBP5jEZKY95SfbNnQ8cCKvA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js" integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD" crossorigin="anonymous"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -270,7 +271,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                 <!-- <a class="navbar-brand" href="{{ url('https://www.wetra.ca/') }}">
                     <h3>{{ config('app.name', 'Home') }}</h3>
                 </a> -->
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="{{ url('home') }}">
                     <img src="/wetra/storage/logo-main-light-80H.png" alt="" width="60" height="45" style="margin-right:80px;">
 
                 </a>
