@@ -165,11 +165,11 @@ class ScheduleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
 
-        //Log::debug($request);
-        //return;
+        // Log::debug($id);
+        // return;
         $id = $request->all()["id"];
         $task = Task::findOrFail($id);
         switch ($request->all()["taskStatus"]) {
@@ -194,7 +194,11 @@ class ScheduleController extends Controller
         }
         $task->update();
 
-        return response()->json($task);
+        if($request->ajax()){
+            return response()->json($task);
+        }
+
+        return redirect()->back();
     }
 
     /**

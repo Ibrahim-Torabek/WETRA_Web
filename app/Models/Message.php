@@ -19,7 +19,7 @@ class Message extends Model
 
 
     function sender(){
-        return $this->hasOne(User::class);
+        return $this->hasOne(User::class, 'id','sender_id');
     }
 
     public function receiver(){
