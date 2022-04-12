@@ -2,7 +2,13 @@
 @extends('layouts.app')
 
 @section('selected-user')
+@if(!empty($selectedUser))
 {{ $selectedUser->first_name }} {{ $selectedUser->last_name }}
+@endif
+@if(!empty($selectedGroup))
+{{ $selectedGroup->name }}
+@endif
+
 @stop
 
 @section('content')
@@ -10,6 +16,7 @@
 
 <div class="conteiner chat-area">
     <div class="chat-content" id="chat-content">
+        @if(!empty($selectedUser))
         @foreach($chatLines as $chatLine)
         <div class="row">
             <div class="chat-box col-md-10 d-flex {{ $chatLine->sender_id == Auth::id() ? 'justify-content-end' : '' }}">
@@ -19,19 +26,26 @@
             </div>
         </div>
         @endforeach
+        @endif
 
 
     </div>
     <footer class="footer fixed">
         <div class="container-footer">
-            <!-- method="post" action="{{ action([\App\Http\Controllers\MessageController::class, 'store'], ['receiver' => $selectedUser->id]) }}" -->
+
             <form id="message_form">
                 @csrf
                 <div class="input-group">
                     <label for=""></label>
                     <div class="chatboxdiv mx-auto pr-0">
                         <input class="chatbox" id="chatText" name="chatText" type="text" required />
+                        @if(!empty($selectedUser))
                         <input type="hidden" name="selectedUser" id="selectedUser" value="{{ $selectedUser->id }}" />
+                        @endif
+                        @if(!empty($selectedGroup))
+                        <input type="hidden" name="selectedGroup" id="selectedUser" value="{{ $selectedGroup->id }}" />
+                        <input type="hidden" name="isGroup" id="isGroup" value="1">
+                        @endif
                         <input type="hidden" name="user" id="user" value="{{ Auth::id() }}" />
                     </div>
                     <button class="btn btn-link pl-0 ml-0">
@@ -159,4 +173,6 @@
             console.log("Cannot find element")
         }
     }
+
+    
 </script>
