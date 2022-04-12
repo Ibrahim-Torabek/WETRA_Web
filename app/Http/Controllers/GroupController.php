@@ -19,7 +19,11 @@ class GroupController extends Controller
         $groups = Group::all();
         
         if($request->wantsJson())
-            return response()->json($groups);
+            return $groups;
+    }
+
+    public function all(){
+        return Group::all();
     }
 
     /**

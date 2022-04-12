@@ -7,12 +7,18 @@ require('./bootstrap');
 const message_input = document.getElementById("chatText");
 const message_form = document.getElementById("message_form");
 const message_content = document.getElementById("chat-content");
-const receiver = document.getElementById("selectedUser");
+// if(document.getElementById("selectedUser") != null){
+//     const receiver = document.getElementById("selectedUser");
+// } else {
+//     const receiver = document.getElementById("selectedGroup");
+// }
 const user = document.getElementById("user");
+
 
 message_form.addEventListener('submit', function (e) {
 
     e.preventDefault();
+    console.log("receiver");
 
     let has_errors = false;
 
@@ -20,12 +26,23 @@ message_form.addEventListener('submit', function (e) {
         return;
     }
 
-    const options = {
-        method: "POST",
-        url: "../messages",
-        data: {
-            chatText: message_input.value,
-            receiver: parseInt(receiver.value),
+    if (document.getElementById("selectedUser") != null) {
+        const options = {
+            method: "POST",
+            url: "../messages",
+            data: {
+                chatText: message_input.value,
+                receiver: parseInt(document.getElementById("selectedUser").value),
+            }
+        }
+    } else {
+        const options = {
+            method: "POST",
+            url: "../messages",
+            data: {
+                chatText: message_input.value,
+                group: parseInt(document.getElementById("selectedUser").value),
+            }
         }
     }
 
@@ -58,8 +75,7 @@ window.Echo.channel('chat')
             message_input.value = "";
             updateScroll();
         }
-    }
-    );
+    });
 
 // Echo.channel('chat')
 //   .listen('.message', (e) => {
