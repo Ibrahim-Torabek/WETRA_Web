@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use App\Models\User;
-
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use App\Events\Chat;
 
@@ -42,13 +42,49 @@ class MessageController extends Controller
         $chatedUsers = $chatedUsers->unique('email');
         //$chatedUsers->forget(Auth::user()->first_name);
 
-        // if($requestAray->wantsJson()){
-        //     return response([
-        //         "chatedUsers" => $chatedUsers
-        //     ]);
+        // if($request->wantsJson()){
+        //     return response()->json($chatedUsers);
+        //     Log::debug(response()->json($chatedUsers));
         // }
+        
+        //Log::debug(json_encode($chatedUsers->toArray()));
         return $chatedUsers;
     }
+
+    public function getChatedUsersAPI()
+    {
+        $sent = Auth::user()->sentMessages->unique('receiver_id')->except(Auth::id());;
+        $received = Auth::user()->receivedMessages->unique('sender_id')->except(Auth::id());;
+
+        $allLines = $sent->merge($received)->sortBy('created_at');
+
+        $chatedUsers = [];//collect(new User);
+        //dd($chatedUsers);
+        foreach ($allLines as $line) {
+            $user = $line->sender_id == Auth::id() ? User::find($line->receiver_id) : User::find($line->sender_id);
+            if (!empty($user)) {
+                //if ($user->id != Auth::id())
+                    // $chatedUsers->push($user);
+                if(!in_array($user,$chatedUsers))
+                    array_push($chatedUsers, $user);
+            }
+        }
+
+        //$chatedUsers = array_unique($chatedUsers);
+        //$chatedUsers = $chatedUsers->unique('email');
+        //$chatedUsers->forget(Auth::user()->first_name);
+
+        // if($request->wantsJson()){
+        //     return response()->json($chatedUsers);
+        //     Log::debug(response()->json($chatedUsers));
+        // }
+
+        
+        
+        //Log::debug(response()->json($chatedUsers));
+        return $chatedUsers;
+    }
+
 
     /**
      * Display a listing of the resource.
@@ -227,11 +263,23 @@ class MessageController extends Controller
         //$users1 = Message::find(1)->reciever;
 
         //dd($users1);
-
+        
         if ($request->wantsJson()) {
-            return response([
-                'chatLines' => $allMessages
-            ], 401);
+            $temp = [];
+            foreach($allMessages as $message){
+                //Log::debug($message->toArray());
+                array_push($temp, [
+                    "id"=> $message->id,
+                    "line_text" => $message->line_text,
+                    "sender_id" => $message->sender_id,
+                    "receiver_id" => $message->receiver_id,
+                    "image_url" => $message->image_url,
+                    "is_read" => $message->is_read
+                ]);
+            }
+            Log::debug($temp);
+            
+            return response()->json($temp);
         } else {
             //return redirect()->back();
             return view('message.chat', ['selectedUser' => $selectedUser, 'chatLines' => $allMessages]);

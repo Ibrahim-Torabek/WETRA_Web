@@ -60,7 +60,7 @@
                     <h3 class="text-center pb-2 pt-2 border-bottom">Hi {{ Auth::user()->first_name }}</h3>
 
                     <!-- TODO: If user does not have any tasks, display: "You dont have any tasks today." Overwise, display:" You have number of tasks today" -->
-                    <h5 class="text-center pt-1">You have 2 tasks today.</h5>
+                    <h5 class="text-center pt-1">You have {{ count($dayTasks) }} task{{count($dayTasks) > 1? 's': ''}} today.</h5>
 
                     <h5 class="text-left pt-1"><strong>My tasks for today, {{ date('l M d, Y') }}.</strong></h5>
 
