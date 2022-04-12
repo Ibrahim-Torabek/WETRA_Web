@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 // use PHPUnit\TextUI\XmlConfiguration\Group;
 use App\Models\Group;
+use Illuminate\Support\Facades\Log;
 
 class GroupController extends Controller
 {
@@ -13,9 +14,12 @@ class GroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $groups = Group::all();
+        
+        if($request->wantsJson())
+            return response()->json($groups);
     }
 
     /**
@@ -38,6 +42,9 @@ class GroupController extends Controller
     {
         //dd($request->all());
         Group::create($request->all());
+        if($request->wantsJson()){
+            return response()->json(["success" => "created"]);
+        }
         return redirect()->back();
         
     }
@@ -73,9 +80,15 @@ class GroupController extends Controller
      */
     public function update(Request $request, Group $group)
     {
-        //dd($request->all());
-        $group->update($request->all());
-
+        Log::debug($request);
+        $group = $group->update($request->all());
+        if($request->wantsJson()){
+            if($group)
+                return response()->json(["success" => "Group name updated successfully."]);
+            else{
+                return response()->json(["fail" => "Failed to update group name."]);
+            }
+        }
         return redirect()->back();
     }
 
@@ -85,9 +98,13 @@ class GroupController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Group $group)
+    public function destroy(Request $request, Group $group)
     {
-        $group->delete();
+        $result = $group->delete();
+        
+        if($request->wantsJson()){
+            return response()->json(["success" => "Deleted successfully"]);
+        }
 
         return redirect()->back();
     }

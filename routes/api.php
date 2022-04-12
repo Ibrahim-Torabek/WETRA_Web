@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('messages/chat', [App\Http\Controllers\MessageController::class, 'chat']);
-Route::post('messages/chatted_users', [App\Http\Controllers\MessageController::class, 'getChatedUsers']);
+Route::post('messages/chatted_users', [App\Http\Controllers\MessageController::class, 'getChatedUsersAPI']);
 Route::post('messages/send', [App\Http\Controllers\MessageController::class, 'store']);
 
 Route::post('users/all', [User::class, 'all']);
@@ -37,6 +37,8 @@ Route::apiResource('users', App\Http\Controllers\UserController::class);
 Route::apiResource('schedules', App\Http\Controllers\ScheduleController::class);
 
 Route::apiResource('files', App\Http\Controllers\FileController::class);
+
+Route::apiResource('groups', App\Http\Controllers\GroupController::class);
 //Route::apiResource('messages', App\Http\Controllers\MessageController::class);
 
 // Route::group(['middleware' => ['auth:sanctum']], function(){
