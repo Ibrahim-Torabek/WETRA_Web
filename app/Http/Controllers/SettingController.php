@@ -15,6 +15,7 @@ class SettingController extends Controller
     {
         
         $this->middleware('auth:sanctum', ['except' => []]);
+        $this->middleware('verified');
     }
     /**
      * Display a listing of the resource.
