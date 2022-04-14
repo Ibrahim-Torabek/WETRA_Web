@@ -20,7 +20,7 @@ class MessageController extends Controller
     {
 
         $this->middleware('auth:sanctum', ['except' => []]);
-        $this->middleware('verified');
+        //$this->middleware('verified');
     }
 
     // Function that get all chated users for current user
@@ -127,8 +127,8 @@ class MessageController extends Controller
         //return $request;
         $requestArray = $request->all();
 
-        if ($requestArray["receiver"] >= 10000) {
-            $group = Group::find($requestArray["receiver"]);
+        if ($request->has('group')) {
+            $group = Group::find($requestArray["group"]);
             foreach ($group->users as $user) {
                 $message = new Message();
 
@@ -142,6 +142,7 @@ class MessageController extends Controller
                 event(
                     new Chat(
                         $user->id,
+                        Auth::id(),
                         $message->line_text
                     )
                 );
@@ -160,6 +161,7 @@ class MessageController extends Controller
             event(
                 new Chat(
                     $requestArray["receiver"],
+                    Auth::id(),
                     $requestArray["chatText"]
                 )
             );

@@ -15,6 +15,7 @@ class Chat implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $user;
+    public $sender;
     public $message;
 
     /**
@@ -22,10 +23,11 @@ class Chat implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($userName, $message)
+    public function __construct($userName, $sender, $message)
     {
         $this->user = $userName;
         $this->message = $message;
+        $this->sender = $sender;
     }
 
     /**

@@ -20,7 +20,7 @@ class ScheduleController extends Controller
     {
 
         $this->middleware('auth:sanctum', ['except' => []]);
-        $this->middleware('verified');
+        //$this->middleware('verified');
     }
 
     /**

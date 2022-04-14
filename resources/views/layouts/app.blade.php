@@ -263,6 +263,9 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
 </head>
 
 <body>
+<input type="hidden"  id="user" value="{{ Auth::id() }}" />
+<input type="hidden"  id="messageUrl" value="{{ url('messages') }}" />
+
     <div id="app">
 
         <nav class="navbar fixed-top navbar-expand-md navbar-dark p-0  shadow-sm" style="background-color:#800b37;">
@@ -372,7 +375,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
             @yield('content')
         </main>
     </div>
-
+    
 </body>
 
 </html>

@@ -36,20 +36,22 @@ Route::post('/email/verification-notification', function (Request $request) {
     return back()->with('message', 'Verification link sent!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
+//Auth::routes(['verify'=>true]);
+
 Auth::routes();
 
 
-Route::get('users/profile', [App\Http\Controllers\UserController::class, 'profile']);
-Route::post('users/upload_image', [App\Http\Controllers\UserController::class, 'uploadImage']);
+Route::get('users/profile', [App\Http\Controllers\UserController::class, 'profile'])->middleware('verified');
+Route::post('users/upload_image', [App\Http\Controllers\UserController::class, 'uploadImage'])->middleware('verified');
 Route::resource('users', App\Http\Controllers\UserController::class);
 
 
-Route::resource('schedules', App\Http\Controllers\ScheduleController::class);
+Route::resource('schedules', App\Http\Controllers\ScheduleController::class)->middleware('verified');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('verified');
 
-Route::get('messages/chat', [App\Http\Controllers\MessageController::class, 'chat']);
-Route::resource('messages', App\Http\Controllers\MessageController::class);
+Route::get('messages/chat', [App\Http\Controllers\MessageController::class, 'chat'])->middleware('verified');
+Route::resource('messages', App\Http\Controllers\MessageController::class)->middleware('verified');
 
 
 
@@ -58,11 +60,11 @@ Route::resource('messages', App\Http\Controllers\MessageController::class);
 
 
 
-Route::resource('files', App\Http\Controllers\FileController::class);
+Route::resource('files', App\Http\Controllers\FileController::class)->middleware('verified');
 
-Route::resource('groups', App\Http\Controllers\GroupController::class);
+Route::resource('groups', App\Http\Controllers\GroupController::class)->middleware('verified');
 
-Route::resource('settings', App\Http\Controllers\SettingController::class);
+Route::resource('settings', App\Http\Controllers\SettingController::class)->middleware('verified');
 
 
 
