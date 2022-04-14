@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Events\Schedule;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -80,6 +81,14 @@ class ScheduleController extends Controller
             //return redirect()->back();
             //Alert::toast('Error: ' . $validator, 'alert');
         }
+
+        event(
+            new Schedule(
+                83,
+                Auth::id(),
+                "Hello World"
+            )
+        );
 
 
         //dd($request);

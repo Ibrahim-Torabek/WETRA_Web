@@ -290,7 +290,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item {{ (request()->routeIs('messages.*')) ? 'active' : '' }}">
                             <a class="navbar-brand" href="{{ url('/messages') }}" style="color:{{ (request()->is('messages/*') or request()->is('messages')) ? 'gray' : '' }};">
-                                Messages
+                                Messages <span class="badge badge-light"></span>
                             </a>
 
 

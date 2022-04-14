@@ -100,3 +100,43 @@ window.Echo.channel('chat')
         }
     });
 
+window.Echo.channel('schedule')
+    .listen('.schedule', (e) => {
+        //console.log(e);
+        
+        Swal.fire({
+            toast: true,
+            icon: 'info',
+            title: '<a href="#">You have a new Schedule</a>',
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 6000,
+        });
+        // if (user.value == e.user) {
+        //     if (selected_user != null && selected_user.value == e.sender) {
+        //         message_content.innerHTML += `
+        // <div class="chat-box col-md-10 d-flex ">
+        //     <div class="chat-bubble chat-bubble--blue  chat-bubble--left">
+        // ` + e.message + `
+        //     </div>
+        // </div>
+        // `
+        //         message_input.value = "";
+        //         updateScroll();
+        //     } else {
+
+        //         // url = {!!str_replace("'", "\'", json_encode(url("messages"))) !!};// "<?php echo url('messages') ?>"
+        //         //url = {!!str_replace("'", "\'", json_encode($users)) !!};
+        //         console.log("Url: " + message_url);
+        //         Swal.fire({
+        //             toast: true,
+        //             icon: 'info',
+        //             title: '<a href="' + message_url + '/chat?selectedUser=' + e.sender + '">You have a new Message</a>',
+        //             position: 'top-right',
+        //             showConfirmButton: false,
+        //             timer: 6000,
+        //         });
+        //     }
+        // }
+    });
+

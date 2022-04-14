@@ -22,14 +22,17 @@ class SettingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        //return "settings";
         $settings = Auth::user()->settings;
 
         if(empty($settings)){
-            Auth::user()->settings()->create();
-            Log::debug('Setting is empty, and created new settings table');
-            
+            Auth::user()->settings()->create();            
+        }
+
+        if($request->wantsJson()){
+            return response()->json($settings);
         }
         
         return view('setting.index');
@@ -88,32 +91,49 @@ class SettingController extends Controller
     public function update(Request $request, Setting $setting)
     {
         
-        $request = $request->all();
-        Log::debug($request);
+        $requestArray = $request->all();
+        $successMessage = 'Notification changed successfully';
+        $passwordErrorMessage = 'Current password you entered is not match!';
+        $passwordSuccessMessage = 'Password changed successfully';
+        $notvalidMessage = 'Your new password does not match with the confirm password!';
+
+        Log::debug($requestArray);
         switch($request['settingsType']){
             case 'notification':
-                $setting->update($request);
-                Alert::toast('Settings saved successfully', 'success');
+                $setting->update($requestArray);
+                if($request->wantsJson()){
+                    return response()->json(['success' => $successMessage]);
+                }
+                Alert::toast($successMessage, 'success');
                 return redirect()->back();
                 break;
 
             case 'password':
-                if(!(Hash::check($request['password'], Auth::user()->password))){
+                if(!(Hash::check($requestArray['password'], Auth::user()->password))){
                     //Log::debug("Password not mach");
-                    return redirect()->back()->withErrors(['password' => 'Current password you entered is not match!']);
+                    if($request->wantsJson()){
+                        return response()->json(['failed' => $passwordErrorMessage]);
+                    }
+                    return redirect()->back()->withErrors(['password' => $passwordErrorMessage]);
                 }
-                if(strcmp($request['newPassword'], $request['confirmPassword']) != 0){
-                    
-                    return redirect()->back()->withErrors(['notvalid' => 'Your new password does not match with the confirm password!']);
+                if(strcmp($requestArray['newPassword'], $requestArray['confirmPassword']) != 0){
+                    if($request->wantsJson()){
+                        return response()->json(['failed' => $notvalidMessage ]);
+                    }
+                    return redirect()->back()->withErrors(['notvalid' => $notvalidMessage]);
                 }
                 
                 break;
         }
         Log::debug(Auth::user());
         $user = Auth::user()->update([
-            "password" => bcrypt($request['newPassword'])
+            "password" => bcrypt($requestArray['newPassword'])
         ]);
-        Alert::toast('Password changed successfully', 'success');
+
+        if($request->wantsJson()){
+            return response()->json(['success' => $passwordSuccessMessage]);
+        }
+        Alert::toast($passwordSuccessMessage, 'success');
         return redirect()->back();
     }
 

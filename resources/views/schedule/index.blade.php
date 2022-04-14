@@ -426,7 +426,7 @@
         @else
 
         eventClick: function(event) {
-            console.log(event);
+            //console.log(event);
             if (event.scheduleType == 'task' && event.is_completed != 1) {
                 $("#id").val(event.id);
                 $('#schedule-type').val('task');
