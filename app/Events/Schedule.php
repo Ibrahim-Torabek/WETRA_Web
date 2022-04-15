@@ -10,22 +10,24 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class Message implements ShouldBroadcast
+class Schedule implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $userName;
-    public $message;
+    public $user;
+    public $sender;
+    public $day;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($userName, $message)
+    public function __construct($userName, $sender, $day)
     {
-        $this->userName = $userName;
-        $this->message = $message;
+        $this->user = $userName;
+        $this->day = $day;
+        $this->sender = $sender;
     }
 
     /**
@@ -35,11 +37,11 @@ class Message implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('message');
+        return new Channel('schedule');
     }
 
     public function broadcastAs()
     {
-        return 'message';
+        return 'schedule';
     }
 }

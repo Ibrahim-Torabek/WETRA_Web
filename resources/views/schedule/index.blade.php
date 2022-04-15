@@ -49,13 +49,12 @@
                 <div class="form-group" id="assigned-to">
                     <label>Assigned To</label>
                     <select class="form-control multiple_select" name="assigned_to" id="assigned_to" single="single" style="width:100%">
-                        <option value="0"></option>
+                        
                         <option value="0">All Users</option>
-                        <option value="admins">Admins</option>
-                        <option value="barn">Barn Staff</option>
-                        <option value="office">Office Staff</option>
-                        <option value="instructors">Instructors</option>
-                        <option value="volunteers">Volunteers</option>
+                        @foreach(App\Http\Controllers\GroupController::all() as $group)
+                            <option value="{{ $group->id }}" is_group="1"> {{ $group->name }}</option>
+                        @endforeach
+                        
                         ...
                         <optgroup label="Users">
                             @foreach($users as $user)
@@ -187,8 +186,12 @@
         height: 650,
         showNonCurrenDates: false,
         initialView: 'listWeek',
-        //defaultView: 'listWeek',
+        defaultView: "month",
         events: "{{ url('schedules') }}",
+//         visibleRange: {
+//     start: '2022-04-17',
+//     end: '2022-04-18'
+//   },
 
         eventRender: function(event, element) {
             if (event.allDay == 1) {
@@ -426,7 +429,7 @@
         @else
 
         eventClick: function(event) {
-            console.log(event);
+            //console.log(event);
             if (event.scheduleType == 'task' && event.is_completed != 1) {
                 $("#id").val(event.id);
                 $('#schedule-type').val('task');
@@ -452,60 +455,9 @@
 
     });
 
-
-
-
-
-
-    // Add event
-    $("#submit-event").click(function(e) {
-        e.preventDefault();
-        //$("#dayDialog").hide();
-        //alert("Clicked");
-        $.ajax({
-            url: "schedules",
-            type: "POST",
-            data: {
-                //_token: "{{ csrf_token() }}",
-                scheduleType: $("#schedule-type").val(),
-                title: $("#title").val(),
-                start: $("#start").val(),
-                end: $("#end").val(),
-                allDay: $("#allDay").val(),
-                description: $("#description").val(),
-                assigned_to: $("#assigned_to").val(),
-                color: $("#color").val(),
-                textColor: $("#textColor").val(),
-                id: $("#id").val(),
-            },
-            success: function(data) {
-                $("#dayDialog").dialog('close');
-
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: 'Event added or updated successfully',
-
-                    position: 'top-right',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                });
-                $('#calendar').fullCalendar('refetchEvents');
-
-            },
-            error: function(result) {
-                //$("#dayDialog").hide();
-                alert("Error: " + result);
-                console.log(result);
-
-            },
-        });
-    });
+    @if(!empty($day))
+        $('#calendar').fullCalendar('changeView', 'listDay', '{{ $day }}');
+    @endif
 
     //Delete Event
     $("#delete-event").click(function(e) {

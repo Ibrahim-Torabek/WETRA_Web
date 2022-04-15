@@ -1,87 +1,220 @@
 const { default: axios } = require('axios');
 
 require('./bootstrap');
-//console.log("Hello World");
 
+
+
+/********************************************************************************************************************************
+ ********************************************************************************************************************************
+ *               Message
+ ********************************************************************************************************************************
+ ********************************************************************************************************************************/
+
+ 
 //var user = {{ json_encode((array)auth()->user()) }};
 const message_input = document.getElementById("chatText");
 const message_form = document.getElementById("message_form");
 const message_content = document.getElementById("chat-content");
-// if(document.getElementById("selectedUser") != null){
-//     const receiver = document.getElementById("selectedUser");
-// } else {
-//     const receiver = document.getElementById("selectedGroup");
-// }
+const selected_user = document.getElementById("selectedUser");
+const message_url = document.getElementById("message—url").value;
+const schedule_url = document.getElementById("schedule-url").value;
 const user = document.getElementById("user");
 
 
-message_form.addEventListener('submit', function (e) {
 
-    e.preventDefault();
-    console.log("receiver");
 
-    let has_errors = false;
+if (message_form != null) {
+    message_form.addEventListener('submit', function (e) {
 
-    if (has_errors) {
-        return;
-    }
+        e.preventDefault();
 
-    if (document.getElementById("selectedUser") != null) {
-        const options = {
-            method: "POST",
-            url: "../messages",
-            data: {
-                chatText: message_input.value,
-                receiver: parseInt(document.getElementById("selectedUser").value),
-            }
+
+        let has_errors = false;
+
+        if (has_errors) {
+            return;
         }
-    } else {
-        const options = {
-            method: "POST",
-            url: "../messages",
-            data: {
-                chatText: message_input.value,
-                group: parseInt(document.getElementById("selectedUser").value),
-            }
-        }
-    }
 
-    //console.log(options);
-    axios(options);
-    message_content.innerHTML += `
-    <div class="chat-box col-md-10 d-flex justify-content-end">
-        <div class="chat-bubble chat-bubble--blue bg-primary text-light chat-bubble--right">
-    ` + message_input.value + `
+
+        if (document.getElementById("selectedUser") != null) {
+            const options = {
+                method: "POST",
+                url: "../messages",
+                data: {
+                    chatText: message_input.value,
+                    receiver: parseInt(document.getElementById("selectedUser").value),
+                }
+            };
+            axios(options);
+            console.log("Selected User");
+        } else {
+            const options = {
+                method: "POST",
+                url: "../messages",
+                data: {
+                    chatText: message_input.value,
+                    group: parseInt(document.getElementById("selectedGroup").value),
+                }
+            };
+            axios(options);
+            console.log("Selected Group");
+        }
+
+        //console.log(options);
+
+        // message_content.innerHTML += '<div class="chat-box col-md-10 d-flex justify-content-end">';
+        // message_content.innerHTML += '<div class="chat-bubble chat-bubble--blue bg-primary text-light chat-bubble--right">';
+        // message_content.innerHTML += message_input.value;
+        // message_content.innerHTML += '</div></div>';
+        message_content.innerHTML += `
+        <div class="chat-box col-md-10 d-flex justify-content-end">
+            <div class="chat-bubble chat-bubble--blue bg-primary text-light chat-bubble--right">
+        ` + message_input.value + `
+            </div>
         </div>
-    </div>
-    `
-    message_input.value = "";
-    updateScroll();
+        `
+        message_input.value = "";
+        updateScroll();
 
-});
+    });
+}
 
 window.Echo.channel('chat')
     .listen('.message', (e) => {
         //console.log(e);
-
+        console.log("User: " + user.value);
         if (user.value == e.user) {
-            message_content.innerHTML += `
+            if (selected_user != null && selected_user.value == e.sender) {
+                message_content.innerHTML += `
         <div class="chat-box col-md-10 d-flex ">
             <div class="chat-bubble chat-bubble--blue  chat-bubble--left">
         ` + e.message + `
             </div>
         </div>
         `
-            message_input.value = "";
-            updateScroll();
+                message_input.value = "";
+                updateScroll();
+            } else {
+
+                // url = {!!str_replace("'", "\'", json_encode(url("messages"))) !!};// "<?php echo url('messages') ?>"
+                //url = {!!str_replace("'", "\'", json_encode($users)) !!};
+                console.log("Url: " + message_url);
+                Swal.fire({
+                    toast: true,
+                    icon: 'info',
+                    title: '<a href="' + message_url + '/chat?selectedUser=' + e.sender + '">You have a new Message</a>',
+                    position: 'top-right',
+                    showConfirmButton: false,
+                    timer: 6000,
+                });
+            }
         }
     });
 
-// Echo.channel('chat')
-//   .listen('.message', (e) => {
-//     // this.messages.push({
-//     //   message: e.message.message,
-//     //   user: e.user
-//     // });
-//     console.log(e);
-//   });
+
+
+
+
+
+/********************************************************************************************************************************
+ ********************************************************************************************************************************
+ *
+ *               Schedule
+ * 
+ ********************************************************************************************************************************
+ ********************************************************************************************************************************/
+
+// Add event
+$("#submit-event").click(function(e) {
+    e.preventDefault();
+    //$("#dayDialog").hide();
+    is_group = $("#assigned_to").find(':selected').attr('is_group');
+    //alert();
+    $.ajax({
+        url: "schedules",
+        type: "POST",
+        data: {
+            //_token: "{{ csrf_token() }}",
+            scheduleType: $("#schedule-type").val(),
+            title: $("#title").val(),
+            start: $("#start").val(),
+            end: $("#end").val(),
+            allDay: $("#allDay").val(),
+            description: $("#description").val(),
+            assigned_to: $("#assigned_to").val(),
+            is_group: is_group,
+            color: $("#color").val(),
+            textColor: $("#textColor").val(),
+            id: $("#id").val(),
+        },
+        success: function(data) {
+            $("#dayDialog").dialog('close');
+
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Event added or updated successfully',
+
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+            $('#calendar').fullCalendar('refetchEvents');
+
+        },
+        error: function(result) {
+            //$("#dayDialog").hide();
+            alert("Error: " + result);
+            console.log(result);
+
+        },
+    });
+});
+
+// Listen schedule chanlle
+window.Echo.channel('schedule')
+    .listen('.schedule', (e) => {
+        console.log(e);
+        if(user.value == e.user){
+            Swal.fire({
+                toast: true,
+                icon: 'info',
+                title: '<a href="' + schedule_url + '?day=' + e.day + '">You have a new Schedule</a>',
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 6000,
+            });
+        }
+
+        // if (user.value == e.user) {
+        //     if (selected_user != null && selected_user.value == e.sender) {
+        //         message_content.innerHTML += `
+        // <div class="chat-box col-md-10 d-flex ">
+        //     <div class="chat-bubble chat-bubble--blue  chat-bubble--left">
+        // ` + e.message + `
+        //     </div>
+        // </div>
+        // `
+        //         message_input.value = "";
+        //         updateScroll();
+        //     } else {
+
+        //         // url = {!!str_replace("'", "\'", json_encode(url("messages"))) !!};// "<?php echo url('messages') ?>"
+        //         //url = {!!str_replace("'", "\'", json_encode($users)) !!};
+        //         console.log("Url: " + message_url);
+        //         Swal.fire({
+        //             toast: true,
+        //             icon: 'info',
+        //             title: '<a href="' + message_url + '/chat?selectedUser=' + e.sender + '">You have a new Message</a>',
+        //             position: 'top-right',
+        //             showConfirmButton: false,
+        //             timer: 6000,
+        //         });
+        //     }
+        // }
+    });

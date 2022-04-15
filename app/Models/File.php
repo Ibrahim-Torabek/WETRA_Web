@@ -16,6 +16,7 @@ class File extends Model
         "description",
         "shared_to",
         "uploaded_by",
+        'is_group',
     ];
 
 }

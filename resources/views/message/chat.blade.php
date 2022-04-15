@@ -43,7 +43,7 @@
                         <input type="hidden" name="selectedUser" id="selectedUser" value="{{ $selectedUser->id }}" />
                         @endif
                         @if(!empty($selectedGroup))
-                        <input type="hidden" name="selectedGroup" id="selectedUser" value="{{ $selectedGroup->id }}" />
+                        <input type="hidden" name="selectedGroup" id="selectedGroup" value="{{ $selectedGroup->id }}" />
                         <input type="hidden" name="isGroup" id="isGroup" value="1">
                         @endif
                         <input type="hidden" name="user" id="user" value="{{ Auth::id() }}" />
@@ -166,13 +166,13 @@
     //setInterval(updateScroll,3000);
 
     function updateScroll() {
-        var myDiv = document.getElementById("chat-scroll-area");
-        if (myDiv) {
-            myDiv.scrollTop = myDiv.scrollHeight;
-        } else {
-            console.log("Cannot find element")
-        }
+    var myDiv = document.getElementById("chat-scroll-area");
+    if (myDiv) {
+        myDiv.scrollTop = myDiv.scrollHeight;
+    } else {
+        console.log("Cannot find element")
     }
+}
 
     
 </script>

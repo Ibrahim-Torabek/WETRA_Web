@@ -164,23 +164,27 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
             margin-left: 0;
             margin-right: 0;
         }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button{
+            box-sizing:border-box;
+            display:inline-block;
+            min-width:0;
+            padding: 0;
+            margin-left:0px;
+            text-align:center;
+            text-decoration:none !important;
+            cursor:pointer;
+            *cursor:hand;
+            color:#333 !important;
+            border:1px solid transparent;
+            border-radius:2px
+        }
     </style>
     <script>
         
         $(document).ready(function() {
 
-            $("#file").on('change', function(e){
-                let size = this.files[0].size;
-                if(size > 2097152){  // If more than 2MB
-                    alert('File zise must be less than 2MB ');
-                    //toast('Your Post as been submited!','success');
 
-                    e.preventDefault();
-                    $("#file").val('');
-                    //$("#uploadForm").reset;
-                }
-                
-            });
 
             var table = $('.user-table').DataTable({
                 processing: true,
@@ -219,34 +223,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                 ]
             });
 
-            var table = $('.data-table').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: "{{ route('files.index') }}",
-                columns: [{
-                        data: 'file_name',
-                        name: 'file_name',
-                        render: function(data,type,row){
-                            return "<a href='" + row.file_url + "'>" + row.file_name + "</a>";
-                        }
-                        
-                    },
-                    {
-                        data: 'file_extention',
-                        name: 'file_extention'
-                    },
-                    {
-                        data: 'description',
-                        name: 'description'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
-                    },
-                ]
-            });
+
 
             bsCustomFileInput.init();
 
@@ -263,6 +240,10 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
 </head>
 
 <body>
+<input type="hidden"  id="user" value="{{ Auth::id() }}" />
+<input type="hidden"  id="message—url" value="{{ url('messages') }}" />
+<input type="hidden"  id="schedule-url" value="{{ url('schedules') }}" />
+
     <div id="app">
 
         <nav class="navbar fixed-top navbar-expand-md navbar-dark p-0  shadow-sm" style="background-color:#800b37;">
@@ -287,7 +268,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item {{ (request()->routeIs('messages.*')) ? 'active' : '' }}">
                             <a class="navbar-brand" href="{{ url('/messages') }}" style="color:{{ (request()->is('messages/*') or request()->is('messages')) ? 'gray' : '' }};">
-                                Messages
+                                Messages <span class="badge badge-light" id="message_badge"></span>
                             </a>
 
 
@@ -372,7 +353,7 @@ derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
             @yield('content')
         </main>
     </div>
-
+    
 </body>
 
 </html>

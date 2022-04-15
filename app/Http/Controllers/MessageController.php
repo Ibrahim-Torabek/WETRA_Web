@@ -20,7 +20,7 @@ class MessageController extends Controller
     {
 
         $this->middleware('auth:sanctum', ['except' => []]);
-        $this->middleware('verified');
+        //$this->middleware('verified');
     }
 
     // Function that get all chated users for current user
@@ -127,9 +127,10 @@ class MessageController extends Controller
         //return $request;
         $requestArray = $request->all();
 
-        if ($requestArray["receiver"] >= 10000) {
-            $group = Group::find($requestArray["receiver"]);
+        if ($request->has('group')) {
+            $group = Group::find($requestArray["group"]);
             foreach ($group->users as $user) {
+                //$user = User::find($user->id);
                 $message = new Message();
 
                 $message->line_text ="Group Message: " . $requestArray["chatText"];
@@ -137,14 +138,23 @@ class MessageController extends Controller
                 $message->receiver_id = $user->id;
                 $message->is_read = false;
                 $message->save();
-                Log::debug($message);
-    
-                event(
-                    new Chat(
-                        $user->id,
-                        $message->line_text
-                    )
-                );
+                
+                $settings = User::find($user->id)->settings;
+                if(empty($settings)){
+                    $user->settings()->create();  
+                    Log::debug($user->settings);   
+                }
+                
+                if($settings->new_message == 1){
+                    Log::debug("Receiver: accepted");
+                    event(
+                        new Chat(
+                            $user->id,
+                            Auth::id(),
+                            $message->line_text
+                        )
+                    );
+                }
             }
             return;
         } else {
@@ -157,12 +167,24 @@ class MessageController extends Controller
             $message->is_read = false;
             $message->save();
 
-            event(
-                new Chat(
-                    $requestArray["receiver"],
-                    $requestArray["chatText"]
-                )
-            );
+            $receiver = User::find($requestArray["receiver"]);
+            $settings = $receiver->settings;
+            Log::debug("Settings: " . $settings);
+            if(empty($settings)){
+                $receiver->settings()->create();  
+                Log::debug($receiver->settings);   
+            } 
+            
+            if($settings->new_message == 1){
+                event(
+                    new Chat(
+                        $requestArray["receiver"],
+                        Auth::id(),
+                        $requestArray["chatText"]
+                    )
+                );
+            }
+
         }
 
         //return view('message.chat',['selectedUser' => $selectedUser]);

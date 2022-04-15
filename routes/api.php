@@ -39,6 +39,8 @@ Route::apiResource('schedules', App\Http\Controllers\ScheduleController::class);
 Route::apiResource('files', App\Http\Controllers\FileController::class);
 
 Route::apiResource('groups', App\Http\Controllers\GroupController::class);
+
+Route::apiResource('settings', App\Http\Controllers\SettingController::class);
 //Route::apiResource('messages', App\Http\Controllers\MessageController::class);
 
 // Route::group(['middleware' => ['auth:sanctum']], function(){

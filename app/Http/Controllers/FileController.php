@@ -21,7 +21,7 @@ class FileController extends Controller
     {
         
         $this->middleware('auth:sanctum', ['except' => []]);
-        $this->middleware('verified');
+        //$this->middleware('verified');
     }
     /**
      * Display a listing of the resource.
@@ -38,25 +38,34 @@ class FileController extends Controller
             if(Auth::user()->is_admin != 1){
                 $files = File::where('shared_to', '0')
                     ->orWhere('shared_to', Auth::id())
+                    ->orWhere('is_group', "1")
+                    ->where('shared_to', Auth::user()->group->id)
                     ->get();
-                Log::debug($files);                
+
+                //Log::debug("Group files:" . $groupFiles);
+                //Log::debug($files);                
             } 
+            
+            if(Auth::user()->is_admin == 1){
+                return DataTables::of($files)
+                    ->addIndexColumn()
+                    ->addColumn('action', function ($file) {
 
-            return DataTables::of($files)
-                ->addIndexColumn()
-                ->addColumn('action', function ($file) {
-
-                    $btn = '<form method="post" action="';
-                    $btn .= action([\App\Http\Controllers\FileController::class,'destroy'],  ['file' => $file->id]);
-                    $btn .= '">';
-                    $btn .= csrf_field();
-                    $btn .= method_field('DELETE');
-                    $btn .= '<input class="btn btn-danger" type="submit" name="submit" value="Delete" onclick="return confirm(\'Are you Sure you want to delete this file?\')">';
-                    $btn .= "</form>";
-                    return $btn;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
+                        $btn = '<form method="post" action="';
+                        $btn .= action([\App\Http\Controllers\FileController::class,'destroy'],  ['file' => $file->id]);
+                        $btn .= '">';
+                        $btn .= csrf_field();
+                        $btn .= method_field('DELETE');
+                        $btn .= '<input class="btn btn-danger" type="submit" name="submit" value="Delete" onclick="return confirm(\'Are you Sure you want to delete this file?\')">';
+                        $btn .= "</form>";
+                        return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+            } else {
+                return DataTables::of($files)
+                    ->toJson();
+            }
         }
         
         if($request->wantsJson()){
@@ -88,7 +97,10 @@ class FileController extends Controller
     {
         //dd($request->all());
 
-        Log::debug($request . $request->file('file'));
+        Log::debug($request->all());
+
+        $isGroup = $request->all()['is_group'] ?? null;
+
         //TODO: File validate file size.
         $validator = Validator::make($request->all(), [
             'file' => 'max:500000',

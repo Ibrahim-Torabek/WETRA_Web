@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Task;
 use App\Models\User;
+use App\Models\Group;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Events\Schedule;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -20,7 +22,7 @@ class ScheduleController extends Controller
     {
 
         $this->middleware('auth:sanctum', ['except' => []]);
-        $this->middleware('verified');
+        //$this->middleware('verified');
     }
 
     /**
@@ -37,15 +39,27 @@ class ScheduleController extends Controller
                 $events = Event::latest()->get();
                 $tasks = Task::latest()->get();
             } else {
-                $events = Event::where('assigned_to', Auth::id())->orWhere('assigned_to', '0')->get();
-                $tasks = Task::where('assigned_to', Auth::id())->orWhere('assigned_to', '0')->get();
+                $events = Event::where('assigned_to', Auth::id())
+                    ->orWhere('assigned_to', '0')
+                    ->get();
+
+
+                $tasks = Task::where('assigned_to', Auth::id())
+                    ->orWhere('assigned_to', '0')
+                    ->orWhere('is_group', "1")
+                    ->where('assigned_to', Auth::user()->group->id)
+                    ->get();
             }
             //dd($data);
             return response()->json($events->merge($tasks));
         }
 
         $users = User::all();
-        return view('schedule.index', ['users' => $users]);
+        $day = null;
+        if ($request->has('day')) {
+            $day = $request->all()['day'];
+        }
+        return view('schedule.index', ['users' => $users, 'day' => $day]);
     }
 
     /**
@@ -66,7 +80,9 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {
 
-        // Log::debug($request->all());
+        Log::debug($request->all());
+        $assignedTo = $request->all()['assigned_to'];
+        $isGroup = $request->all()['is_group'] ?? null;
         // return ['Debug'];
         $validator = Validator::make($request->all(), [
             'title' => 'required',
@@ -97,7 +113,24 @@ class ScheduleController extends Controller
                 case 'task':
                     // Add 30 minutes to the start time.
                     $requestArray["end"] = Carbon::parse($requestArray["start"])->addMinutes(30)->format('Y-m-d H:i:s');
-                    Task::create($requestArray);
+                    $task = Task::create($requestArray);
+                    //Log::debug("Task: " . $task);
+                    if ($assignedTo == 0) {  // all members
+                        $users = User::all();
+                    } else if ($isGroup) {
+                        $users = Group::find($assignedTo)->users;
+                    } else {
+                        $user = User::find($assignedTo);
+                    }
+
+                    if (!empty($user)) {
+                        $this->triggerEvent($user, $task);
+                    }
+                    if (!empty($users)) {
+                        foreach ($users as $user) {
+                            $this->triggerEvent($user, $task);
+                        }
+                    }
                     break;
 
                 default:
@@ -136,6 +169,24 @@ class ScheduleController extends Controller
         return redirect()->back();
     }
 
+    function triggerEvent(User $user, Task $task)
+    {
+        $settings = User::find($user->id)->settings;
+        if (empty($settings)) {
+            $user->settings()->create();
+            Log::debug($user->settings);
+        }
+        if ($settings->new_schedule == 1) {
+            event(
+                new Schedule(
+                    $user->id,
+                    Auth::id(),
+                    Carbon::parse($task['start'])->format('Y-m-d')
+                )
+            );
+        }
+    }
+
     /**
      * Display the specified resource.
      *
@@ -169,7 +220,7 @@ class ScheduleController extends Controller
     public function update(Request $request, $id)
     {
 
-        // Log::debug($id);
+
         // return;
         $id = $request->all()["id"];
         $task = Task::findOrFail($id);
@@ -191,11 +242,10 @@ class ScheduleController extends Controller
             case 'rejectTimeOff':
                 $task->request_time_off_id = 0;
                 $task->confirm_time_off_id = 0;
-                        
         }
         $task->update();
 
-        if($request->ajax()){
+        if ($request->ajax()) {
             return response()->json($task);
         }
 

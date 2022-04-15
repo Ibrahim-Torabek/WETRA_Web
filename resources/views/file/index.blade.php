@@ -5,7 +5,7 @@
 
 
 <div class="container pt-5">
-    @if(Auth::user()->is_admin ==1)
+    @if(Auth::user()->is_admin == 1)
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-10">
@@ -36,13 +36,13 @@
 
                                 <label for="inputGroupSelect01">Share to:</label>
 
+                                <input type="hidden" id="is_group" name="is_group" >
                                 <select class=" user_select js-states" name="shared_to" id="shared_to" style="width:100%">
+                                    
                                     <option value="0">All Users</option>
-                                    <option value="admins">Admins</option>
-                                    <option value="barn">Barn Staff</option>
-                                    <option value="office">Office Staff</option>
-                                    <option value="instructors">Instructors</option>
-                                    <option value="volunteers">Volunteers</option>
+                                    @foreach(App\Http\Controllers\GroupController::all() as $group)
+                                    <option value="{{ $group->id }}" is_group="1"> {{ $group->name }}</option>
+                                    @endforeach
                                     <optgroup label="Users">
                                         @foreach($users as $user)
                                         <option value="{{ $user->id }}">{{ $user->first_name}} {{ $user->last_name}}</option>
@@ -74,7 +74,9 @@
                                     <th>File Name</th>
                                     <th>Ext</th>
                                     <th>Description</th>
-                                    <th width="100px">Action</th>
+                                    @if(Auth::user()->is_admin == 1)
+                                        <th width="100px">Action</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -87,6 +89,55 @@
     </div>
 </div>
 
+<script>
+    $('#shared_to').change(function(){
+        $('#is_group').val($('#shared_to').find(':selected').attr('is_group'));
+        console.log($('#is_group').val());
+    });
 
+    $("#file").on('change', function(e){
+                let size = this.files[0].size;
+                if(size > 2097152){  // If more than 2MB
+                    alert('File zise must be less than 2MB ');
+                    //toast('Your Post as been submited!','success');
+
+                    e.preventDefault();
+                    $("#file").val('');
+                    //$("#uploadForm").reset;
+                }
+                
+            });
+
+    var table = $('.data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('files.index') }}",
+                columns: [{
+                        data: 'file_name',
+                        name: 'file_name',
+                        render: function(data,type,row){
+                            return "<a href='" + row.file_url + "'>" + row.file_name + "</a>";
+                        }
+                        
+                    },
+                    {
+                        data: 'file_extention',
+                        name: 'file_extention'
+                    },
+                    {
+                        data: 'description',
+                        name: 'description'
+                    },
+                    @if(Auth::user()->is_admin == 1)
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                    @endif
+                ]
+            });
+</script>
 
 @stop
