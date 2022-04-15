@@ -14,7 +14,7 @@
 
                     <ul class="list-group list-group-flush">
                         @foreach($publicFiles as $file)
-                        <li class="list-group-item"><a href="{{ $file->file_url }}">{{ $file->file_name }}</a></li>
+                        <li class="list-group-item"><a href="{{ str_replace('storage/upload', 'storage/files', $file->file_url)  }}">{{ $file->file_name }}</a></li>
                         @endforeach
                     </ul>
 
@@ -34,7 +34,7 @@
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
                         @foreach($personalFiles as $file)
-                        <li class="list-group-item"><a href="{{ $file->file_url }}">{{ $file->file_name }}</a></li>
+                        <li class="list-group-item"><a href="{{ str_replace('storage/upload', 'storage/files', $file->file_url) }}">{{ $file->file_name }}</a></li>
                         @endforeach
                     </ul>
                 </div>
