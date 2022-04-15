@@ -22,5 +22,6 @@ class Task extends Model
         'is_completed',
         'request_time_off_id',
         'confirm_time_off_id',
+        'is_group',
     ];
 }

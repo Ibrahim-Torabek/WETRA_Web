@@ -166,13 +166,13 @@
     //setInterval(updateScroll,3000);
 
     function updateScroll() {
-        var myDiv = document.getElementById("chat-scroll-area");
-        if (myDiv) {
-            myDiv.scrollTop = myDiv.scrollHeight;
-        } else {
-            console.log("Cannot find element")
-        }
+    var myDiv = document.getElementById("chat-scroll-area");
+    if (myDiv) {
+        myDiv.scrollTop = myDiv.scrollHeight;
+    } else {
+        console.log("Cannot find element")
     }
+}
 
     
 </script>

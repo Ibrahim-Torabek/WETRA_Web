@@ -168,9 +168,14 @@ class MessageController extends Controller
             $message->save();
 
             $receiver = User::find($requestArray["receiver"]);
-            //Log::debug($receiver);
-            if($receiver->settings->new_message == 1){
-                
+            $settings = $receiver->settings;
+            Log::debug("Settings: " . $settings);
+            if(empty($settings)){
+                $receiver->settings()->create();  
+                Log::debug($receiver->settings);   
+            } 
+            
+            if($settings->new_message == 1){
                 event(
                     new Chat(
                         $requestArray["receiver"],

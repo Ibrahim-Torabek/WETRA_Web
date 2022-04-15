@@ -3,13 +3,24 @@ const { default: axios } = require('axios');
 require('./bootstrap');
 
 
+
+/********************************************************************************************************************************
+ ********************************************************************************************************************************
+ *               Message
+ ********************************************************************************************************************************
+ ********************************************************************************************************************************/
+
+ 
 //var user = {{ json_encode((array)auth()->user()) }};
 const message_input = document.getElementById("chatText");
 const message_form = document.getElementById("message_form");
 const message_content = document.getElementById("chat-content");
 const selected_user = document.getElementById("selectedUser");
-const message_url = document.getElementById("messageUrl").value;
+const message_url = document.getElementById("message—url").value;
+const schedule_url = document.getElementById("schedule-url").value;
 const user = document.getElementById("user");
+
+
 
 
 if (message_form != null) {
@@ -100,18 +111,86 @@ window.Echo.channel('chat')
         }
     });
 
+
+
+
+
+
+/********************************************************************************************************************************
+ ********************************************************************************************************************************
+ *
+ *               Schedule
+ * 
+ ********************************************************************************************************************************
+ ********************************************************************************************************************************/
+
+// Add event
+$("#submit-event").click(function(e) {
+    e.preventDefault();
+    //$("#dayDialog").hide();
+    is_group = $("#assigned_to").find(':selected').attr('is_group');
+    //alert();
+    $.ajax({
+        url: "schedules",
+        type: "POST",
+        data: {
+            //_token: "{{ csrf_token() }}",
+            scheduleType: $("#schedule-type").val(),
+            title: $("#title").val(),
+            start: $("#start").val(),
+            end: $("#end").val(),
+            allDay: $("#allDay").val(),
+            description: $("#description").val(),
+            assigned_to: $("#assigned_to").val(),
+            is_group: is_group,
+            color: $("#color").val(),
+            textColor: $("#textColor").val(),
+            id: $("#id").val(),
+        },
+        success: function(data) {
+            $("#dayDialog").dialog('close');
+
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Event added or updated successfully',
+
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+            $('#calendar').fullCalendar('refetchEvents');
+
+        },
+        error: function(result) {
+            //$("#dayDialog").hide();
+            alert("Error: " + result);
+            console.log(result);
+
+        },
+    });
+});
+
+// Listen schedule chanlle
 window.Echo.channel('schedule')
     .listen('.schedule', (e) => {
-        //console.log(e);
-        
-        Swal.fire({
-            toast: true,
-            icon: 'info',
-            title: '<a href="#">You have a new Schedule</a>',
-            position: 'top-right',
-            showConfirmButton: false,
-            timer: 6000,
-        });
+        console.log(e);
+        if(user.value == e.user){
+            Swal.fire({
+                toast: true,
+                icon: 'info',
+                title: '<a href="' + schedule_url + '?day=' + e.day + '">You have a new Schedule</a>',
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 6000,
+            });
+        }
+
         // if (user.value == e.user) {
         //     if (selected_user != null && selected_user.value == e.sender) {
         //         message_content.innerHTML += `
@@ -139,4 +218,3 @@ window.Echo.channel('schedule')
         //     }
         // }
     });
-

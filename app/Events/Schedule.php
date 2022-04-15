@@ -16,17 +16,17 @@ class Schedule implements ShouldBroadcast
 
     public $user;
     public $sender;
-    public $message;
+    public $day;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($userName, $sender, $message)
+    public function __construct($userName, $sender, $day)
     {
         $this->user = $userName;
-        $this->message = $message;
+        $this->day = $day;
         $this->sender = $sender;
     }
 
