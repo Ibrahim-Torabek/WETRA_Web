@@ -21,7 +21,8 @@ class FileController extends Controller
     {
         
         $this->middleware('auth:sanctum', ['except' => []]);
-        //$this->middleware('verified');
+        $this->middleware('is_pending');
+        $this->middleware('verified');
     }
     /**
      * Display a listing of the resource.

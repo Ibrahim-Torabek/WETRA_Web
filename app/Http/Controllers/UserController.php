@@ -21,7 +21,7 @@ class UserController extends Controller
         
         $this->middleware('auth:sanctum', ['except' => []]);
         $this->middleware('is_admin', ['except' => ['profile', 'update','uploadImage','settings']]);
-        
+        $this->middleware('is_pending', ['except' => ['profile', 'update','uploadImage','settings', 'pending']]);
 
     }
 
@@ -148,7 +148,7 @@ class UserController extends Controller
         $messages = Message::where('receiver_id', $user->id)
                             ->orWhere('sender_id', $user->id)
                             ->delete();
-                            
+
         $user->delete();
         if($request->wantsJson()){
             return response()->json(["Message" => "Success"]);
@@ -166,6 +166,11 @@ class UserController extends Controller
     public function settings(){
 
         return view('user.settings');
+    }
+
+    public function pending()
+    {
+        return view('auth.pending');
     }
 
     public function uploadImage(Request $request){

@@ -20,7 +20,8 @@ class MessageController extends Controller
     {
 
         $this->middleware('auth:sanctum', ['except' => []]);
-        //$this->middleware('verified');
+        $this->middleware('is_pending');
+        $this->middleware('verified');
     }
 
     // Function that get all chated users for current user
