@@ -49,12 +49,12 @@
                 <div class="form-group" id="assigned-to">
                     <label>Assigned To</label>
                     <select class="form-control multiple_select" name="assigned_to" id="assigned_to" single="single" style="width:100%">
-                        
+
                         <option value="0">All Users</option>
                         @foreach(App\Http\Controllers\GroupController::all() as $group)
-                            <option value="{{ $group->id }}" is_group="1"> {{ $group->name }}</option>
+                        <option value="{{ $group->id }}" is_group="1"> {{ $group->name }}</option>
                         @endforeach
-                        
+
                         ...
                         <optgroup label="Users">
                             @foreach($users as $user)
@@ -188,10 +188,10 @@
         initialView: 'listWeek',
         defaultView: "month",
         events: "{{ url('schedules') }}",
-//         visibleRange: {
-//     start: '2022-04-17',
-//     end: '2022-04-18'
-//   },
+        //         visibleRange: {
+        //     start: '2022-04-17',
+        //     end: '2022-04-18'
+        //   },
 
         eventRender: function(event, element) {
             if (event.allDay == 1) {
@@ -206,7 +206,7 @@
                 } else if (event.request_time_off_id > 0) {
                     element.css("background-color", "orange");
                     element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">auto_delete</i> ' + event.title);
-                    if(event.confirm_time_off_id > 0){
+                    if (event.confirm_time_off_id > 0) {
                         element.css("background-color", "grey");
                     }
                 }
@@ -332,7 +332,7 @@
                 }).then((result) => {
                     //console.log(result);
                     if (result.isConfirmed) {
-                        
+
                         $.ajax({
                             url: url,
                             type: "PUT",
@@ -349,7 +349,7 @@
                                     position: 'top-right',
                                     showConfirmButton: false,
                                     timer: 3000,
-                                    
+
                                 });
                                 $('#calendar').fullCalendar('refetchEvents');
 
@@ -378,7 +378,7 @@
                                     position: 'top-right',
                                     showConfirmButton: false,
                                     timer: 3000,
-                                    
+
                                 });
                                 $('#calendar').fullCalendar('refetchEvents');
 
@@ -391,7 +391,7 @@
                             },
                         });
 
-                    } else  if(result.isDismissed){
+                    } else if (result.isDismissed) {
                         if (result.dismiss == "cancel")
                             $('#dayDialog').dialog({
                                 title: 'Edit Schedule',
@@ -426,6 +426,50 @@
                 },
             });
         },
+        eventResize: function(event, delta) {
+            //console.log(delta);
+            var start = $.fullCalendar.formatDate(event.start, 'Y-MM-DD HH:mm:ss');
+            var end = $.fullCalendar.formatDate(event.end, 'Y-MM-DD HH:mm:ss');
+            var scheduleType = event.scheduleType ? 'task' : null;
+            //console.log('Resized start: ' + start + ' end: ' + end + ' Schedule Type: ' + scheduleType);
+            $.ajax({
+                url: "schedules",
+                type: "POST",
+                data: {
+                    start: start,
+                    end: end,
+                    assigned_to: event.assigned_to,
+                    scheduleType: scheduleType,
+                    id: event.id,
+                },
+                success: function(data) {
+                    //$("#dayDialog").dialog('close');
+
+                    Swal.fire({
+                        toast: true,
+                        icon: 'success',
+                        title: 'Event updated successfully',
+
+                        position: 'top-right',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    });
+                    $('#calendar').fullCalendar('refetchEvents');
+
+                },
+                error: function(result) {
+                    //$("#dayDialog").hide();
+                    alert("Error: " + result);
+                    console.log(result);
+
+                },
+            });
+        },
         @else
 
         eventClick: function(event) {
@@ -456,7 +500,7 @@
     });
 
     @if(!empty($day))
-        $('#calendar').fullCalendar('changeView', 'listDay', '{{ $day }}');
+    $('#calendar').fullCalendar('changeView', 'listDay', '{{ $day }}');
     @endif
 
     //Delete Event
