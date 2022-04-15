@@ -199,13 +199,13 @@
                 console.log(element);
             }
             if (event.scheduleType == 'task') {
-                element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">task_alt</i> ' + event.title);
+                element.html('<i class="material-icons float-left" style="font-size: 16px;line-height: 1;">task_alt</i> ' + element.html());
                 if (event.is_completed == 1) {
                     element.css("background-color", "grey");
-                    element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">done_all</i> ' + event.title);
+                    element.html('<i class="material-icons float-left" style="font-size: 16px;line-height: 1;">done_all</i> ' + element.html());
                 } else if (event.request_time_off_id > 0) {
                     element.css("background-color", "orange");
-                    element.html('<i class="material-icons" style="font-size: 16px;line-height: 1;">auto_delete</i> ' + event.title);
+                    element.html('<i class="material-icons float-left" style="font-size: 16px;line-height: 1;">auto_delete</i> ' + element.html());
                     if (event.confirm_time_off_id > 0) {
                         element.css("background-color", "grey");
                     }
@@ -226,8 +226,8 @@
 
         navLinks: true,
         navLinkDayClick: function(date, jsEvent) {
-            console.log('day', date.toISOString());
-            console.log('coords', jsEvent.pageX, jsEvent.pageY);
+            // console.log('day', date.toISOString());
+            // console.log('coords', jsEvent.pageX, jsEvent.pageY);
             $('#calendar').fullCalendar('changeView', 'agendaDay', date);
         },
 
@@ -238,27 +238,7 @@
         selectHelper: true,
         editable: true,
         // dayClick: function(date, event, view) {
-        //     var date = $.fullCalendar.formatDate(date, 'Y-MM-DD HH:mm:ss');
-        //     $("#title").val("");
-        //     $("#start").val((date));
-        //     $("#end").val((date));
-        //     $("#delete-event").hide();
-        //     $("#id").val('');
-        //     $("#submit-event").html('Add Event');
-        //     $('#dayDialog').dialog({
-        //         title: 'Add Schedule',
-        //         width: 600,
-        //         height: 650,
-        //         modal: true,
-        //         show: {
-        //             effect: 'clip',
-        //             duration: 350
-        //         },
-        //         hide: {
-        //             effect: 'clip',
-        //             duration: 250
-        //         },
-        //     });
+        //     $('#calendar').fullCalendar('changeView', 'agendaDay', date);
         //     //calendar.fullCalendar('renderEvent', event, true);
         // },
         select: function(start, end) {
@@ -432,6 +412,50 @@
             var end = $.fullCalendar.formatDate(event.end, 'Y-MM-DD HH:mm:ss');
             var scheduleType = event.scheduleType ? 'task' : null;
             //console.log('Resized start: ' + start + ' end: ' + end + ' Schedule Type: ' + scheduleType);
+            $.ajax({
+                url: "schedules",
+                type: "POST",
+                data: {
+                    start: start,
+                    end: end,
+                    assigned_to: event.assigned_to,
+                    scheduleType: scheduleType,
+                    id: event.id,
+                },
+                success: function(data) {
+                    //$("#dayDialog").dialog('close');
+
+                    Swal.fire({
+                        toast: true,
+                        icon: 'success',
+                        title: 'Event updated successfully',
+
+                        position: 'top-right',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    });
+                    $('#calendar').fullCalendar('refetchEvents');
+
+                },
+                error: function(result) {
+                    //$("#dayDialog").hide();
+                    alert("Error: " + result);
+                    console.log(result);
+
+                },
+            });
+        },
+        eventDrop: function(event, delta) {
+            //console.log(delta);
+            var start = $.fullCalendar.formatDate(event.start, 'Y-MM-DD HH:mm:ss');
+            var end = $.fullCalendar.formatDate(event.end, 'Y-MM-DD HH:mm:ss');
+            var scheduleType = event.scheduleType ? 'task' : null;
+            console.log('Resized start: ' + start + ' end: ' + end + ' Schedule Type: ' + scheduleType);
             $.ajax({
                 url: "schedules",
                 type: "POST",
