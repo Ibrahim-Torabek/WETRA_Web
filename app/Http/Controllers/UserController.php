@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -144,6 +145,10 @@ class UserController extends Controller
     public function destroy(Request $request, User $user)
     {
 
+        $messages = Message::where('receiver_id', $user->id)
+                            ->orWhere('sender_id', $user->id)
+                            ->delete();
+                            
         $user->delete();
         if($request->wantsJson()){
             return response()->json(["Message" => "Success"]);
