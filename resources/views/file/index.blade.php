@@ -90,24 +90,6 @@
 </div>
 
 <script>
-    $('#shared_to').change(function(){
-        $('#is_group').val($('#shared_to').find(':selected').attr('is_group'));
-        console.log($('#is_group').val());
-    });
-
-    $("#file").on('change', function(e){
-                let size = this.files[0].size;
-                if(size > 2097152){  // If more than 2MB
-                    alert('File zise must be less than 2MB ');
-                    //toast('Your Post as been submited!','success');
-
-                    e.preventDefault();
-                    $("#file").val('');
-                    //$("#uploadForm").reset;
-                }
-                
-            });
-
     var table = $('.data-table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -116,7 +98,7 @@
                         data: 'file_name',
                         name: 'file_name',
                         render: function(data,type,row){
-                            return "<a href='" + row.file_url + "'>" + row.file_name + "</a>";
+                            return "<a href='" +  row.file_url.replace('storage/upload', 'storage/files') + "'>" + row.file_name + "</a>";
                         }
                         
                     },

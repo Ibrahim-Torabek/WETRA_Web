@@ -21,7 +21,8 @@ class FileController extends Controller
     {
         
         $this->middleware('auth:sanctum', ['except' => []]);
-        //$this->middleware('verified');
+        $this->middleware('is_pending');
+        $this->middleware('verified');
     }
     /**
      * Display a listing of the resource.
@@ -116,6 +117,7 @@ class FileController extends Controller
 
             //TODO: Change the sub folder. My wetra url ha wetra subfolder. it couase the mass of file url.
             $fileURL = '/wetra' . Storage::url($filePath);
+            Log::debug("New URL: " . str_replace('storage/upload', 'storage/files', $fileURL));
             //dd($fileURL);
 
             $fileArray = $request->all();

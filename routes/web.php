@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +17,9 @@ use Illuminate\Http\Request;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('storage/files/{path}', [\App\Http\Controllers\StorageController::class, 'index']);
+// Route::get('storage/{path}', \App\Http\Controllers\StorageController::class);
 
 Route::get('/', function () {
     return view('welcome');
@@ -41,17 +46,18 @@ Route::post('/email/verification-notification', function (Request $request) {
 Auth::routes();
 
 
-Route::get('users/profile', [App\Http\Controllers\UserController::class, 'profile'])->middleware('verified');
-Route::post('users/upload_image', [App\Http\Controllers\UserController::class, 'uploadImage'])->middleware('verified');
+Route::get('users/profile', [App\Http\Controllers\UserController::class, 'profile']);
+Route::post('users/upload_image', [App\Http\Controllers\UserController::class, 'uploadImage']);
 Route::resource('users', App\Http\Controllers\UserController::class);
 
 
-Route::resource('schedules', App\Http\Controllers\ScheduleController::class)->middleware('verified');
+Route::resource('schedules', App\Http\Controllers\ScheduleController::class);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('verified');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/pending', [App\Http\Controllers\UserController::class, 'pending']);
 
-Route::get('messages/chat', [App\Http\Controllers\MessageController::class, 'chat'])->middleware('verified');
-Route::resource('messages', App\Http\Controllers\MessageController::class)->middleware('verified');
+Route::get('messages/chat', [App\Http\Controllers\MessageController::class, 'chat']);
+Route::resource('messages', App\Http\Controllers\MessageController::class);
 
 
 
@@ -60,11 +66,11 @@ Route::resource('messages', App\Http\Controllers\MessageController::class)->midd
 
 
 
-Route::resource('files', App\Http\Controllers\FileController::class)->middleware('verified');
+Route::resource('files', App\Http\Controllers\FileController::class);
 
-Route::resource('groups', App\Http\Controllers\GroupController::class)->middleware('verified');
+Route::resource('groups', App\Http\Controllers\GroupController::class);
 
-Route::resource('settings', App\Http\Controllers\SettingController::class)->middleware('verified');
+Route::resource('settings', App\Http\Controllers\SettingController::class);
 
 
 

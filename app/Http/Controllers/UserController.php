@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,7 +21,7 @@ class UserController extends Controller
         
         $this->middleware('auth:sanctum', ['except' => []]);
         $this->middleware('is_admin', ['except' => ['profile', 'update','uploadImage','settings']]);
-        
+        $this->middleware('is_pending', ['except' => ['profile', 'update','uploadImage','settings', 'pending']]);
 
     }
 
@@ -144,6 +145,10 @@ class UserController extends Controller
     public function destroy(Request $request, User $user)
     {
 
+        $messages = Message::where('receiver_id', $user->id)
+                            ->orWhere('sender_id', $user->id)
+                            ->delete();
+
         $user->delete();
         if($request->wantsJson()){
             return response()->json(["Message" => "Success"]);
@@ -161,6 +166,11 @@ class UserController extends Controller
     public function settings(){
 
         return view('user.settings');
+    }
+
+    public function pending()
+    {
+        return view('auth.pending');
     }
 
     public function uploadImage(Request $request){
