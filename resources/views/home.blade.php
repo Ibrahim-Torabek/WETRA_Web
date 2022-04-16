@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
 
         <!-- Card on the left to display some last uploaded Files -->
-        <div class="col mt-5">
+        <div class="col mt-5" style="max-width: 25%;">
             <div class="card">
                 <div class="card-header text-left h5">
                     Latest Public <a href="{{ url('/files') }}"> Files </a>
@@ -15,7 +15,7 @@
                     <ul class="list-group list-group-flush">
                         @if(count($publicFiles) > 0)
                         @foreach($publicFiles as $file)
-                        <li class="list-group-item d-inline-block text-truncate" style="max-width: 350px;"><a href="{{ str_replace('storage/upload', 'storage/files', $file->file_url)  }}">{{ $file->file_name }}</a></li>
+                        <li class="list-group-item d-inline-block text-truncate"><a href="{{ str_replace('storage/upload', 'storage/files', $file->file_url)  }}">{{ $file->file_name }}</a></li>
                         @endforeach
                         @else
                             There is no publicly shared files
@@ -51,7 +51,7 @@
 
         <!-- Card in the center showing the tasks for today and the following week -->
         @if(Auth::user()->is_admin == 1)
-        <div class="col-auto mt-2">
+        <div class="col-auto mt-2"  style="max-width: 50%;">
             <div class="card">
                 <div class="card-body">
                     <!-- <div class="card">
@@ -117,7 +117,7 @@
             </div>
         </div>
         @else
-        <div class="col-auto mt-2">
+        <div class="col-auto mt-2"  style="max-width: 50%;">
             <div class="card">
                 <div class="card-body">
                     <!-- <div class="card">
@@ -221,7 +221,7 @@
         </div>
         @endif
         <!-- Card on the right to display new Messages -->
-        <div class="col mt-5">
+        <div class="col mt-5"  style="max-width: 25%;">
             <div class="card">
 
                 <div class="card-header text-left h5">New Messages</div>
@@ -229,7 +229,7 @@
                 <ul class="list-group list-group-flush">
                         @if(count($messages) > 0)
                         @foreach($messages as $message)
-                        <li class="list-group-item text-truncate" style="max-width: 400px;">
+                        <li class="list-group-item text-truncate">
                             <a href="messages/chat?selectedUser={{ $message->sender->id }}">
                                 {{ $message->sender->first_name }}: 
                             </a> {{ $message->line_text }}</span>
