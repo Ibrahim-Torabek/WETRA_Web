@@ -33,12 +33,23 @@ class MessageController extends Controller
         $allLines = $sent->merge($received)->sortBy('created_at');
 
         $chatedUsers = collect(new User);
+
         //dd($chatedUsers);
         foreach ($allLines as $line) {
             $user = $line->sender_id == Auth::id() ? User::find($line->receiver_id) : User::find($line->sender_id);
             if (!empty($user)) {
-                if ($user->id != Auth::id())
+                if ($user->id != Auth::id()){
+                    $unreadMessage = Message::where('sender_id', $user->id)
+                                        ->where('receiver_id', Auth::id())
+                                        ->where('is_read', 0)
+                                        ->orderBy('created_at', 'desc')
+                                        ->first();
+                    Log::debug("Unread Message: " . $unreadMessage);
+                    $user['message'] = $unreadMessage['line_text'];
+                    if(!empty($unreadMessage))
+                        $user['un_read'] = 1;
                     $chatedUsers->push($user);
+                }
             }
         }
 
@@ -303,10 +314,15 @@ class MessageController extends Controller
 
             // Get all chat lines that current user received from the selected user
             $received = Auth::user()->receivedMessages->where('sender_id', $userId);
+            foreach($received as $message){
+                $message->is_read = 1;
+                $message->save();
+            }
 
             // merge and sort by created date
             $allMessages = $sent->merge($received);
             $allMessages = $allMessages->sortBy('created_at');
+            //Log::debug(Message::where($received)->update(['is_read' => 1]));
             //dd($allMessages);
 
             //$users1 = Message::find(1)->reciever;
@@ -326,7 +342,7 @@ class MessageController extends Controller
                         "is_read" => $message->is_read
                     ]);
                 }
-                Log::debug($temp);
+                
 
                 return response()->json($temp);
             } else {

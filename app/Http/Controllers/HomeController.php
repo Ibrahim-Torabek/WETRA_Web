@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\File;
 use App\Models\Message;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -60,9 +61,16 @@ class HomeController extends Controller
             ->get();
 
         $messages = Message::where('receiver_id', Auth::id())
+            ->where('is_read', 0)
             ->take(7)
             ->orderBy('created_at','desc')
             ->get();
+
+        $pendingUsers = User::where('group_id', 0)
+            ->where('status', 0)
+            //->take(7)
+            ->get();
+
 
         Log::debug(json_decode($messages));
         return view('home', [
@@ -71,6 +79,7 @@ class HomeController extends Controller
             'dayTasks' => $dayTasks,
             'weekTasks' => $weekTasks,
             'messages' => $messages,
+            'pendingUsers' => $pendingUsers,
         ]);
     }
 }

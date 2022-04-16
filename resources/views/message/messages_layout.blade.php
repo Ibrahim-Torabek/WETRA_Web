@@ -21,7 +21,7 @@
             </nav>
             <ul class="nav flex-column sticky-top pl-0 pt-2 mt-3">
                 @foreach(App\Http\Controllers\MessageController::getChatedUsers() as $user)
-                    <li class="nav-item">
+                    <li class="nav-item @if(!empty($user['un_read'])) font-weight-bold @endif">
                         <a class="nav-link" href="{{ action([App\Http\Controllers\MessageController::class, 'chat'], ['selectedUser' => $user]) }}">
 
 
@@ -38,7 +38,7 @@
                         </tr>
                         <tr>
                             
-                            <td>Message</td>
+                            <td><spam class="d-inline-block text-truncate text-uppercase" style="max-width: 200px;"> {{ $user['message'] }}</spam></td>
                         </tr>
                         </table>
 

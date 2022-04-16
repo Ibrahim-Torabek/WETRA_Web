@@ -20,7 +20,7 @@ class UserController extends Controller
     {
         
         $this->middleware('auth:sanctum', ['except' => []]);
-        $this->middleware('is_admin', ['except' => ['profile', 'update','uploadImage','settings']]);
+        $this->middleware('is_admin', ['except' => ['profile', 'update','uploadImage','settings','pending']]);
         $this->middleware('is_pending', ['except' => ['profile', 'update','uploadImage','settings', 'pending']]);
 
     }

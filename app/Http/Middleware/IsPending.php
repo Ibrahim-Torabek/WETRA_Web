@@ -16,7 +16,7 @@ class IsPending
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->user()->group_id != 0 && (auth()->user()->status != 0)){
+        if(auth()->user()->group_id != 0  && auth()->user()->status != 0){
             return $next($request);
         }
 
