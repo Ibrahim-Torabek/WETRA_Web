@@ -77,6 +77,9 @@
         flex-direction: column-reverse;
     } */
 
+    .nav-link {
+        color: #0d6efd;
+        }
 
     .chat-bubble {
         max-width: 60%;
@@ -166,11 +169,11 @@
     //setInterval(updateScroll,3000);
 
     function updateScroll() {
-    var myDiv = document.getElementById("chat-scroll-area");
-    if (myDiv) {
-        myDiv.scrollTop = myDiv.scrollHeight;
-    } else {
-        console.log("Cannot find element")
+        var myDiv = document.getElementById("chat-scroll-area");
+        if (myDiv) {
+            myDiv.scrollTop = myDiv.scrollHeight;
+        } else {
+            console.log("Cannot find element")
     }
 }
 

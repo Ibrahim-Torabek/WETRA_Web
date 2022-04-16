@@ -60,6 +60,7 @@ class HomeController extends Controller
             ->get();
 
         $messages = Message::where('receiver_id', Auth::id())
+            ->where('is_read', 0)
             ->take(7)
             ->orderBy('created_at','desc')
             ->get();
