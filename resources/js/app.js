@@ -69,6 +69,7 @@ if (message_form != null) {
         message_content.innerHTML += `
         <div class="chat-box col-md-10 d-flex justify-content-end">
             <div class="chat-bubble chat-bubble--blue bg-primary text-light chat-bubble--right">
+            <small class="text-dark">Now ...</small><br>
         ` + message_input.value + `
             </div>
         </div>
