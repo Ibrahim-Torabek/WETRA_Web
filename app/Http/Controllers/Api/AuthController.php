@@ -81,4 +81,14 @@ class AuthController extends Controller
             'message' => 'Logged out'
         ];
     }
+
+    public function resend() {
+        if (auth()->user()->hasVerifiedEmail()) {
+            return $this->respondBadRequest(ApiCode::EMAIL_ALREADY_VERIFIED);
+        }
+
+        auth()->user()->sendEmailVerificationNotification();
+
+        return response()->json(["success" => "Email verification link sent on your email id"]);
+    }
 }

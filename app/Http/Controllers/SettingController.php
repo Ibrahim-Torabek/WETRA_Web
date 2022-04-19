@@ -94,7 +94,7 @@ class SettingController extends Controller
         
         $requestArray = $request->all();
         $successMessage = 'Notification changed successfully';
-        $passwordErrorMessage = 'Current password you entered is not match!';
+        $passwordErrorMessage = 'Current password you entered does NOT match!';
         $passwordSuccessMessage = 'Password changed successfully';
         $notvalidMessage = 'Your new password does not match with the confirm password!';
 

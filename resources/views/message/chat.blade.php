@@ -21,6 +21,7 @@
         <div class="row">
             <div class="chat-box col-md-10 d-flex {{ $chatLine->sender_id == Auth::id() ? 'justify-content-end' : '' }}">
                 <div class="chat-bubble {{ $chatLine->sender_id == Auth::id() ? 'chat-bubble--blue bg-primary text-light' : '' }} chat-bubble--{{ $chatLine->sender_id == Auth::id() ? 'right' : 'left' }}">
+                    <small class="text-dark">{{ $chatLine->created_at }}</small><br>
                     {{ $chatLine->line_text }}
                 </div>
             </div>
@@ -48,11 +49,11 @@
                         @endif
                         <input type="hidden" name="user" id="user" value="{{ Auth::id() }}" />
                     </div>
-                    <button class="btn btn-link pl-0 ml-0">
+                    <!-- <button class="btn btn-link pl-0 ml-0">
                         <span class="material-icons">
                             sentiment_satisfied_alt
                         </span>
-                    </button>
+                    </button> -->
                     <button type="submit" class="btn btn-link pl-0 ml-0">
                         <i class="material-icons">
                             send

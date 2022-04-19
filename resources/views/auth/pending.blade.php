@@ -10,7 +10,7 @@
                 <div class="card-body">
 
                     {{ __('Your accont is pending now, please wait for the admin to accept your registration.') }}
-                    {{ __('Only thing you can do is change your profiles.') }},
+                    {{ __('The only thing you can do is change your profiles.') }},
                 </div>
                 <div class="card-footer">
                     <a href="{{ url('users/profile') }}">Click to change profile</a>
