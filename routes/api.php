@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +21,7 @@ use App\Models\User;
 Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout']);
 Route::post('login', [AuthController::class, 'login']);
+Route::post('/email/verification-notification', [AuthController::class, 'resend']);
 
 //Route::resource('message', UserController::class);
 
@@ -29,6 +32,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('messages/chat', [App\Http\Controllers\MessageController::class, 'chat']);
 Route::post('messages/chatted_users', [App\Http\Controllers\MessageController::class, 'getChatedUsersAPI']);
 Route::post('messages/send', [App\Http\Controllers\MessageController::class, 'store']);
+
 
 Route::post('users/all', [User::class, 'all']);
 Route::apiResource('users', App\Http\Controllers\UserController::class);
@@ -41,6 +45,8 @@ Route::apiResource('files', App\Http\Controllers\FileController::class);
 Route::apiResource('groups', App\Http\Controllers\GroupController::class);
 
 Route::apiResource('settings', App\Http\Controllers\SettingController::class);
+
+
 //Route::apiResource('messages', App\Http\Controllers\MessageController::class);
 
 // Route::group(['middleware' => ['auth:sanctum']], function(){

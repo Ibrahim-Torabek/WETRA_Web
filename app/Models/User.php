@@ -85,7 +85,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     function status(){
         if($this->status == 0)
-            return "In Active";
+            return "Inactive";
 
         return "Active";
     }
