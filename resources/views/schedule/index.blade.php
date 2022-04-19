@@ -391,6 +391,12 @@
                 });
                 return;
             }
+
+            if(event.scheduleType == 'task'){
+                taskClicked();
+            } else {
+                eventClicked();
+            }
             $('#dayDialog').dialog({
                 title: 'Edit Schedule',
                 width: 600,
