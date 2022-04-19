@@ -254,3 +254,30 @@ window.Echo.channel('schedule')
  * 
  ********************************************************************************************************************************
  ********************************************************************************************************************************/
+ const buttons = document.getElementsByClassName("change-group-name");
+ const inputs = document.getElementsByClassName("group-name-input");
+ 
+
+for (i = 0; i < buttons.length; i++){
+    buttons[i].onclick = function(e){
+        e.preventDefault();
+        
+        groupName = 'Hello'; // inputs[0].value();
+        groupId = this.getAttribute('group_id');
+        groupName = document.getElementById(groupId).value;
+
+        const options = {
+            method: "PUT",
+            url: "../../groups/" + groupId,
+            data: {
+                id: groupId,
+                name: groupName,
+            }
+        };
+        axios(options);
+    }
+}
+
+$('#close_modal').click(function(){
+    location.reload();
+});

@@ -81,9 +81,9 @@
                         <!-- @csrf
                         @method('PATCH') -->
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Group Name" aria-label="Group Name" aria-describedby="button-addon2" value="{{ $group->name }}" name="name">
+                        <input type="text" class="group-name-input form-control" placeholder="Group Name" aria-label="Group Name" aria-describedby="button-addon2" value="{{ $group->name }}" name="name" id="{{ $group->id }}">
                         <div class="input-group-append" id="save-button">
-                            <button class="change-group-name btn btn-outline-secondary" type="submit" group_name="{{ $group->name }}" id="{{ $group->id }}">Save</button>
+                            <button class="change-group-name btn btn-outline-secondary" type="submit" group_name="{{ $group->name }}" group_id="{{ $group->id }}">Save</button>
                         </div>
                         <form method="POST" action="{{ action([App\Http\Controllers\GroupController::class, 'destroy'], ['group' => $group]) }}">
                         @csrf
@@ -108,7 +108,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close_modal">Close</button>
                 <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
             </div>
         </div>
@@ -116,55 +116,7 @@
 </div>
 
 <script>
- const buttons = document.getElementsByClassName("change-group-name");
- $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-for (var i = 0; i < buttons.length; i++){
-    buttons[i].onclick = function(e){
-        e.preventDefault();
-        
-        groupName = this.getAttribute('group_name');
-        groupId = this.id;
-        console.log(groupId);
-        //alert();
-        $.ajax({
-            url: '{{url("groups/update")}}',
-            type: "PUT",
-            data: {
-                //_token: "{{ csrf_token() }}",
-                id:groupId,
-                name: groupName
-            },
-            success: function(data) {
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: 'Group name updated successfully',
 
-                    position: 'top-right',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                });
-                
-
-            },
-            error: function(result) {
-                //$("#dayDialog").hide();
-                //console.log("Error: " + result);
-                console.log(result);
-
-            },
-        });
-    }
-}
 
 
 </script>

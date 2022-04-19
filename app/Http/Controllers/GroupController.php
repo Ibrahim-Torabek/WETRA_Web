@@ -84,9 +84,9 @@ class GroupController extends Controller
      */
     public function update(Request $request, Group $group)
     {
-        Log::debug($request);
+        //Log::debug($request);
         $group = $group->update($request->all());
-        return;
+        
         if($request->wantsJson()){
             if($group)
                 return response()->json(["success" => "Group name updated successfully."]);
@@ -94,7 +94,7 @@ class GroupController extends Controller
                 return response()->json(["fail" => "Failed to update group name."]);
             }
         }
-        return redirect()->back();
+        //return redirect()->back();
     }
 
     /**
