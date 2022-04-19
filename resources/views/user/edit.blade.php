@@ -77,24 +77,23 @@
             <div class="modal-body">
                 @foreach($groups as $group)
                 <div class="row form-group">
-                    <form method="POST" action="{{ action([App\Http\Controllers\GroupController::class, 'update'], ['group' => $group]) }}">
-                        @csrf
-                        @method('PATCH')
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Group Name" aria-label="Group Name" aria-describedby="button-addon2" value="{{ $group->name }}" name="name">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="submit">Save</button>
-                            </div>
+                    
+                        <!-- @csrf
+                        @method('PATCH') -->
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Group Name" aria-label="Group Name" aria-describedby="button-addon2" value="{{ $group->name }}" name="name">
+                        <div class="input-group-append" id="save-button">
+                            <button class="change-group-name btn btn-outline-secondary" type="submit" group_name="{{ $group->name }}" id="{{ $group->id }}">Save</button>
                         </div>
-                    </form>
-
-                    <form method="POST" action="{{ action([App\Http\Controllers\GroupController::class, 'destroy'], ['group' => $group]) }}">
+                        <form method="POST" action="{{ action([App\Http\Controllers\GroupController::class, 'destroy'], ['group' => $group]) }}">
                         @csrf
                         @method('DELETE')
 
                         <button class="btn btn-outline-danger float-right" type="submit">Delete</button>
 
                     </form>
+                    </div>
+                    
                 </div>
                 @endforeach
                 <form method="POST" action="{{ action([App\Http\Controllers\GroupController::class, 'store']) }}">
@@ -115,4 +114,58 @@
         </div>
     </div>
 </div>
+
+<script>
+ const buttons = document.getElementsByClassName("change-group-name");
+ $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+for (var i = 0; i < buttons.length; i++){
+    buttons[i].onclick = function(e){
+        e.preventDefault();
+        
+        groupName = this.getAttribute('group_name');
+        groupId = this.id;
+        console.log(groupId);
+        //alert();
+        $.ajax({
+            url: '{{url("groups/update")}}',
+            type: "PUT",
+            data: {
+                //_token: "{{ csrf_token() }}",
+                id:groupId,
+                name: groupName
+            },
+            success: function(data) {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Group name updated successfully',
+
+                    position: 'top-right',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+                
+
+            },
+            error: function(result) {
+                //$("#dayDialog").hide();
+                //console.log("Error: " + result);
+                console.log(result);
+
+            },
+        });
+    }
+}
+
+
+</script>
 @stop

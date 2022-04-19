@@ -86,6 +86,7 @@ class GroupController extends Controller
     {
         Log::debug($request);
         $group = $group->update($request->all());
+        return;
         if($request->wantsJson()){
             if($group)
                 return response()->json(["success" => "Group name updated successfully."]);
