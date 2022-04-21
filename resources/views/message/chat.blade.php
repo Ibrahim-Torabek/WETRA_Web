@@ -49,11 +49,11 @@
                         @endif
                         <input type="hidden" name="user" id="user" value="{{ Auth::id() }}" />
                     </div>
-                    <!-- <button class="btn btn-link pl-0 ml-0">
+                    <a class="emojie-selector btn btn-link pl-0 ml-0">
                         <span class="material-icons">
                             sentiment_satisfied_alt
                         </span>
-                    </button> -->
+                    </a>
                     <button type="submit" class="btn btn-link pl-0 ml-0">
                         <i class="material-icons">
                             send

@@ -1,3 +1,4 @@
+import { EmojiButton } from '@joeattardi/emoji-button';
 const { default: axios } = require('axios');
 
 require('./bootstrap');
@@ -113,8 +114,20 @@ window.Echo.channel('chat')
     });
 
 
+// Emojie Picker
+const picker = new EmojiButton();
+const trigger = document.querySelector('.emojie-selector');
 
+picker.on('emoji', selection => {
+    //message_input.value += selection.emoji;
+    var p = message_input.selectionStart;
+    var txt = message_input.value;
+    var face = selection.name == 'smiling face' ? '🙂' : selection.emoji;
+    message_input.value = txt.substring(0,p) + face + txt.substring(p);
+    console.log(face);
+  });
 
+trigger.addEventListener('click', () => picker.togglePicker(trigger));
 
 
 /********************************************************************************************************************************
@@ -258,7 +271,7 @@ window.Echo.channel('schedule')
  const inputs = document.getElementsByClassName("group-name-input");
  
 
-for (i = 0; i < buttons.length; i++){
+for (var i = 0; i < buttons.length; i++){
     buttons[i].onclick = function(e){
         e.preventDefault();
         
