@@ -177,7 +177,7 @@ class ScheduleController extends Controller
             $user->settings()->create();
             Log::debug($user->settings);
         }
-        if ($settings->new_schedule == 1) {
+        if ($user->settings->new_schedule == 1) {
             event(
                 new Schedule(
                     $user->id,
