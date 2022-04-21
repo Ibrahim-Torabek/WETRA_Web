@@ -89,7 +89,7 @@
                         @csrf
                         @method('DELETE')
 
-                        <button class="btn btn-outline-danger float-right" type="submit">Delete</button>
+                        <button class="btn btn-outline-danger float-right" type="submit" onclick="return confirm('Are you sure you want to delete this group?\nAll users that belong to this group will be pending.')">Delete</button>
 
                     </form>
                     </div>

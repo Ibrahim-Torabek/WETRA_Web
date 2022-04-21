@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 // use PHPUnit\TextUI\XmlConfiguration\Group;
 use App\Models\Group;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 class GroupController extends Controller
@@ -105,6 +106,12 @@ class GroupController extends Controller
      */
     public function destroy(Request $request, Group $group)
     {
+        $users = User::where('group_id', $group->id)->get();
+        Log::debug($users);
+        foreach($users as $user){
+            $user->group_id = 0;
+            $user->save();
+        }
         $result = $group->delete();
         
         if($request->wantsJson()){
