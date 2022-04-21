@@ -124,10 +124,11 @@ picker.on('emoji', selection => {
     var txt = message_input.value;
     var face = selection.name == 'smiling face' ? '🙂' : selection.emoji;
     message_input.value = txt.substring(0,p) + face + txt.substring(p);
-    console.log(face);
+    //console.log(face);
   });
 
-trigger.addEventListener('click', () => picker.togglePicker(trigger));
+if(trigger != null)
+    trigger.addEventListener('click', () => picker.togglePicker(trigger));
 
 
 /********************************************************************************************************************************
@@ -142,7 +143,7 @@ trigger.addEventListener('click', () => picker.togglePicker(trigger));
 $("#submit-event").click(function(e) {
     e.preventDefault();
     //$("#dayDialog").hide();
-    is_group = $("#assigned_to").find(':selected').attr('is_group');
+    var is_group = $("#assigned_to").find(':selected').attr('is_group');
     //alert();
     $.ajax({
         url: "schedules",
