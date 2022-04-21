@@ -77,24 +77,23 @@
             <div class="modal-body">
                 @foreach($groups as $group)
                 <div class="row form-group">
-                    <form method="POST" action="{{ action([App\Http\Controllers\GroupController::class, 'update'], ['group' => $group]) }}">
-                        @csrf
-                        @method('PATCH')
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Group Name" aria-label="Group Name" aria-describedby="button-addon2" value="{{ $group->name }}" name="name">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="submit">Save</button>
-                            </div>
+                    
+                        <!-- @csrf
+                        @method('PATCH') -->
+                    <div class="input-group">
+                        <input type="text" class="group-name-input form-control" placeholder="Group Name" aria-label="Group Name" aria-describedby="button-addon2" value="{{ $group->name }}" name="name" id="{{ $group->id }}">
+                        <div class="input-group-append" id="save-button">
+                            <button class="change-group-name btn btn-outline-secondary" type="submit" group_name="{{ $group->name }}" group_id="{{ $group->id }}">Save</button>
                         </div>
-                    </form>
-
-                    <form method="POST" action="{{ action([App\Http\Controllers\GroupController::class, 'destroy'], ['group' => $group]) }}">
+                        <form method="POST" action="{{ action([App\Http\Controllers\GroupController::class, 'destroy'], ['group' => $group]) }}">
                         @csrf
                         @method('DELETE')
 
-                        <button class="btn btn-outline-danger float-right" type="submit">Delete</button>
+                        <button class="btn btn-outline-danger float-right" type="submit" onclick="return confirm('Are you sure you want to delete this group?\nAll users that belong to this group will be pending.')">Delete</button>
 
                     </form>
+                    </div>
+                    
                 </div>
                 @endforeach
                 <form method="POST" action="{{ action([App\Http\Controllers\GroupController::class, 'store']) }}">
@@ -109,10 +108,16 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close_modal">Close</button>
                 <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
             </div>
         </div>
     </div>
 </div>
+
+<script>
+
+
+
+</script>
 @stop

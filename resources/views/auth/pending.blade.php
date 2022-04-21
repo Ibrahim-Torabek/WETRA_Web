@@ -5,11 +5,11 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Verify Your Email Address') }}</div>
+                <div class="card-header">{{ __('Pending Account') }}</div>
 
                 <div class="card-body">
 
-                    {{ __('Your accont is pending now, please wait for the admin to accept your registration.') }}
+                    {{ __('Your account is pending now, please wait for the admin to accept your registration.') }}
                     {{ __('The only thing you can do is change your profiles.') }},
                 </div>
                 <div class="card-footer">
