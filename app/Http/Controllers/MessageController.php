@@ -24,7 +24,9 @@ class MessageController extends Controller
         $this->middleware('verified');
     }
 
-    // Function that get all chated users for current user
+    /**
+     * Function that get all chated users for current user
+     */
     public function getChatedUsers()
     {
         $sent = Auth::user()->sentMessages->unique('receiver_id')->except(Auth::id());;
@@ -44,7 +46,7 @@ class MessageController extends Controller
                                         ->where('is_read', 0)
                                         ->orderBy('created_at', 'desc')
                                         ->first();
-                    Log::debug("Unread Message: " . $unreadMessage);
+                    
                     $user['message'] = $unreadMessage['line_text'];
                     if(!empty($unreadMessage))
                         $user['un_read'] = 1;
@@ -54,17 +56,13 @@ class MessageController extends Controller
         }
 
         $chatedUsers = $chatedUsers->unique('email');
-        //$chatedUsers->forget(Auth::user()->first_name);
 
-        // if($request->wantsJson()){
-        //     return response()->json($chatedUsers);
-        //     Log::debug(response()->json($chatedUsers));
-        // }
-
-        //Log::debug(json_encode($chatedUsers->toArray()));
         return $chatedUsers;
     }
 
+    /**
+     * API Function that get all chated users for current user
+     */
     public function getChatedUsersAPI()
     {
         $sent = Auth::user()->sentMessages->unique('receiver_id')->except(Auth::id());;
@@ -84,18 +82,6 @@ class MessageController extends Controller
             }
         }
 
-        //$chatedUsers = array_unique($chatedUsers);
-        //$chatedUsers = $chatedUsers->unique('email');
-        //$chatedUsers->forget(Auth::user()->first_name);
-
-        // if($request->wantsJson()){
-        //     return response()->json($chatedUsers);
-        //     Log::debug(response()->json($chatedUsers));
-        // }
-
-
-
-        //Log::debug(response()->json($chatedUsers));
         return $chatedUsers;
     }
 
@@ -108,9 +94,11 @@ class MessageController extends Controller
     public function index()
     {
 
-        //$chatedUsers = getChatedUsers();
-        //dd($chatedUsers);
-        return view('message.index'); //, ['chatedUsers' => $chatedUsers]);
+        $messages = Message::where('receiver_id', Auth::id())
+            ->where('is_read', 0)
+            ->orderBy('created_at','desc')
+            ->get();
+        return view('message.index',['messages' => $messages]); //, ['chatedUsers' => $chatedUsers]);
     }
 
     /**
@@ -154,11 +142,11 @@ class MessageController extends Controller
                 $settings = User::find($user->id)->settings;
                 if(empty($settings)){
                     $user->settings()->create();  
-                    Log::debug($user->settings);   
+                    
                 }
                 
                 if($settings->new_message == 1){
-                    Log::debug("Receiver: accepted");
+                    
                     event(
                         new Chat(
                             $user->id,
@@ -181,10 +169,10 @@ class MessageController extends Controller
 
             $receiver = User::find($requestArray["receiver"]);
             $settings = $receiver->settings;
-            Log::debug("Settings: " . $settings);
+            
             if(empty($settings)){
                 $receiver->settings()->create();  
-                Log::debug($receiver->settings);   
+                
             } 
             
             if($settings->new_message == 1){
@@ -210,16 +198,6 @@ class MessageController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Message $message)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -233,27 +211,6 @@ class MessageController extends Controller
         return view('message.index');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $requestAray
-     * @param  \App\Models\Message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $requestAray, Message $message)
-    {
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Message $message)
-    {
-        //
-    }
 
 
     /**
@@ -276,38 +233,14 @@ class MessageController extends Controller
     public function chat(Request $request)
     {
 
-        //Log::debug($request->all());
-        // return response([
-        //     "requestAray$requestAray" => $requestAray
-        // ]);
 
         if (!empty($request->all()["selectedUser"])) {
             // Get selected user's id from requestAray$requestAray collection
             $userId = $request->all()["selectedUser"];
-            //$userId = $userIds["selectedUser"];
 
-            //dd($userId);
 
             // Find user by Id, and get the first element from the results set.
             $selectedUser = User::find($userId);
-
-            // Get all chat lines for the current user
-            // $chatLines1 = Message::where('sender_id', Auth::id())
-            //     ->where('receiver_id', $userId)
-            //     ->get();
-
-            // Get all chat lines for the selected user
-            // $chatLines2 = Message::where('sender_id', $userId)
-            //     ->where('receiver_id', Auth::id())
-            //     ->get();
-
-            // Merge the two collections and sort by created data
-            // $chatLines = $chatLines1->merge($chatLines2);
-            // $chatLines = $chatLines->sortBy('created_at');
-            //dd($chatLines);
-
-            // Get all users that chatted with the current user 
-            // This collection will display left side bar in chat page.
 
             // Get all chat lines current user sent to selected user
             $sent = Auth::user()->sentMessages->where('receiver_id', $userId);
@@ -322,12 +255,7 @@ class MessageController extends Controller
             // merge and sort by created date
             $allMessages = $sent->merge($received);
             $allMessages = $allMessages->sortBy('created_at');
-            //Log::debug(Message::where($received)->update(['is_read' => 1]));
-            //dd($allMessages);
 
-            //$users1 = Message::find(1)->reciever;
-
-            //dd($users1);
 
             if ($request->wantsJson()) {
                 $temp = [];

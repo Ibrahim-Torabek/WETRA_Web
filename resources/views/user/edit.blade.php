@@ -60,6 +60,8 @@
             </div>
         </div>
         <input class="btn btn-primary" type="submit" value="Save">
+        <a class="btn btn-primary pl-4 pr-4" href="{{ action([App\Http\Controllers\UserController::class, 'show'], ['user' => $user]) }}">Return</a>
+        
     </form>
 </div>
 

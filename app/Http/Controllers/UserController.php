@@ -67,26 +67,6 @@ class UserController extends Controller
         return view('user.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
@@ -149,6 +129,7 @@ class UserController extends Controller
                             ->orWhere('sender_id', $user->id)
                             ->delete();
 
+        $user->settings()->delete();
         $user->delete();
         if($request->wantsJson()){
             return response()->json(["Message" => "Success"]);
@@ -158,32 +139,39 @@ class UserController extends Controller
         return redirect()->route('users.index');
     }
 
+    /**
+     * Display profile page
+     */
     public function profile(){
 
         return view('user.profile');
     }
 
+    /**
+     * Display setting page
+     */
     public function settings(){
 
         return view('user.settings');
     }
 
+    /**
+     * Display pending page
+     */
     public function pending()
     {
         return view('auth.pending');
     }
 
+    /**
+     * Upload user avatar
+     */
     public function uploadImage(Request $request){
         
-
-        // $input = $request->all();
-        // $input['file'] = time().'.'.$request->file->extension();
-        // $request->file->move(public_path('images'), $input['image']);
-
         $user = User::findOrFail(Auth::id());
 
         if($request->update == 'deleteImage'){
-            Log::debug($request);
+            
             $user->image_url = NULL;
             $user->update();
 
@@ -212,12 +200,12 @@ class UserController extends Controller
 
             $user->image_url = $fileURL;
             $user->update();
-            Log::debug($user);
+            
 
             return response()->json(['fileUrl' => $fileURL]);
             
         } else {
-            Log::debug("No File");
+            
             return response()->json(['error' => 'File not found']);
         }
     }

@@ -6,6 +6,7 @@ use App\Models\File;
 use Illuminate\Http\Request;
 
 use App\Models\User;
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -25,7 +26,7 @@ class FileController extends Controller
         $this->middleware('verified');
     }
     /**
-     * Display a listing of the resource.
+     * Get All files for admin, or get public files, group files and personal shared files for regular users.
      *
      * @return \Illuminate\Http\Response
      */
@@ -42,9 +43,7 @@ class FileController extends Controller
                     ->orWhere('is_group', "1")
                     ->where('shared_to', Auth::user()->group->id)
                     ->get();
-
-                //Log::debug("Group files:" . $groupFiles);
-                //Log::debug($files);                
+           
             } 
             
             if(Auth::user()->is_admin == 1){
@@ -70,62 +69,52 @@ class FileController extends Controller
         }
         
         if($request->wantsJson()){
-            Log::debug("File API Requested." . $request);
-            
             return response()->json($files);
         }
         $users = User::all();
         return view('file.index', ['users' => $users]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
-     * Store a newly created resource in storage.
+     * Store uploaded file into storage and database table (files tabel)
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //dd($request->all());
 
-        Log::debug($request->all());
 
         $isGroup = $request->all()['is_group'] ?? null;
 
-        //TODO: File validate file size.
+        //File validate file size.
         $validator = Validator::make($request->all(), [
             'file' => 'max:500000',
         ]);
 
         if ($request->hasFile('file')) {
+            // Get file information
             $fileNameWithExt = $request->file('file')->getClientOriginalName();
             $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
             $extention = $request->file('file')->getClientOriginalExtension();
             $nameToStore = $fileName . '_' . time() . '.' . $extention;
 
+            // Storage to disk and get the file path
             $filePath = $request->file->storeAs('public/upload',$nameToStore);
 
-            //TODO: Change the sub folder. My wetra url ha wetra subfolder. it couase the mass of file url.
+            // convert file path to URL
             $fileURL = '/wetra' . Storage::url($filePath);
-            Log::debug("New URL: " . str_replace('storage/upload', 'storage/files', $fileURL));
-            //dd($fileURL);
+
 
             $fileArray = $request->all();
             $fileArray["file_name"] = $fileName;
             $fileArray["file_extention"] = $extention;
             $fileArray["file_url"] = $fileURL;
+            $fileArray["file_path"] = $filePath;
             $fileArray["uploaded_by"] = Auth::id();
 
+            // Write to data table
             File::create($fileArray);
             if($request->wantsJson()){
                 return response()->json(['success' => 'file uploaded successfully!']);
@@ -135,42 +124,13 @@ class FileController extends Controller
             
         }
 
+        if($request->wantsJson()){
+            return 'There is no file';
+        }
+
         return redirect()->back();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\File  $file
-     * @return \Illuminate\Http\Response
-     */
-    // public function show(File $file)
-    // {
-    //     //
-    // }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\File  $file
-     * @return \Illuminate\Http\Response
-     */
-    // public function edit(File $file)
-    // {
-    //     //
-    // }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\File  $file
-     * @return \Illuminate\Http\Response
-     */
-    // public function update(Request $request, File $file)
-    // {
-    //     //
-    // }
 
     /**
      * Remove the specified resource from storage.
@@ -180,6 +140,7 @@ class FileController extends Controller
      */
     public function destroy(Request $request, File $file)
     {
+        Storage::delete($file->file_path);
         $file->delete();
 
         if($request->wantsJson()){
