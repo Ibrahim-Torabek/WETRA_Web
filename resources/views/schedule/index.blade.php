@@ -199,7 +199,7 @@
                 console.log(element);
             }
             if (event.scheduleType == 'task') {
-                element.html('<i class="material-icons float-left" style="font-size: 16px;line-height: 1;">task_alt</i> ' + element.html());
+                
                 if (event.is_completed == 1) {
                     element.css("background-color", "grey");
                     element.html('<i class="material-icons float-left" style="font-size: 16px;line-height: 1;">done_all</i> ' + element.html());
@@ -209,6 +209,8 @@
                     if (event.confirm_time_off_id > 0) {
                         element.css("background-color", "grey");
                     }
+                } else {
+                    element.html('<i class="material-icons float-left" style="font-size: 16px;line-height: 1;">task_alt</i> ' + element.html());
                 }
             }
         },
@@ -553,7 +555,6 @@
                         toast: true,
                         icon: 'success',
                         title: 'Event deleted successfully',
-                        animation: false,
                         position: 'top-right',
                         showConfirmButton: false,
                         timer: 3000,

@@ -66,13 +66,12 @@ class HomeController extends Controller
             ->orderBy('created_at','desc')
             ->get();
 
-        $pendingUsers = User::where('group_id', 0)
-            ->where('status', 0)
+        // Get all new registered users (group_id = null and status == null)
+        $pendingUsers = User::where('group_id', null)
+            ->where('status', null)
             //->take(7)
             ->get();
 
-
-        Log::debug(json_decode($messages));
         return view('home', [
             'publicFiles' => $publicFiles,
             'personalFiles' => $personalFiles,

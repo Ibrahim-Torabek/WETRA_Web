@@ -27,31 +27,32 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display all events and tasks for admin user
+     * Display all public, group or personal events and tasks for regular user
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
 
-
+        
         if ($request->ajax() || $request->wantsJson()) {
             if (Auth::user()->is_admin == 1) {
                 $events = Event::latest()->get();
                 $tasks = Task::latest()->get();
             } else {
                 $events = Event::where('assigned_to', Auth::id())
-                    ->orWhere('assigned_to', '0')
+                    ->orWhere('assigned_to', '0') // Public
                     ->get();
 
 
                 $tasks = Task::where('assigned_to', Auth::id())
-                    ->orWhere('assigned_to', '0')
-                    ->orWhere('is_group', "1")
+                    ->orWhere('assigned_to', '0') //Public
+                    ->orWhere('is_group', "1") 
                     ->where('assigned_to', Auth::user()->group->id)
                     ->get();
             }
-            //dd($data);
+            
             return response()->json($events->merge($tasks));
         }
 
@@ -63,14 +64,6 @@ class ScheduleController extends Controller
         return view('schedule.index', ['users' => $users, 'day' => $day]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    // public function create()`
-    // {
-    // }
 
     /**
      * Store a newly created resource in storage.
@@ -81,7 +74,7 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {
 
-        Log::debug($request->all());
+        
         $assignedTo = $request->all()['assigned_to'];
         $isGroup = $request->all()['is_group'] ?? null;
         // return ['Debug'];
@@ -99,23 +92,18 @@ class ScheduleController extends Controller
         }
 
 
-        //dd($request);
+        
         $requestArray = $request->all();
         $requestArray["assigned_by"] = Auth::id();
-        //$requestArray["description"] = "No Descripition";
 
-
-        //Log::debug($request->all());
         // Has id means create event, else update event.
         if (empty($requestArray["id"])) {
-            //dd($request);
-            //Alert::toast('Empty: ' . $validator->errors(), 'alert');
             switch ($requestArray["scheduleType"]) {
                 case 'task':
                     // Add 30 minutes to the start time.
                     $requestArray["end"] = Carbon::parse($requestArray["start"])->addMinutes(30)->format('Y-m-d H:i:s');
                     $task = Task::create($requestArray);
-                    //Log::debug("Task: " . $task);
+                    
                     if ($assignedTo == 0) {  // all members
                         $users = User::all();
                     } else if ($isGroup) {
@@ -170,12 +158,15 @@ class ScheduleController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * Trigger an event for related users when a task created.
+     */
     function triggerEvent(User $user, Task $task)
     {
         $settings = User::find($user->id)->settings;
         if (empty($settings)) {
             $user->settings()->create();
-            Log::debug($user->settings);
+            
         }
         if ($user->settings->new_schedule == 1) {
             event(
@@ -188,28 +179,6 @@ class ScheduleController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    // public function show($id)
-    // {
-    //     //return redirect()->back();
-
-    // }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    // public function edit($id)
-    // {
-    //     //
-    // }
 
     /**
      * Update the specified resource in storage.
@@ -261,14 +230,14 @@ class ScheduleController extends Controller
      */
     public function destroy(Request $request)
     {
-        //Log::debug($request);
+        
         // return;
         if ($request->wantsJson() || $request->ajax()) {
             switch ($request["scheduleType"]) {
                 case 'task':
 
                     $task = Task::find($request->id);
-                    //Log::debug($task);
+                    
                     if (!empty($task)) {
                         $task->delete();
                         return response()->json($task);
@@ -276,7 +245,7 @@ class ScheduleController extends Controller
                     break;
                 default:
                     $event = Event::find($request->id);
-                    Log::debug($event);
+                    
                     if (!empty($event)) {
                         $event->delete();
                         return response()->json($event);
@@ -287,14 +256,4 @@ class ScheduleController extends Controller
         }
     }
 
-
-
-    // public function deleteEvent($id)
-    // {
-
-    //     //dd(Event::findOrFail($id));
-    //     Event::findOrFail($id)->delete();
-
-    //     return redirect()->back();
-    // }
 }

@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
 
         <!-- Card on the left to display some last uploaded Files -->
-        <div class="col mt-5" style="max-width: 25%;">
+        <div class="col mt-5" style="max-width: 25%; min-width:400px;">
             <div class="card">
                 <div class="card-header text-left h5">
                     Latest Public <a href="{{ url('/files') }}"> Files </a>
@@ -51,7 +51,7 @@
 
         <!-- Card in the center showing the tasks for today and the following week -->
         @if(Auth::user()->is_admin == 1)
-        <div class="col-auto mt-2"  style="max-width: 50%;">
+        <div class="col-auto mt-2"  style="max-width: 50%; min-width:400px;">
             <div class="card">
                 <div class="card-body">
                     <!-- <div class="card">
@@ -69,7 +69,7 @@
                     <h3 class="text-center pb-2 pt-2 border-bottom">Hi {{ Auth::user()->first_name }}</h3>
 
                     
-                    <h5 class="text-center pt-1">You have {{ count($pendingUsers) }} user{{count($pendingUsers) > 1? 's': ''}} that waiting for grouping.</h5>
+                    <h5 class="text-center pt-1">You have {{ count($pendingUsers) }} <span class="text-danger">NEW</span> user{{count($pendingUsers) > 1? 's': ''}} that waiting for accepting.</h5>
 
                     <!-- Table to display user tasks for a week -->
                     <div class="pt-2 table-responsive">
@@ -117,7 +117,7 @@
             </div>
         </div>
         @else
-        <div class="col-auto mt-2"  style="max-width: 50%;">
+        <div class="col-auto mt-2"  style="max-width: 50%; min-width:400px;">
             <div class="card">
                 <div class="card-body">
                     <!-- <div class="card">
@@ -155,7 +155,7 @@
                                 <tr>
                                     <td scope="row">{{ date('H:i:s', strtotime($task->start)) }}</td>
                                     <td> <span class="d-inline-block text-truncate" style="max-width: 200px;">{{ $task->title }}</span> </td>
-                                    <td>{{ $task->is_compled == 1 ? 'Competed' : 'Not Completed' }}</td>
+                                    <td>{{ $task->is_completed == 1 ? 'Completed' : 'Not Completed' }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -184,7 +184,7 @@
                                     <td scope="row">{{ date('Y-m-d H:i:s', strtotime($task->start)) }}</td>
                                     <td> <span class="d-inline-block text-truncate text-uppercase" style="max-width: 200px;"> {{ $task->title }}</span></td>
                                     <td>
-                                        {{ $task->is_compled == 1 ? 'Competed' : 'Not Completed' }}
+                                        {{ $task->is_completed == 1 ? 'Completed' : 'Not Completed' }}
                                         <br/>
                                         <span class="text-info">
                                         {{ $task->request_time_off_id > 0 ? 'Time off requested' : '' }}
@@ -196,7 +196,7 @@
                                             {{ method_field('PATCH') }}
                                             <input type="hidden" name="id" value="{{ $task->id }}">
                                             <input type="hidden" name="taskStatus" value="requestTimeOff">
-                                            <button type="submit" class="btn btn-primary float-right request-time-off {{ $task->request_time_off_id > 0 ? 'disabled' : '' }}" id="request-time-off" value="{{ $task->id }}"
+                                            <button type="submit" class="btn btn-primary float-right request-time-off {{ ($task->request_time_off_id > 0 || $task->is_completed == 1) ? 'disabled' : '' }}" id="request-time-off" value="{{ $task->id }}"
                                             
                                             >
                                                 Request Time Off
@@ -221,7 +221,7 @@
         </div>
         @endif
         <!-- Card on the right to display new Messages -->
-        <div class="col mt-5"  style="max-width: 25%;">
+        <div class="col mt-5"  style="max-width: 25%; min-width:400px;">
             <div class="card">
 
                 <div class="card-header text-left h5">New Messages</div>

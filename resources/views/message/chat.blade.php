@@ -122,7 +122,7 @@
         position: fixed;
         bottom: 0;
         height: 60px;
-        width: 60%;
+        width: 70%;
         background: #fff;
         align-items: baseline;
     }

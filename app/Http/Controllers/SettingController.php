@@ -39,48 +39,7 @@ class SettingController extends Controller
         return view('setting.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Setting  $setting
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Setting $setting)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Setting  $setting
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Setting $setting)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -98,7 +57,7 @@ class SettingController extends Controller
         $passwordSuccessMessage = 'Password changed successfully';
         $notvalidMessage = 'Your new password does not match with the confirm password!';
 
-        Log::debug($requestArray);
+        
         switch($request['settingsType']){
             case 'notification':
                 $setting->update($requestArray);
@@ -111,7 +70,7 @@ class SettingController extends Controller
 
             case 'password':
                 if(!(Hash::check($requestArray['password'], Auth::user()->password))){
-                    //Log::debug("Password not mach");
+                    
                     if($request->wantsJson()){
                         return response()->json(['failed' => $passwordErrorMessage]);
                     }
@@ -126,7 +85,7 @@ class SettingController extends Controller
                 
                 break;
         }
-        Log::debug(Auth::user());
+        
         $user = Auth::user()->update([
             "password" => bcrypt($requestArray['newPassword'])
         ]);
@@ -138,14 +97,5 @@ class SettingController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Setting  $setting
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Setting $setting)
-    {
-        //
-    }
+
 }

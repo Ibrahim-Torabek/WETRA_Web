@@ -242,6 +242,7 @@ window.Echo.channel('schedule')
  * 
  ********************************************************************************************************************************
  ********************************************************************************************************************************/
+    bsCustomFileInput.init();
 
     $('#shared_to').change(function(){
         $('#is_group').val($('#shared_to').find(':selected').attr('is_group'));
@@ -272,14 +273,15 @@ window.Echo.channel('schedule')
  const inputs = document.getElementsByClassName("group-name-input");
  
 
+
 for (var i = 0; i < buttons.length; i++){
     buttons[i].onclick = function(e){
         e.preventDefault();
         
-        groupName = 'Hello'; // inputs[0].value();
-        groupId = this.getAttribute('group_id');
-        groupName = document.getElementById(groupId).value;
-
+        //groupName = 'Hello'; // inputs[0].value();
+        var groupId = this.getAttribute('group_id');
+        var groupName = document.getElementById(groupId).value;
+        console.log(groupName + groupId);
         const options = {
             method: "PUT",
             url: "../../groups/" + groupId,
@@ -294,4 +296,11 @@ for (var i = 0; i < buttons.length; i++){
 
 $('#close_modal').click(function(){
     location.reload();
+});
+
+$('.user_select').select2({
+    placeholder: "Select a group or a person",
+    allowClear: true,
+    width: 'resolve',
+    theme: "classic"
 });
