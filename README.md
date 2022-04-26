@@ -48,7 +48,7 @@ time-off requested tasks.
 - Non-admin: only can view events, public or assigned tasks. Can request time-off a task. Can mark as complete of a task.
 ![Usage](Gif/Schedule.gif)
 
-### Admin' Users Page
+### Admin's Users Page
 Admin can view, edit and delete any users. Can allow or forbid any user to use the system.
 ![Usage](Gif/Admin-Users.gif)
 
