@@ -9,7 +9,7 @@
 @section('message-content')
 <h2 class="text"> <i> Click "Start Chat" to begin a NEW chat</i></h2>
 <div class="container ml-5 mt-5">
-    @if(!empty($messages))
+    @if(!empty($messages) && count($messages) > 0)
     <h4 class="">New Messages</h4>
     @foreach($messages as $message)
     <li class="list-group-item text-truncate">
@@ -18,6 +18,8 @@
         </a> {{ $message->line_text }}</span>
     </li>
     @endforeach
+    @else
+        <h4 class="">No new Messages</h4>
     @endif
 </div>
 
