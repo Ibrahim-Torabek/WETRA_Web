@@ -34,32 +34,28 @@ The Windsor-Essex Therapeutic Riding Association or WETRA want us to build a web
 ## Demos
 
 ### Admin's home page
-
 Admins can see Latest files, Newly registered users and New messages in their home page.
 ![Usage](Gif/Admin-Homepage.gif)
 
 ### Message page
-
 Admin users and non-admin users have same messages page. They can send group messages or personal messages in this page.
 ![Usage](Gif/Messaging.gif)
 
 ### Schedule page
-#### Even if admin users and non-admin users have the same page, their roles are different
-
-Admin: can view all events and tasks on the calendar. Can add, edit and delete events and tasks. Can accept or reject 
+Even if admin users and non-admin users have the same page, their roles are different
+- Admin: can view all events and tasks on the calendar. Can add, edit and delete events and tasks. Can accept or reject 
 time-off requested tasks.
-Non-admin: only can view events, public or assigned tasks. Can request time-off a task. Can mark as complete of a task.
+- Non-admin: only can view events, public or assigned tasks. Can request time-off a task. Can mark as complete of a task.
 ![Usage](Gif/Schedule.gif)
 
-### Admin' Users Page
-
+### Admin's Users Page
 Admin can view, edit and delete any users. Can allow or forbid any user to use the system.
 ![Usage](Gif/Admin-Users.gif)
 
 ### Non-admin Users' Pages
-
 The following gif animation demonstrating all pages the non-admin user can browse
 ![Usage](Gif/User-Overall.gif)
+
 
 ## Credits
 
@@ -73,7 +69,3 @@ The following gif animation demonstrating all pages the non-admin user can brows
 - [Emoji-Button](https://github.com/joeattardi/picmo/packages/55603?version=4.0.0) The MIT license. 
 - [Google icons](https://fonts.google.com/icons) Apache License 2.0. 
 - [jQuery](https://jquery.org/license/) The MIT license. 
-
-
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
