@@ -56,7 +56,6 @@ Admin can view, edit and delete any users. Can allow or forbid any user to use t
 The following gif animation demonstrating all pages the non-admin user can browse
 ![Usage](Gif/User-Overall.gif)
 
-### [All screen recorded gifs](Gif)
 
 ## Credits
 
